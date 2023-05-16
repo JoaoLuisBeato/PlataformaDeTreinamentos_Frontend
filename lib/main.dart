@@ -9,12 +9,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String nome = '';
+
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       title: "app",
-      theme: ThemeData(primaryColor: Colors.white),
-      home: MyHomePage(),
+      theme: ThemeData(primaryColor: Colors.white,
+                      primarySwatch: Colors.amber
+              ),
+      home: MyHomePage(nome: nome),
+      
+      
     );
   }
 }
-
