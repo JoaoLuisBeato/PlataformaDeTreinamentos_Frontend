@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_app/admin_page.dart';
+import 'cadastro.dart';
+
 
 class MyHomePage extends StatelessWidget {
+  
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
   String email = '';
   String password = '';
@@ -43,6 +47,41 @@ class MyHomePage extends StatelessWidget {
       ),
     );
 
+    final buttonLogin = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 150.0,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            minimumSize: const Size(150, 40),
+          ),
+          onPressed: () {
+            /*final url = Uri.parse('http://127.0.0.1:5000/login');
+            http.post(url, body: {'email': email, 'password': password});*/
+
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
+            );
+          },
+          child: Text(
+            "Login",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
@@ -59,18 +98,35 @@ class MyHomePage extends StatelessWidget {
         child: Center(
           child: SizedBox(
             width: 700,
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints.expand(),
-                padding: const EdgeInsets.fromLTRB(30.0, 250.0, 30.0, 150.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 30.0),
-                    emailField,
-                    const SizedBox(height: 30.0),
-                    passwordField,
-                    const SizedBox(height: 30.0),
-                  ],
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    spreadRadius: 4,
+                    blurRadius: 7,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Container(
+                  constraints: const BoxConstraints.expand(),
+                  padding: const EdgeInsets.fromLTRB(30.0, 250.0, 30.0, 150.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30.0),
+                      emailField,
+                      const SizedBox(height: 30.0),
+                      passwordField,
+                      const SizedBox(height: 30.0),
+                      buttonLogin,
+                      const SizedBox(height: 30.0),
+                      buttonCadastro,
+                      const SizedBox(height: 30.0)
+                    ],
+                  ),
                 ),
               ),
             ),
