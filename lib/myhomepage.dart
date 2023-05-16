@@ -148,7 +148,7 @@ class MyHomePage extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(30.0, 250.0, 30.0, 150.0),
                   child: Column(
                     children: [
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 40.0),
                       emailField,
                       const SizedBox(height: 30.0),
                       passwordField,
