@@ -82,6 +82,38 @@ class MyHomePage extends StatelessWidget {
       ),
     );
 
+    final buttonCadastro = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 150.0,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            minimumSize: const Size(150, 40),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyWidget()),
+            );
+          },
+          child: Text(
+            "Cadastrar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
