@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\joaol\OneDrive\Documentos\GitHub\app_tarefa07_principal\projeto\app_tarefa07_frontend\windows\flutter\ephemeral\cpp_client_wrapper\core_implementations.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\joaol\OneDrive\Documentos\GitHub\app_tarefa07_principal\projeto\app_tarefa07_frontend\windows\flutter\ephemeral\cpp_client_wrapper\standard_codec.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\joaol\OneDrive\Documentos\GitHub\app_tarefa07_principal\projeto\app_tarefa07_frontend\windows\flutter\ephemeral\cpp_client_wrapper\plugin_registrar.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\joaol\OneDrive\Documentos\GitHub\app_tarefa07_principal\projeto\app_tarefa07_frontend\windows\flutter\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{04FFDE5F-F9B7-3074-AD3E-2D8A6EFF49C3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DFE7D257-B81C-3A2C-8749-850891E8722F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

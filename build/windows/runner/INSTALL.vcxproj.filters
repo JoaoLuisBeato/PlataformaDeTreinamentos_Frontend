@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\joaol\OneDrive\Documentos\GitHub\app_tarefa07_principal\projeto\app_tarefa07_frontend\build\windows\CMakeFiles\ece2504db3ec74433f00652b15f91bbe\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{04FFDE5F-F9B7-3074-AD3E-2D8A6EFF49C3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
