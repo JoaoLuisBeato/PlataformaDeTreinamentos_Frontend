@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 class MyHomePage extends StatelessWidget {
@@ -70,10 +71,21 @@ class MyHomePage extends StatelessWidget {
             color: Colors.white,
             fontWeight: FontWeight.bold
           )),
-          onPressed: ((){
+          onPressed: (()async{{
             final url = Uri.parse('http://127.0.0.1:5000/login');
-            http.post(url, body: {'email': email, 'password': password});
-          
+            final response = await http.post(url, body: {'email': email, 'password': password});
+
+            final jsonData = response.body;
+            final parsedJson = jsonDecode(jsonData);
+            final verificado = parsedJson['acesso'];
+
+            print(verificado);
+            if(verificado == "OK")
+              print("passou");
+
+            
+
+            }
           }),
         ),
       ),
