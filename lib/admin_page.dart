@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class AdminPageCall extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class AdminPage extends State<AdminPageCall> {
   int _selectedIndex = 0;
 
   final _widgetOptions = [
-    CrudTreinamentos(),
+    CrudTreinamentosCall(),
     const Text('Cursos'),
     const Text('Resultados'),
     const Text('Testes'),
@@ -84,15 +85,45 @@ class AdminPage extends State<AdminPageCall> {
   }
 }
 
-class CrudTreinamentos extends StatelessWidget {
+class CrudTreinamentosCall extends StatefulWidget {
+  @override
+  CrudTreinamentos createState() => CrudTreinamentos();
+}
+
+class CrudTreinamentos extends State<CrudTreinamentosCall> {
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
 
   String nomeComercial = '';
   String descricao = '';
-  String carga_horaria = '';
+  String cargaHoraria = '';
+  DateTime dataInicioInscricao = DateTime.now();
+  DateTime dataFinalInscricao = DateTime.now();         //corrigir formatação para DD-MM-YYYY
+  DateTime dataFinalTreinamento = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    void _showDatePicker(pressedButton) {
+      showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime(2030),
+              )
+          .then((value) {
+        setState(() {
+          if (value != null) {
+            if (pressedButton == 'Inicio') {
+              dataInicioInscricao = value;
+            } else if (pressedButton == 'Final') {
+              dataFinalInscricao = value;
+            } else {
+              dataFinalTreinamento = value;
+            }
+          }
+        });
+      });
+    }
+
     final comercialNameField = SizedBox(
       width: 600,
       child: TextField(
@@ -131,7 +162,7 @@ class CrudTreinamentos extends StatelessWidget {
       width: 300,
       child: TextField(
         onChanged: (text) {
-          carga_horaria = '${text} Horas';
+          cargaHoraria = text;
         },
         keyboardType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
@@ -140,13 +171,110 @@ class CrudTreinamentos extends StatelessWidget {
         obscureText: false,
         style: style,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Carga horária",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-          suffixText: ' Horas',
-          suffixStyle: style
-        ),
+            contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+            hintText: "Carga horária",
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            suffixText: 'Horas',
+            suffixStyle: style),
       ),
+    );
+
+    final alinhamentoBotoesDeData = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ButtonTheme(
+            minWidth: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+            child: ButtonTheme(
+              minWidth: 200.0,
+              height: 150.0,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
+                  minimumSize: const Size(150, 40),
+                ),
+                onPressed: () {
+                  _showDatePicker('Inicio');
+                },
+                child: Text(
+                  "Selecione INÍCIO das inscrições",
+                  textAlign: TextAlign.center,
+                  style: style.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ButtonTheme(
+            minWidth: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+            child: ButtonTheme(
+              minWidth: 200.0,
+              height: 150.0,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
+                  minimumSize: const Size(150, 40),
+                ),
+                onPressed: () {
+                  _showDatePicker('Final');
+                },
+                child: Text(
+                  "Selecione FIM das inscrições",
+                  textAlign: TextAlign.center,
+                  style: style.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          child: ButtonTheme(
+            minWidth: 200.0,
+            height: 150.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+                minimumSize: const Size(150, 40),
+              ),
+              onPressed: () {
+                _showDatePicker('Treinamento');
+              },
+              child: Text(
+                "Selecione FIM do treinamento",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
 
     return SingleChildScrollView(
@@ -160,7 +288,9 @@ class CrudTreinamentos extends StatelessWidget {
               const Text(
                   "ID do Curso: "), //<-- colocar um randomizador no backend e fazer o call nele para printar
               const SizedBox(height: 30.0), descriptionField,
-              const SizedBox(height: 30.0), workloadField
+              const SizedBox(height: 30.0), workloadField,
+              const SizedBox(height: 30.0), alinhamentoBotoesDeData,
+              const SizedBox(height: 30.0), Text(dataFinalInscricao.toString())
             ],
           ),
         ),

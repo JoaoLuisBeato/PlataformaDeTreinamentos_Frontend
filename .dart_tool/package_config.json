@@ -50,8 +50,20 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_cupertino_date_picker",
+      "rootUri": "file:///C:/Users/mjwf/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cupertino_date_picker-1.0.26+2",
+      "packageUri": "lib/",
+      "languageVersion": "1.19"
+    },
+    {
       "name": "flutter_lints",
       "rootUri": "file:///C:/Users/mjwf/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "flutter_localizations",
+      "rootUri": "file:///C:/src/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -70,6 +82,12 @@
     {
       "name": "http_parser",
       "rootUri": "file:///C:/Users/mjwf/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "intl",
+      "rootUri": "file:///C:/Users/mjwf/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.17.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -170,7 +188,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-05-16T20:53:43.242127Z",
+  "generated": "2023-05-17T23:28:01.431419Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }
