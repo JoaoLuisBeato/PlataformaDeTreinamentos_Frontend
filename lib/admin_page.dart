@@ -93,15 +93,51 @@ class CrudTreinamentos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final comercialNameField = SizedBox(
+      width: 600,
+      child: TextField(
+        onChanged: (text) {
+          nomeComercial = text;
+        },
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Nome comercial do treinamento",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+
+    final descriptionField = SizedBox(
+      width: 600,
+      child: TextField(
+        onChanged: (text) {
+          descricao = text;
+        },
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Descrição",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+
     return SingleChildScrollView(
       child: Center(
         child: Container(
           padding: const EdgeInsets.fromLTRB(30.0, 150.0, 30.0, 150.0),
           child: Column(
             children: [
+              const SizedBox(height: 30.0), comercialNameField,
               const SizedBox(height: 30.0),
               const Text(
                   "ID do Curso: "), //<-- colocar um randomizador no backend e fazer o call nele para printar
+              const SizedBox(height: 30.0), descriptionField
             ],
           ),
         ),
