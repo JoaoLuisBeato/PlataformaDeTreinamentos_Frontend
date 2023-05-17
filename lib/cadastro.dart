@@ -7,6 +7,11 @@ class Cadastro extends State<MyWidget> {
   String passwordCadastro = '';
   String nomeCadastro = '';
 
+  bool checkValueAdministrador = false;
+  bool checkValueMentores = false;
+  bool checkValueEmpresas = false;
+  bool checkValueAluno = false;
+
   @override
   Widget build(BuildContext context) {
     final nameField = SizedBox(
@@ -89,6 +94,72 @@ class Cadastro extends State<MyWidget> {
           ),
         ),
       ),
+    );
+
+
+    final checkboxMentores = CheckboxListTile(
+      contentPadding: const EdgeInsets.only(
+          left: 60.0, top: 60.0, bottom: 0.0, right: 60.0),
+      value: checkValueMentores,
+      onChanged: (bool? value) {
+        setState(() {
+          checkValueMentores = value!;
+          checkValueAdministrador = false;
+          checkValueAluno = false;
+          checkValueEmpresas = false;
+        });
+      },
+      title: const Text('Mentor'),
+      subtitle: const Text('Caso você seja um MENTOR, selecione essa opção'),
+    );
+
+    final checkboxEmpresa = CheckboxListTile(
+      contentPadding: const EdgeInsets.only(
+          left: 60.0, top: 60.0, bottom: 0.0, right: 60.0),
+      value: checkValueEmpresas,
+      onChanged: (bool? value) {
+        setState(() {
+          checkValueEmpresas = value!;
+          checkValueAdministrador = false;
+          checkValueAluno = false;
+          checkValueMentores = false;
+        });
+      },
+      title: const Text('Empresa'),
+      subtitle: const Text('Caso você seja o responsável da EMPRESA, selecione essa opção'),
+    );
+
+    final checkboxAdministrador = CheckboxListTile(
+      contentPadding: const EdgeInsets.only(
+          left: 60.0, top: 60.0, bottom: 0.0, right: 60.0),
+      value: checkValueAdministrador,
+      onChanged: (bool? value) {
+        setState(() {
+          checkValueAdministrador = value!;
+          checkValueMentores = false;
+          checkValueAluno = false;
+          checkValueEmpresas = false;
+        });
+      },
+      title: const Text('Administrador'),
+      subtitle:
+          const Text('Caso você seja um ADMINISTRADOR, selecione essa opção'),
+    );
+
+    final checkboxAluno = CheckboxListTile(
+      contentPadding: const EdgeInsets.only(
+          left: 60.0, top: 60.0, bottom: 0.0, right: 60.0),
+      value: checkValueAluno,
+      onChanged: (bool? value) {
+        setState(() {
+          checkValueAluno = value!;
+          checkValueAdministrador = false;
+          checkValueMentores = false;
+          checkValueEmpresas = false;
+        });
+      },
+      title: const Text('Aluno'),
+      subtitle: const Text('Caso você seja um ALUNO, selecione essa opção'),
     );
 
     return Scaffold(
