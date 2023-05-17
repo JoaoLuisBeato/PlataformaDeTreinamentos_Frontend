@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AdminPageCall extends StatefulWidget {
   @override
@@ -84,15 +85,14 @@ class AdminPage extends State<AdminPageCall> {
 }
 
 class CrudTreinamentos extends StatelessWidget {
-
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
 
   String nomeComercial = '';
   String descricao = '';
+  String carga_horaria = '';
 
   @override
   Widget build(BuildContext context) {
-
     final comercialNameField = SizedBox(
       width: 600,
       child: TextField(
@@ -127,6 +127,28 @@ class CrudTreinamentos extends StatelessWidget {
       ),
     );
 
+    final workloadField = SizedBox(
+      width: 300,
+      child: TextField(
+        onChanged: (text) {
+          carga_horaria = '${text} Horas';
+        },
+        keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.digitsOnly
+        ],
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Carga horária",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          suffixText: ' Horas',
+          suffixStyle: style
+        ),
+      ),
+    );
+
     return SingleChildScrollView(
       child: Center(
         child: Container(
@@ -137,7 +159,8 @@ class CrudTreinamentos extends StatelessWidget {
               const SizedBox(height: 30.0),
               const Text(
                   "ID do Curso: "), //<-- colocar um randomizador no backend e fazer o call nele para printar
-              const SizedBox(height: 30.0), descriptionField
+              const SizedBox(height: 30.0), descriptionField,
+              const SizedBox(height: 30.0), workloadField
             ],
           ),
         ),
