@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'myhomepage.dart';
 
 class Cadastro extends State<MyWidget> {
+  
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
   String emailCadastro = '';
   String passwordCadastro = '';
@@ -14,6 +15,7 @@ class Cadastro extends State<MyWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     final nameField = SizedBox(
       width: 500,
       child: TextField(
@@ -80,8 +82,7 @@ class Cadastro extends State<MyWidget> {
             //Enviar para API --> Email, senha, nome e tipo de usuário
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => MyHomePage(nome: nomeCadastro)),
+              MaterialPageRoute(builder: (context) => MyHomePage(nome: nomeCadastro)),
             );
           },
           child: Text(
@@ -95,7 +96,6 @@ class Cadastro extends State<MyWidget> {
         ),
       ),
     );
-
 
     final checkboxMentores = CheckboxListTile(
       contentPadding: const EdgeInsets.only(
@@ -179,19 +179,40 @@ class Cadastro extends State<MyWidget> {
           child: Center(
             child: SizedBox(
               width: 700,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(30.0, 150.0, 30.0, 150.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 30.0),
-                      nameField,
-                      const SizedBox(height: 30.0),
-                      emailField,
-                      const SizedBox(height: 30.0),
-                      passwordField,
-                      const SizedBox(height: 30.0),
-                    ],
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 4,
+                      blurRadius: 7,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.fromLTRB(30.0, 150.0, 30.0, 150.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30.0),
+                        nameField,
+                        const SizedBox(height: 30.0),
+                        emailField,
+                        const SizedBox(height: 30.0),
+                        passwordField,
+                        const SizedBox(height: 30.0),
+                        checkboxAluno,
+                        checkboxMentores,
+                        checkboxEmpresa,
+                        checkboxAdministrador,
+                        const SizedBox(height: 30.0),
+                        buttonCadastro,
+                        const SizedBox(height: 30.0),
+                      ],
+                    ),
                   ),
                 ),
               ),
