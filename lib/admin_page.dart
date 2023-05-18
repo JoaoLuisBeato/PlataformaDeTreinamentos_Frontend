@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 class AdminPageCall extends StatefulWidget {
   @override
@@ -26,8 +27,7 @@ class AdminPage extends State<AdminPageCall> {
     });
   }
 
-  TextStyle style = const TextStyle(
-      fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
+  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
 
   //String nomeDisplay;
 
@@ -93,7 +93,7 @@ class CrudTreinamentosCall extends StatefulWidget {
 }
 
 class CrudTreinamentos extends State<CrudTreinamentosCall> {
-  TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
+  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
 
   String nomeComercial = '';
   String descricao = '';
@@ -104,9 +104,16 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   DateTime dataFinalInscricao = DateTime.now();
   DateTime dataFinalTreinamento = DateTime.now();
 
+  final fieldText = TextEditingController();
+
+  String minCandidatos = '';
+  String maxCandidatos = '';
+
+  Timer? _debounce;
+  final Duration _debounceTime = const Duration(seconds: 2);
+
   @override
   Widget build(BuildContext context) {
-
     void _showDatePicker(pressedButton) {
       showDatePicker(
         context: context,
@@ -118,9 +125,11 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
           if (value != null) {
             if (pressedButton == 'Inicio') {
               dataInicioInscricao = value;
-            } else if (pressedButton == 'Final' && value.isAfter(dataInicioInscricao)) {
-                dataFinalInscricao = value;
-            } else {
+            } else if (pressedButton == 'Final' &&
+                value.isAfter(dataInicioInscricao)) {
+              dataFinalInscricao = value;
+            } else if (pressedButton == 'Treinamento' &&
+                value.isAfter(dataFinalInscricao)) {
               dataFinalTreinamento = value;
             }
           }
@@ -182,6 +191,67 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             suffixText: 'Horas',
             suffixStyle: style),
       ),
+    );
+
+    void checkText(minCandidatos, maxCandidatos){
+
+      if (minCandidatos != '' && maxCandidatos != '') {
+            if (int.parse(maxCandidatos) < int.parse(minCandidatos)) {
+              fieldText.clear();
+            } else if (int.parse(minCandidatos) > int.parse(maxCandidatos)) {
+              fieldText.clear();
+            }
+          }
+    }
+
+    final maxCandidates = TextField(
+      textAlign: TextAlign.center,
+      onChanged: (text) {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+        _debounce = Timer(_debounceTime, () {
+          maxCandidatos = text;
+          checkText(minCandidatos, maxCandidatos);
+        });
+      },
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly
+      ],
+      obscureText: false,
+      style: style,
+      controller: fieldText,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        hintText: "Máximo de candidatos",
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        suffixText: 'Candidatos',
+        suffixStyle: style,
+      ),
+    );
+
+    final minCandidates = TextField(
+      
+      textAlign: TextAlign.center,
+      onChanged: (text) {
+        if (_debounce?.isActive ?? false) _debounce?.cancel();
+        _debounce = Timer(_debounceTime, () {
+          minCandidatos = text;
+           checkText(minCandidatos, maxCandidatos);
+        });
+      },
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly
+      ],
+      obscureText: false,
+      style: style,
+      decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "Mínimo de candidatos",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          suffixText: 'Candidatos',
+          suffixStyle: style),
     );
 
     final alinhamentoBotoesDeData = Row(
@@ -289,10 +359,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             "Data selecionada INÍCIO DA INSCRIÇÃO: ${formatter.format(dataInicioInscricao)}",
             textAlign: TextAlign.center,
             style: style.copyWith(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 11
-            ),
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11),
           ),
         ),
         Padding(
@@ -301,10 +368,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             "Data selecionada FIM DA INSCRIÇÃO: ${formatter.format(dataFinalInscricao)}",
             textAlign: TextAlign.center,
             style: style.copyWith(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 11
-            ),
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11),
           ),
         ),
         Padding(
@@ -313,12 +377,19 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             "Data selecionada FIM DO TREINAMENTO: ${formatter.format(dataFinalTreinamento)}",
             textAlign: TextAlign.center,
             style: style.copyWith(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 11
-            ),
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11),
           ),
         ),
+      ],
+    );
+
+    final minMaxCandidates = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: 400, child: minCandidates),
+        const SizedBox(width: 30,
+          child: Text('até')),
+        SizedBox(width: 400, child: maxCandidates),
       ],
     );
 
@@ -335,7 +406,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               const SizedBox(height: 30.0), descriptionField,
               const SizedBox(height: 30.0), workloadField,
               const SizedBox(height: 30.0), alinhamentoBotoesDeData,
-              const SizedBox(height: 30.0), selectedDates
+              const SizedBox(height: 30.0), selectedDates,
+              const SizedBox(height: 30.0), minMaxCandidates,
             ],
           ),
         ),
