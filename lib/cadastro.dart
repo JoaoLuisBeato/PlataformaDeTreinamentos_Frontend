@@ -3,7 +3,7 @@ import 'myhomepage.dart';
 
 class Cadastro extends State<MyWidget> {
   
-  TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
+  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   String emailCadastro = '';
   String passwordCadastro = '';
   String nomeCadastro = '';

@@ -26,7 +26,8 @@ class AdminPage extends State<AdminPageCall> {
     });
   }
 
-  TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
+  TextStyle style = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
 
   //String nomeDisplay;
 
@@ -38,6 +39,7 @@ class AdminPage extends State<AdminPageCall> {
       appBar: AppBar(
         title:
             const Text('Bem-vindo ADMINISTRADOR, '), //<-- colocar $nomedisplay
+        titleTextStyle: style,
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -96,26 +98,28 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   String nomeComercial = '';
   String descricao = '';
   String cargaHoraria = '';
+
+  DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
   DateTime dataInicioInscricao = DateTime.now();
-  DateTime dataFinalInscricao = DateTime.now();         //corrigir formatação para DD-MM-YYYY
+  DateTime dataFinalInscricao = DateTime.now();
   DateTime dataFinalTreinamento = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+
     void _showDatePicker(pressedButton) {
       showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2030),
-              )
-          .then((value) {
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2030),
+      ).then((value) {
         setState(() {
           if (value != null) {
             if (pressedButton == 'Inicio') {
               dataInicioInscricao = value;
-            } else if (pressedButton == 'Final') {
-              dataFinalInscricao = value;
+            } else if (pressedButton == 'Final' && value.isAfter(dataInicioInscricao)) {
+                dataFinalInscricao = value;
             } else {
               dataFinalTreinamento = value;
             }
@@ -213,7 +217,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             ),
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: ButtonTheme(
@@ -245,7 +248,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             ),
           ),
         ),
-
         ButtonTheme(
           minWidth: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -277,6 +279,48 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       ],
     );
 
+    final selectedDates = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 30, left: 20),
+          child: Text(
+            "Data selecionada INÍCIO DA INSCRIÇÃO: ${formatter.format(dataInicioInscricao)}",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 11
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 30),
+          child: Text(
+            "Data selecionada FIM DA INSCRIÇÃO: ${formatter.format(dataFinalInscricao)}",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 11
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: Text(
+            "Data selecionada FIM DO TREINAMENTO: ${formatter.format(dataFinalTreinamento)}",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 11
+            ),
+          ),
+        ),
+      ],
+    );
+
     return SingleChildScrollView(
       child: Center(
         child: Container(
@@ -290,7 +334,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               const SizedBox(height: 30.0), descriptionField,
               const SizedBox(height: 30.0), workloadField,
               const SizedBox(height: 30.0), alinhamentoBotoesDeData,
-              const SizedBox(height: 30.0), Text(dataFinalInscricao.toString())
+              const SizedBox(height: 30.0), selectedDates
             ],
           ),
         ),

@@ -6,7 +6,7 @@ import 'cadastro.dart';
 
 class MyHomePage extends StatelessWidget {
   
-  TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
+  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
   String email = '';
   String password = '';
   String nome = '';
