@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_app/admin_page.dart';
 import 'cadastro.dart';
+import 'dart:convert';
 
 
 class MyHomePage extends StatelessWidget {
@@ -61,14 +62,24 @@ class MyHomePage extends StatelessWidget {
             ),
             minimumSize: const Size(150, 40),
           ),
-          onPressed: () {
-            /*final url = Uri.parse('http://127.0.0.1:5000/login');
-            http.post(url, body: {'email': email, 'password': password});*/
+          onPressed: () async{
+            final url = Uri.parse('http://127.0.0.1:5000/login');
 
-             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
-            );
+            final response = await http.post(url, body: {'email': email, 'password': password});
+
+            final jsonData = response.body;
+            final parsedJson = jsonDecode(jsonData);
+            final verificado = parsedJson['acesso'];
+
+            print(verificado);
+            if(verificado == "OK"){
+              print("passou");
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
+              );
+            }
           },
           child: Text(
             "Login",
