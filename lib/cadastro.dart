@@ -87,15 +87,12 @@ class Cadastro extends State<MyWidget> {
             if(checkValueAdministrador){
               final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Administrador', 'nome': nomeCadastro});
               
-              
             } else if(checkValueAluno){
               final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Aluno', 'nome': nomeCadastro});
               
-
             } else if(checkValueEmpresas){
               final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Empresa', 'nome': nomeCadastro});
               
-
             } else if(checkValueMentores){
               final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Mentor', 'nome': nomeCadastro});
             
