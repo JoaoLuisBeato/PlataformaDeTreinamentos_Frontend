@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'myhomepage.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Cadastro extends State<MyWidget> {
   
@@ -78,8 +80,23 @@ class Cadastro extends State<MyWidget> {
             ),
             minimumSize: const Size(150, 40),
           ),
-          onPressed: () {
+          onPressed: () async{
             //Enviar para API --> Email, senha, nome e tipo de usuário
+            final url = Uri.parse('http://127.0.0.1:5000/cadastro');
+
+            if(checkValueAdministrador){
+              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Administrador', 'nome': nomeCadastro});
+              
+            } else if(checkValueAluno){
+              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Aluno', 'nome': nomeCadastro});
+              
+            } else if(checkValueEmpresas){
+              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Empresa', 'nome': nomeCadastro});
+              
+            } else if(checkValueMentores){
+              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Mentor', 'nome': nomeCadastro});
+            
+            }
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => MyHomePage(nome: nomeCadastro)),
