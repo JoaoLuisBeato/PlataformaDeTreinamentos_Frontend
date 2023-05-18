@@ -165,6 +165,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
     final workloadField = SizedBox(
       width: 300,
       child: TextField(
+        textAlign: TextAlign.center,
         onChanged: (text) {
           cargaHoraria = text;
         },
