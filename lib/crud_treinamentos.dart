@@ -111,15 +111,15 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       ),
     );
 
-    void checkText(minCandidatos, maxCandidatos){
-
+    void checkText(minCandidatos, maxCandidatos) {
       if (minCandidatos != '' && maxCandidatos != '') {
-            if (int.parse(maxCandidatos) < int.parse(minCandidatos)) {
-              fieldText.clear();
-            } else if (int.parse(minCandidatos) > int.parse(maxCandidatos)) {
-              fieldText.clear();
-            }
-          }
+        if (int.parse(maxCandidatos) < int.parse(minCandidatos)) {
+          fieldText.clear();
+        }
+        if (int.parse(minCandidatos) > int.parse(maxCandidatos)) {
+          fieldText.clear();
+        }
+      }
     }
 
     final maxCandidates = TextField(
@@ -149,13 +149,12 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
     );
 
     final minCandidates = TextField(
-      
       textAlign: TextAlign.center,
       onChanged: (text) {
         if (_debounce?.isActive ?? false) _debounce?.cancel();
         _debounce = Timer(_debounceTime, () {
           minCandidatos = text;
-           checkText(minCandidatos, maxCandidatos);
+          checkText(minCandidatos, maxCandidatos);
         });
       },
       keyboardType: TextInputType.number,
@@ -305,62 +304,67 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(width: 400, child: minCandidates),
-        const SizedBox(width: 30,
-          child: Text('até')),
+        Padding(
+          padding: const EdgeInsets.only(right: 10, left: 10),
+          child: Text(
+            "até",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ),
         SizedBox(width: 400, child: maxCandidates),
       ],
     );
 
     final buttonQuiz = ButtonTheme(
-            minWidth: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-            child: ButtonTheme(
-              minWidth: 200.0,
-              height: 150.0,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
-                  minimumSize: const Size(150, 40),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Quiz()),
-            );
-                },
-                child: Text(
-                  "Criar QUIZ",
-                  textAlign: TextAlign.center,
-                  style: style.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+      minWidth: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 150.0,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
             ),
-          );
-
-    return SingleChildScrollView(
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30.0, 150.0, 30.0, 150.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 30.0), comercialNameField,
-              const SizedBox(height: 30.0),
-              const Text(
-                  "ID do Curso: "), //<-- colocar um randomizador no backend e fazer o call nele para printar
-              const SizedBox(height: 30.0), descriptionField,
-              const SizedBox(height: 30.0), workloadField,
-              const SizedBox(height: 30.0), alinhamentoBotoesDeData,
-              const SizedBox(height: 30.0), selectedDates,
-              const SizedBox(height: 30.0), minMaxCandidates,
-              const SizedBox(height: 30.0), buttonQuiz,
-            ],
+            minimumSize: const Size(150, 40),
           ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => QuizCall()),
+            );
+          },
+          child: Text(
+            "Criar QUIZ",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(30.0, 50.0, 30.0, 0),
+        child: Column(
+          children: [
+            const SizedBox(height: 30.0), comercialNameField,
+            const SizedBox(height: 30.0),
+            const Text(
+                "ID do Curso: "), //<-- colocar um randomizador no backend e fazer o call nele para printar
+            const SizedBox(height: 30.0), descriptionField,
+            const SizedBox(height: 30.0), workloadField,
+            const SizedBox(height: 30.0), alinhamentoBotoesDeData,
+            const SizedBox(height: 30.0), selectedDates,
+            const SizedBox(height: 30.0), minMaxCandidates,
+            const SizedBox(height: 30.0), buttonQuiz,
+          ],
         ),
       ),
     );
