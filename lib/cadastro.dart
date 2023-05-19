@@ -82,7 +82,7 @@ class Cadastro extends State<MyWidget> {
           ),
           onPressed: () async{
             //Enviar para API --> Email, senha, nome e tipo de usuário
-            final url = Uri.parse('http://127.0.0.1:5000/cadastro');
+           final url = Uri.parse('http://127.0.0.1:5000/cadastro');
 
             if(checkValueAdministrador){
               final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Administrador', 'nome': nomeCadastro});
@@ -95,8 +95,8 @@ class Cadastro extends State<MyWidget> {
               
             } else if(checkValueMentores){
               final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Mentor', 'nome': nomeCadastro});
-            
             }
+
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => MyHomePage(nome: nomeCadastro)),
