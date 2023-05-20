@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'myhomepage.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Cadastro extends State<MyWidget> {
