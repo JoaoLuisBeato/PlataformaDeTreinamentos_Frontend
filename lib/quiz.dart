@@ -27,8 +27,6 @@ class Quiz extends State<QuizCall> {
         alternativaB: checkAlternativaB,
         respostaDaAlternativaC: respostaC,
         alternativaC: checkAlternativaC,
-        respostaDaAlternativaD: respostaD,
-        alternativaD: checkAlternativaD,
       ));
     });
   }
@@ -40,12 +38,10 @@ class Quiz extends State<QuizCall> {
   String respostaA = '';
   String respostaB = '';
   String respostaC = '';
-  String respostaD = '';
 
   bool checkAlternativaA = false;
   bool checkAlternativaB = false;
   bool checkAlternativaC = false;
-  bool checkAlternativaD = false;
 
   int questionCounter = 0;
 
@@ -73,12 +69,10 @@ class Quiz extends State<QuizCall> {
       checkAlternativaA = false;
       checkAlternativaB = false;
       checkAlternativaC = false;
-      checkAlternativaD = false;
 
       respostaA = '';
       respostaB = '';
       respostaC = '';
-      respostaD = '';
 
       return Column(
         children: [
@@ -92,7 +86,6 @@ class Quiz extends State<QuizCall> {
                 checkAlternativaA = listAnswers[index].alternativaA;
                 listAnswers[index].alternativaB = false;
                 listAnswers[index].alternativaC = false;
-                listAnswers[index].alternativaD = false;
               });
             },
             title: SizedBox(
@@ -124,7 +117,6 @@ class Quiz extends State<QuizCall> {
                 checkAlternativaB = listAnswers[index].alternativaB;
                 listAnswers[index].alternativaA = false;
                 listAnswers[index].alternativaC = false;
-                listAnswers[index].alternativaD = false;
               });
             },
             title: SizedBox(
@@ -156,7 +148,6 @@ class Quiz extends State<QuizCall> {
                 checkAlternativaC = listAnswers[index].alternativaC;
                 listAnswers[index].alternativaA = false;
                 listAnswers[index].alternativaB = false;
-                listAnswers[index].alternativaD = false;
               });
             },
             title: SizedBox(
@@ -178,38 +169,7 @@ class Quiz extends State<QuizCall> {
               ),
             ),
           ),
-          CheckboxListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
-            value: listAnswers[index].alternativaD,
-            onChanged: (bool? value) {
-              setState(() {
-                listAnswers[index].alternativaD = value!;
-                checkAlternativaD = listAnswers[index].alternativaD;
-                listAnswers[index].alternativaA = false;
-                listAnswers[index].alternativaB = false;
-                listAnswers[index].alternativaC = false;
-              });
-            },
-            title: SizedBox(
-              child: TextField(
-                onChanged: (text) {
-                  listAnswers[index].respostaDaAlternativaD = text;
-                  respostaD = listAnswers[index].respostaDaAlternativaD;
-                },
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                obscureText: false,
-                style: style,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  hintText: "Resposta da alternativa D",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-            ),
-          ),
+        
         ],
       );
     }
@@ -229,14 +189,6 @@ class Quiz extends State<QuizCall> {
               ),
               questionField,
               returnCheckbox(index, itemsRespostas),
-              Text(itemsRespostas[index].respostaDaAlternativaA),
-              Text(itemsRespostas[index].respostaDaAlternativaB),
-              Text(itemsRespostas[index].respostaDaAlternativaC),
-              Text(itemsRespostas[index].respostaDaAlternativaD),
-              Text(itemsRespostas[index].alternativaA.toString()),
-              Text(itemsRespostas[index].alternativaB.toString()),
-              Text(itemsRespostas[index].alternativaC.toString()),
-              Text(itemsRespostas[index].alternativaD.toString()),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.0),
                 child: Divider(
@@ -271,12 +223,10 @@ class Answers {
   String respostaDaAlternativaA;
   String respostaDaAlternativaB;
   String respostaDaAlternativaC;
-  String respostaDaAlternativaD;
 
   bool alternativaA;
   bool alternativaB;
   bool alternativaC;
-  bool alternativaD;
 
   Answers(
       {required this.respostaDaAlternativaA,
@@ -284,7 +234,5 @@ class Answers {
       required this.respostaDaAlternativaB,
       required this.alternativaB,
       required this.respostaDaAlternativaC,
-      required this.alternativaC,
-      required this.respostaDaAlternativaD,
-      required this.alternativaD});
+      required this.alternativaC,});
 }
