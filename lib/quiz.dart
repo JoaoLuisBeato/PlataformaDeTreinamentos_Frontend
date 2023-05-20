@@ -70,11 +70,15 @@ class Quiz extends State<QuizCall> {
     );
 
     Column returnCheckbox(index, listAnswers) {
-
       checkAlternativaA = false;
       checkAlternativaB = false;
       checkAlternativaC = false;
       checkAlternativaD = false;
+
+      respostaA = '';
+      respostaB = '';
+      respostaC = '';
+      respostaD = '';
 
       return Column(
         children: [
