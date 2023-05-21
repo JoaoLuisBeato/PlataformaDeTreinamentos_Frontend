@@ -6,21 +6,14 @@ class QuizCall extends StatefulWidget {
 }
 
 class Quiz extends State<QuizCall> {
-  List<Questions> itemsQuestoes = [];
   List<Answers> itemsRespostas = [];
-
-  void addItemQuestao() {
-    setState(() {
-      int questionCount = itemsQuestoes.length + 1;
-      itemsQuestoes.add(
-          Questions(questao: 'Questão $questionCount', pergunta: pergunta));
-    });
-  }
 
   void addResposta() {
     setState(() {
-      int answerCount = itemsRespostas.length + 1; //talvez use
+      int questionCount = itemsRespostas.length + 1;
       itemsRespostas.add(Answers(
+        questao: 'Questão $questionCount',
+        pergunta: pergunta,
         respostaDaAlternativaA: respostaA,
         alternativaA: checkAlternativaA,
         respostaDaAlternativaB: respostaB,
@@ -180,12 +173,12 @@ class Quiz extends State<QuizCall> {
         titleTextStyle: style,
       ),
       body: ListView.builder(
-        itemCount: itemsQuestoes.length,
+        itemCount: itemsRespostas.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
               ListTile(
-                title: Text(itemsQuestoes[index].questao, style: style),
+                title: Text(itemsRespostas[index].questao, style: style),
               ),
               questionField,
               returnCheckbox(index, itemsRespostas),
@@ -202,7 +195,6 @@ class Quiz extends State<QuizCall> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          addItemQuestao();
           addResposta();
           questionCounter++;
         },
@@ -212,14 +204,11 @@ class Quiz extends State<QuizCall> {
   }
 }
 
-class Questions {
+class Answers {
+
   String questao;
   String pergunta;
 
-  Questions({required this.questao, required this.pergunta});
-}
-
-class Answers {
   String respostaDaAlternativaA;
   String respostaDaAlternativaB;
   String respostaDaAlternativaC;
@@ -229,7 +218,9 @@ class Answers {
   bool alternativaC;
 
   Answers(
-      {required this.respostaDaAlternativaA,
+      {required this.questao,
+      required this.pergunta,
+      required this.respostaDaAlternativaA,
       required this.alternativaA,
       required this.respostaDaAlternativaB,
       required this.alternativaB,

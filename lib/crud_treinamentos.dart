@@ -32,6 +32,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
   @override
   Widget build(BuildContext context) {
+    
     void _showDatePicker(pressedButton) {
       showDatePicker(
         context: context,
@@ -355,9 +356,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
         child: Column(
           children: [
             const SizedBox(height: 30.0), comercialNameField,
-            const SizedBox(height: 30.0),
-            const Text(
-                "ID do Curso: "), //<-- colocar um randomizador no backend e fazer o call nele para printar
             const SizedBox(height: 30.0), descriptionField,
             const SizedBox(height: 30.0), workloadField,
             const SizedBox(height: 30.0), alinhamentoBotoesDeData,
