@@ -228,6 +228,7 @@ class Quiz extends State<QuizCall> {
       appBar: AppBar(
         title: const Text('Criar QUIZ'),
         titleTextStyle: style,
+        automaticallyImplyLeading: false
       ),
       body: ListView.builder(
         itemCount: itemsRespostas.length,
@@ -257,7 +258,7 @@ class Quiz extends State<QuizCall> {
           if(checkFirstEntranceAlert){
           addResposta();
           questionCounter++;
-          
+
           } else {
             showDialog(
                 context: context,
