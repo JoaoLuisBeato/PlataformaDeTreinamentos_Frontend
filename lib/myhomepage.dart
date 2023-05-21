@@ -63,7 +63,7 @@ class MyHomePage extends StatelessWidget {
             minimumSize: const Size(150, 40),
           ),
           onPressed: () async{
-            /*final url = Uri.parse('http://127.0.0.1:5000/login');
+            final url = Uri.parse('http://127.0.0.1:5000/login');
 
             final response = await http.post(url, body: {'email': email, 'password': password});
 
@@ -73,14 +73,14 @@ class MyHomePage extends StatelessWidget {
 
             print(verificado);
             if(verificado == "OK"){
-              print("passou");*/
+              print("passou");
               
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
               );
-            },
-          //},
+            }
+          },
           child: Text(
             "Login",
             textAlign: TextAlign.center,
