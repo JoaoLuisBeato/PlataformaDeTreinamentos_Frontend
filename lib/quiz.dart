@@ -36,6 +36,10 @@ class Quiz extends State<QuizCall> {
   bool checkAlternativaB = false;
   bool checkAlternativaC = false;
 
+  bool checkFirstEntranceAlert = true;
+
+  int transferIndex = 0;
+
   int questionCounter = 0;
 
   @override
@@ -62,6 +66,8 @@ class Quiz extends State<QuizCall> {
       checkAlternativaA = false;
       checkAlternativaB = false;
       checkAlternativaC = false;
+
+      checkFirstEntranceAlert = false;
 
       respostaA = '';
       respostaB = '';
@@ -162,10 +168,61 @@ class Quiz extends State<QuizCall> {
               ),
             ),
           ),
-        
         ],
       );
     }
+
+    final buttonConfirm = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            addResposta();
+            questionCounter++;
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Continuar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonCancel = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Voltar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -175,6 +232,7 @@ class Quiz extends State<QuizCall> {
       body: ListView.builder(
         itemCount: itemsRespostas.length,
         itemBuilder: (context, index) {
+          transferIndex = index;
           return Column(
             children: [
               ListTile(
@@ -195,8 +253,24 @@ class Quiz extends State<QuizCall> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+
+          if(checkFirstEntranceAlert){
           addResposta();
           questionCounter++;
+          
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Continuar?'),
+                    content: const Text(
+                        'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
+                    actions: [buttonConfirm, buttonCancel],
+                  );
+                });
+          }
+          checkFirstEntranceAlert = false;
         },
         child: const Icon(Icons.add),
       ),
@@ -205,7 +279,6 @@ class Quiz extends State<QuizCall> {
 }
 
 class Answers {
-
   String questao;
   String pergunta;
 
@@ -217,13 +290,14 @@ class Answers {
   bool alternativaB;
   bool alternativaC;
 
-  Answers(
-      {required this.questao,
-      required this.pergunta,
-      required this.respostaDaAlternativaA,
-      required this.alternativaA,
-      required this.respostaDaAlternativaB,
-      required this.alternativaB,
-      required this.respostaDaAlternativaC,
-      required this.alternativaC,});
+  Answers({
+    required this.questao,
+    required this.pergunta,
+    required this.respostaDaAlternativaA,
+    required this.alternativaA,
+    required this.respostaDaAlternativaB,
+    required this.alternativaB,
+    required this.respostaDaAlternativaC,
+    required this.alternativaC,
+  });
 }
