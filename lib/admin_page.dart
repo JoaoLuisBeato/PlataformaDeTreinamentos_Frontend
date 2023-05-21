@@ -201,7 +201,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             } else if (int.parse(minCandidatos) > int.parse(maxCandidatos)) {
               fieldText.clear();
             }
-          }
+      }
     }
 
     final maxCandidates = TextField(
