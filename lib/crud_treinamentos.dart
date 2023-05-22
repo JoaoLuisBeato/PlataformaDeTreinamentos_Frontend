@@ -11,7 +11,9 @@ class CrudTreinamentosCall extends StatefulWidget {
 }
 
 class CrudTreinamentos extends State<CrudTreinamentosCall> {
+  
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
+  TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
 
   String nomeComercial = '';
   String descricao = '';
@@ -355,6 +357,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
         padding: const EdgeInsets.fromLTRB(30.0, 50.0, 30.0, 0),
         child: Column(
           children: [
+            Text('Crie um treinamento!', style: styleTitle),
             const SizedBox(height: 30.0), comercialNameField,
             const SizedBox(height: 30.0), descriptionField,
             const SizedBox(height: 30.0), workloadField,
