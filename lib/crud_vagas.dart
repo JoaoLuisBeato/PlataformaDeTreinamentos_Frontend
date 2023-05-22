@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import 'dart:async';
 
 class CrudVagasCall extends StatefulWidget {
@@ -184,8 +184,11 @@ class CrudVagas extends State<CrudVagasCall> {
               borderRadius: BorderRadius.circular(32.0),
             ),
           ),
-          onPressed: () {
-            // fazer call ao banco de dadsos
+          onPressed: () async {
+
+            final url = Uri.parse('http://127.0.0.1:5000/vaga_emprego');
+
+            final resquest = await http.post(url, body: {'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
             Navigator.of(context).pop();
           },
           child: Text(
