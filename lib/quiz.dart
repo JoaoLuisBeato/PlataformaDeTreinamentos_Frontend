@@ -235,6 +235,7 @@ class Quiz extends State<QuizCall> {
               ),
             ),
             onPressed: () {
+              enviaQuestao(itemsRespostas, transferIndex);
               Navigator.of(context).pop();
             },
             child: Text(
