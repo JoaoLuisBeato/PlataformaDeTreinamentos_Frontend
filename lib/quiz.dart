@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
 
 class QuizCall extends StatefulWidget {
   @override
@@ -199,6 +201,34 @@ class Quiz extends State<QuizCall> {
       ),
     );
 
+    final buttonConfirmSubmit = Container(
+      height: 58,
+      child: ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "Enviar",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
     final buttonCancel = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
@@ -226,10 +256,9 @@ class Quiz extends State<QuizCall> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Criar QUIZ'),
-        titleTextStyle: style,
-        automaticallyImplyLeading: false
-      ),
+          title: const Text('Criar QUIZ'),
+          titleTextStyle: style,
+          automaticallyImplyLeading: false),
       body: ListView.builder(
         itemCount: itemsRespostas.length,
         itemBuilder: (context, index) {
@@ -252,29 +281,38 @@ class Quiz extends State<QuizCall> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-          if(checkFirstEntranceAlert){
-          addResposta();
-          questionCounter++;
-
-          } else {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Continuar?'),
-                    content: const Text(
-                        'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
-                    actions: [buttonConfirm, buttonCancel],
-                  );
-                });
-          }
-          checkFirstEntranceAlert = false;
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              FloatingActionButton(
+                onPressed: () {
+                  if (checkFirstEntranceAlert) {
+                    addResposta();
+                    questionCounter++;
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Continuar?'),
+                            content: const Text(
+                                'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
+                            actions: [buttonConfirm, buttonCancel],
+                          );
+                        });
+                  }
+                  checkFirstEntranceAlert = false;
+                },
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+              const SizedBox(width: 30),
+              buttonConfirmSubmit
+            ]),
+          ]),
     );
   }
 }
