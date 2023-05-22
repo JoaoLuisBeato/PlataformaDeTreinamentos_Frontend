@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
+import 'dart:math';
 
 import 'package:my_app/quiz.dart';
 
@@ -14,6 +15,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+
+  int id_treinamento = Random().nextInt(200);
 
   String nomeComercial = '';
   String descricao = '';
@@ -334,7 +337,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => QuizCall()),
+              MaterialPageRoute(builder: (context) => QuizCall(randId: id_treinamento)),
             );
           },
           child: Text(

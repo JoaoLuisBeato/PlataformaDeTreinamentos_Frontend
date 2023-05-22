@@ -3,6 +3,11 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 class QuizCall extends StatefulWidget {
+
+  final int randId;
+
+  QuizCall({required this.randId});
+
   @override
   Quiz createState() => Quiz();
 }
@@ -14,6 +19,7 @@ class Quiz extends State<QuizCall> {
     setState(() {
       int questionCount = itemsRespostas.length + 1;
       itemsRespostas.add(Answers(
+        idTreinamentoQuiz: widget.randId,
         questao: 'Questão $questionCount',
         pergunta: pergunta,
         respostaDaAlternativaA: respostaA,
@@ -48,7 +54,8 @@ class Quiz extends State<QuizCall> {
     final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
 
     final resquest = await http.post(url, body: {
-      'questao': itemsRespostas[transferIndex].questao.toString(),
+      'id_treinamento_quiz': itemsRespostas[transferIndex].idTreinamentoQuiz.toString(),
+      'questao': itemsRespostas[transferIndex].questao.toString(),    // na criação da nova tabela, isso tem que ser a pk
       'pergunta': itemsRespostas[transferIndex].pergunta,
       'respostaDaAlternativaA':
           itemsRespostas[transferIndex].respostaDaAlternativaA,
@@ -348,7 +355,10 @@ class Answers {
   bool alternativaB;
   bool alternativaC;
 
+  int idTreinamentoQuiz;
+
   Answers({
+    required this.idTreinamentoQuiz,
     required this.questao,
     required this.pergunta,
     required this.respostaDaAlternativaA,
