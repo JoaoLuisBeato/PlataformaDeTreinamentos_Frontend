@@ -5,6 +5,9 @@ import 'package:http/http.dart' as http;
 class Cadastro extends State<MyWidget> {
   
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
+
+  TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+  
   String emailCadastro = '';
   String passwordCadastro = '';
   String nomeCadastro = '';
@@ -213,6 +216,7 @@ class Cadastro extends State<MyWidget> {
                         const EdgeInsets.fromLTRB(30.0, 150.0, 30.0, 150.0),
                     child: Column(
                       children: [
+                        Text('Cadastro', style: styleTitle),
                         const SizedBox(height: 30.0),
                         nameField,
                         const SizedBox(height: 30.0),
