@@ -44,26 +44,27 @@ class Quiz extends State<QuizCall> {
 
   int questionCounter = 0;
 
+  Future<void> enviaQuestao(itemsRespostas, transferIndex) async {
+    final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
+
+    final resquest = await http.post(url, body: {
+      'questao': itemsRespostas[transferIndex].questao.toString(),
+      'pergunta': itemsRespostas[transferIndex].pergunta,
+      'respostaDaAlternativaA':
+          itemsRespostas[transferIndex].respostaDaAlternativaA,
+      'alternativaA': itemsRespostas[transferIndex].alternativaA.toString(),
+      'respostaDaAlternativaB':
+          itemsRespostas[transferIndex].respostaDaAlternativaB,
+      'alternativaB': itemsRespostas[transferIndex].alternativaB.toString(),
+      'respostaDaAlternativaC':
+          itemsRespostas[transferIndex].respostaDaAlternativaC,
+      'alternativaC': itemsRespostas[transferIndex].alternativaC.toString()
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final questionField = SizedBox(
-      width: 600,
-      child: TextField(
-        onChanged: (text) {
-          pergunta = text;
-        },
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        obscureText: false,
-        style: style,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Pergunta da questão",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-      ),
-    );
-
+    
     Column returnCheckbox(index, listAnswers) {
       checkAlternativaA = false;
       checkAlternativaB = false;
@@ -77,6 +78,25 @@ class Quiz extends State<QuizCall> {
 
       return Column(
         children: [
+          SizedBox(
+            width: 600,
+            child: TextField(
+              onChanged: (text) {
+                listAnswers[index].pergunta = text;
+                pergunta = listAnswers[index].pergunta;
+              },
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              obscureText: false,
+              style: style,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                hintText: "Pergunta da questão",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+          ),
           CheckboxListTile(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
@@ -184,9 +204,10 @@ class Quiz extends State<QuizCall> {
               borderRadius: BorderRadius.circular(32.0),
             ),
           ),
-          onPressed: () {
+          onPressed: () async {
             addResposta();
             questionCounter++;
+            enviaQuestao(itemsRespostas, transferIndex);
             Navigator.of(context).pop();
           },
           child: Text(
@@ -268,7 +289,6 @@ class Quiz extends State<QuizCall> {
               ListTile(
                 title: Text(itemsRespostas[index].questao, style: style),
               ),
-              questionField,
               returnCheckbox(index, itemsRespostas),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -285,9 +305,7 @@ class Quiz extends State<QuizCall> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               FloatingActionButton(
                 onPressed: () {
                   if (checkFirstEntranceAlert) {
