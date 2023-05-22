@@ -16,7 +16,7 @@ class CrudVagas extends State<CrudVagasCall> {
   final fieldText = TextEditingController();
 
   Timer? _debounce;
-  final Duration _debounceTime = const Duration(seconds: 2);
+  final Duration _debounceTime = const Duration(seconds: 1);
 
   String tituloDaVaga = '';
   String empresaQueOferta = '';
@@ -30,11 +30,9 @@ class CrudVagas extends State<CrudVagasCall> {
   Widget build(BuildContext context) {
 
     void checkText(minSalario, maxSalario) {
+      
       if (minSalario != '' && maxSalario != '') {
-        if (int.parse(maxSalario) < int.parse(minSalario)) {
-          fieldText.clear();
-        }
-        if (int.parse(minSalario) > int.parse(maxSalario)) {
+        if (int.parse(maxSalario) < int.parse(minSalario) || int.parse(minSalario) > int.parse(maxSalario)) {
           fieldText.clear();
         }
       }
@@ -160,7 +158,7 @@ class CrudVagas extends State<CrudVagasCall> {
     final minMaxWage = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(width: 400, child: minWage),
+        SizedBox(width: 250, child: minWage),
         Padding(
           padding: const EdgeInsets.only(right: 10, left: 10),
           child: Text(
@@ -170,7 +168,7 @@ class CrudVagas extends State<CrudVagasCall> {
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
-        SizedBox(width: 400, child: maxWage),
+        SizedBox(width: 250, child: maxWage),
       ],
     );
 

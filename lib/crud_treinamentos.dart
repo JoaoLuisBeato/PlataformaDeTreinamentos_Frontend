@@ -30,7 +30,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   String maxCandidatos = '';
 
   Timer? _debounce;
-  final Duration _debounceTime = const Duration(seconds: 2);
+  final Duration _debounceTime = const Duration(seconds: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +116,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
     void checkText(minCandidatos, maxCandidatos) {
       if (minCandidatos != '' && maxCandidatos != '') {
-        if (int.parse(maxCandidatos) < int.parse(minCandidatos)) {
-          fieldText.clear();
-        }
-        if (int.parse(minCandidatos) > int.parse(maxCandidatos)) {
+        if (int.parse(maxCandidatos) < int.parse(minCandidatos) || int.parse(minCandidatos) > int.parse(maxCandidatos)) {
           fieldText.clear();
         }
       }
