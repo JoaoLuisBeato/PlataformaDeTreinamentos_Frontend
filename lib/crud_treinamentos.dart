@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/admin_page.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -420,7 +421,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             ),
           ),
           onPressed: () async {
-
             final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
 
             final resquest = await http.post(url, body: {
@@ -434,9 +434,14 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               'final_treinamentos': dataFinalInscricao.toString(),
               'qnt_min': minCandidatos.toString(),
               'qnt_max': maxCandidatos.toString()
-              });
+            });
 
             Navigator.of(context).pop();
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminPageCall()),
+              );
           },
           child: Text(
             "Continuar",
@@ -490,27 +495,19 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             minimumSize: const Size(150, 40),
           ),
           onPressed: () async {
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => QuizCall(randId: id_treinamento)),
-            );*/
 
             showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Continuar?'),
-                            content: const Text(
-                                'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
-                            actions: [buttonConfirm, buttonCancel],
-                          );
-                        });
-
-            
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Continuar?'),
+                    content: const Text('Os campos foram preenchidos?'),
+                    actions: [buttonConfirm, buttonCancel],
+                  );
+                });
           },
-          
           child: Text(
-            "Enviar treinamento",
+            "Enviar TREINAMENTO",
             textAlign: TextAlign.center,
             style: style.copyWith(
               color: Colors.white,

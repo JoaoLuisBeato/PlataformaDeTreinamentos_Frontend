@@ -1,0 +1,88 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class CursosCall extends StatefulWidget {
+  @override
+  Cursos createState() => Cursos();
+}
+
+class Cursos extends State<CursosCall> {
+  TextStyle style = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
+
+  TextStyle styleTitle = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 30.9, fontWeight: FontWeight.bold);
+
+  TextStyle styleSubtitle = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.grey);
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDataFromAPI();
+  }
+
+  List<dynamic> dataListCursosBD = [];
+
+  Future<void> fetchDataFromAPI() async {
+    final response =
+        await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
+
+    setState(() {
+      dataListCursosBD = json.decode(response.body);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Column returnListTile(index) {
+      return Column(children: [
+        Container(
+          width: 1200,
+          child: ListTile(
+            title: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 250, top: 10),
+                  child: Text(dataListCursosBD[index]['Nome Comercial'],
+                      style: styleTitle),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 50),
+                  child: Text(
+                      '    ID: ${dataListCursosBD[index]['Código do Curso']}',
+                      style: styleSubtitle),
+                ),
+              ],
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 10, left: 50),
+              child: Text('${dataListCursosBD[index]['Descricao']}', style: styleSubtitle),
+            ),
+            onTap: () {},
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 50),
+          child: Divider(
+            color: Colors.amber,
+            height: 10.0,
+          ),
+        ),
+      ]);
+    }
+
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: dataListCursosBD.length,
+        itemBuilder: (context, index) {
+          return returnListTile(index);
+        },
+      ),
+    );
+  }
+}

@@ -72,6 +72,7 @@ class Quiz extends State<QuizCall> {
 
   @override
   Widget build(BuildContext context) {
+    
     Column returnCheckbox(index, listAnswers) {
       checkAlternativaA = false;
       checkAlternativaB = false;
