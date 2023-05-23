@@ -409,6 +409,72 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       ),
     );
 
+    final buttonConfirm = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () async {
+
+            final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
+
+            final resquest = await http.post(url, body: {
+              'nome_comercial': nomeComercial.toString(),
+              'codigo_curso': id_treinamento.toString(),
+              'descricao': descricao.toString(),
+              'carga_horaria': cargaHoraria.toString(),
+              'inicio_inscricoes': dataInicioInscricao.toString(),
+              'final_inscricoes': dataFinalInscricao.toString(),
+              'inicio_treinamentos': dataInicioInscricao.toString(),
+              'final_treinamentos': dataFinalInscricao.toString(),
+              'qnt_min': minCandidatos.toString(),
+              'qnt_max': maxCandidatos.toString()
+              });
+
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Continuar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonCancel = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Voltar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
     final buttonSendTreinee = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -429,20 +495,18 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               MaterialPageRoute(builder: (context) => QuizCall(randId: id_treinamento)),
             );*/
 
-            final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
+            showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Continuar?'),
+                            content: const Text(
+                                'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
+                            actions: [buttonConfirm, buttonCancel],
+                          );
+                        });
 
-            final resquest = await http.post(url, body: {
-              'nome_comercial': nomeComercial.toString(),
-              'codigo_curso': id_treinamento.toString(),
-              'descricao': descricao.toString(),
-              'carga_horaria': cargaHoraria.toString(),
-              'inicio_inscricoes': dataInicioInscricao.toString(),
-              'final_inscricoes': dataFinalInscricao.toString(),
-              'inicio_treinamentos': dataInicioInscricao.toString(),
-              'final_treinamentos': dataFinalInscricao.toString(),
-              'qnt_min': minCandidatos.toString(),
-              'qnt_max': maxCandidatos.toString()
-              });
+            
           },
           
           child: Text(
