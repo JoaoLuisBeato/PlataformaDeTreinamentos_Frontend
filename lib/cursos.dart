@@ -9,10 +9,16 @@ class CursosCall extends StatefulWidget {
 
 class Cursos extends State<CursosCall> {
   TextStyle style = const TextStyle(
-      fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black12);
 
   TextStyle styleTitle = const TextStyle(
       fontFamily: 'Nunito', fontSize: 30.9, fontWeight: FontWeight.bold);
+
+  TextStyle styleComplement = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 20, fontWeight: FontWeight.bold);
 
   TextStyle styleSubtitle = const TextStyle(
       fontFamily: 'Nunito',
@@ -47,7 +53,7 @@ class Cursos extends State<CursosCall> {
             title: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 250, top: 10),
+                  padding: const EdgeInsets.only(left: 50, top: 10),
                   child: Text(dataListCursosBD[index]['Nome Comercial'],
                       style: styleTitle),
                 ),
@@ -59,10 +65,69 @@ class Cursos extends State<CursosCall> {
                 ),
               ],
             ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 10, left: 50),
-              child: Text('${dataListCursosBD[index]['Descricao']}', style: styleSubtitle),
-            ),
+            subtitle: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 10),
+                    child: Text('${dataListCursosBD[index]['Descricao']}',
+                        style: styleSubtitle),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 20),
+                    child: Row(
+                      children: [
+                        Text('Carga horária: ', style: styleComplement),
+                        Text(
+                            '${dataListCursosBD[index]['Carga Horária']} Horas',
+                            style: styleSubtitle),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 20),
+                    child: Row(
+                      children: [
+                        Text('Inscrições: ', style: styleComplement),
+                        Text(
+                            '${dataListCursosBD[index]['Início das incricoes']} até ${dataListCursosBD[index]['Final das inscricoes']}',
+                            style: styleSubtitle),
+                      ],
+                    ),
+                  ),
+                   Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 20),
+                    child: Row(
+                      children: [
+                        Text('Treinamentos: ', style: styleComplement),
+                        Text(
+                            '${dataListCursosBD[index]['Início dos treinamentos']} até ${dataListCursosBD[index]['Final dos treinamentos']}',
+                            style: styleSubtitle),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 20),
+                    child: Row(
+                      children: [
+                        Text('Quantidade de alunos: ', style: styleComplement),
+                        Text(
+                            '${dataListCursosBD[index]['Quantidade mínima de alunos']} até ${dataListCursosBD[index]['Quantidade máxima de alunos']}',
+                            style: styleSubtitle),
+                      ],
+                    ),
+                  ),
+                   Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 10),
+                    child: Row(
+                      children: [
+                        Text('Quantidade atual de alunos inscritos: ', style: styleComplement),
+                        Text('${dataListCursosBD[index]['Quantidade atual de alunos']}', style: styleSubtitle),
+                      ],
+                    ),
+                  ),
+                ]),
             onTap: () {},
           ),
         ),
