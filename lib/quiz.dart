@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
 
 class QuizCall extends StatefulWidget {
+  final int randId;
+
+  QuizCall({required this.randId});
+
   @override
   Quiz createState() => Quiz();
 }
@@ -12,6 +18,7 @@ class Quiz extends State<QuizCall> {
     setState(() {
       int questionCount = itemsRespostas.length + 1;
       itemsRespostas.add(Answers(
+        idTreinamentoQuiz: widget.randId,
         questao: 'Questão $questionCount',
         pergunta: pergunta,
         respostaDaAlternativaA: respostaA,
@@ -42,26 +49,30 @@ class Quiz extends State<QuizCall> {
 
   int questionCounter = 0;
 
+  Future<void> enviaQuestao(itemsRespostas, transferIndex) async {
+    final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
+
+    final resquest = await http.post(url, body: {
+      'id_treinamento_quiz':
+          itemsRespostas[transferIndex].idTreinamentoQuiz.toString(),
+      'questao': itemsRespostas[transferIndex].questao
+          .toString(), // na criação da nova tabela, isso tem que ser a pk
+      'pergunta': itemsRespostas[transferIndex].pergunta,
+      'respostaDaAlternativaA':
+          itemsRespostas[transferIndex].respostaDaAlternativaA,
+      'alternativaA': itemsRespostas[transferIndex].alternativaA.toString(),
+      'respostaDaAlternativaB':
+          itemsRespostas[transferIndex].respostaDaAlternativaB,
+      'alternativaB': itemsRespostas[transferIndex].alternativaB.toString(),
+      'respostaDaAlternativaC':
+          itemsRespostas[transferIndex].respostaDaAlternativaC,
+      'alternativaC': itemsRespostas[transferIndex].alternativaC.toString()
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final questionField = SizedBox(
-      width: 600,
-      child: TextField(
-        onChanged: (text) {
-          pergunta = text;
-        },
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        obscureText: false,
-        style: style,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Pergunta da questão",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-      ),
-    );
-
+    
     Column returnCheckbox(index, listAnswers) {
       checkAlternativaA = false;
       checkAlternativaB = false;
@@ -75,6 +86,25 @@ class Quiz extends State<QuizCall> {
 
       return Column(
         children: [
+          SizedBox(
+            width: 600,
+            child: TextField(
+              onChanged: (text) {
+                listAnswers[index].pergunta = text;
+                pergunta = listAnswers[index].pergunta;
+              },
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              obscureText: false,
+              style: style,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                hintText: "Pergunta da questão",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+          ),
           CheckboxListTile(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
@@ -182,9 +212,10 @@ class Quiz extends State<QuizCall> {
               borderRadius: BorderRadius.circular(32.0),
             ),
           ),
-          onPressed: () {
+          onPressed: () async {
             addResposta();
             questionCounter++;
+            enviaQuestao(itemsRespostas, transferIndex);
             Navigator.of(context).pop();
           },
           child: Text(
@@ -193,6 +224,35 @@ class Quiz extends State<QuizCall> {
             style: style.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonConfirmSubmit = Container(
+      height: 58,
+      child: ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () {
+              enviaQuestao(itemsRespostas, transferIndex);
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              "Enviar",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
         ),
@@ -226,10 +286,9 @@ class Quiz extends State<QuizCall> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Criar QUIZ'),
-        titleTextStyle: style,
-        automaticallyImplyLeading: false
-      ),
+          title: const Text('Criar QUIZ'),
+          titleTextStyle: style,
+          automaticallyImplyLeading: false),
       body: ListView.builder(
         itemCount: itemsRespostas.length,
         itemBuilder: (context, index) {
@@ -239,7 +298,6 @@ class Quiz extends State<QuizCall> {
               ListTile(
                 title: Text(itemsRespostas[index].questao, style: style),
               ),
-              questionField,
               returnCheckbox(index, itemsRespostas),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -252,29 +310,36 @@ class Quiz extends State<QuizCall> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-          if(checkFirstEntranceAlert){
-          addResposta();
-          questionCounter++;
-
-          } else {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Continuar?'),
-                    content: const Text(
-                        'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
-                    actions: [buttonConfirm, buttonCancel],
-                  );
-                });
-          }
-          checkFirstEntranceAlert = false;
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              FloatingActionButton(
+                onPressed: () {
+                  if (checkFirstEntranceAlert) {
+                    addResposta();
+                    questionCounter++;
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Continuar?'),
+                            content: const Text(
+                                'Os campos foram preenchidos e a alternativa certa foi assinalada?'),
+                            actions: [buttonConfirm, buttonCancel],
+                          );
+                        });
+                  }
+                  checkFirstEntranceAlert = false;
+                },
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+              const SizedBox(width: 30),
+              buttonConfirmSubmit
+            ]),
+          ]),
     );
   }
 }
@@ -291,7 +356,10 @@ class Answers {
   bool alternativaB;
   bool alternativaC;
 
+  int idTreinamentoQuiz;
+
   Answers({
+    required this.idTreinamentoQuiz,
     required this.questao,
     required this.pergunta,
     required this.respostaDaAlternativaA,

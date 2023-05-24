@@ -8,6 +8,9 @@ import 'dart:convert';
 class MyHomePage extends StatelessWidget {
   
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
+
+  TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+
   String email = '';
   String password = '';
   String nome = '';
@@ -72,6 +75,7 @@ class MyHomePage extends StatelessWidget {
             final verificado = parsedJson['acesso'];
 
             print(verificado);
+
             if(verificado == "OK"){
               print("passou");
               
@@ -159,6 +163,7 @@ class MyHomePage extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(30.0, 250.0, 30.0, 150.0),
                   child: Column(
                     children: [
+                      Text('Login', style: styleTitle),
                       const SizedBox(height: 30.0),
                       emailField,
                       const SizedBox(height: 30.0),
