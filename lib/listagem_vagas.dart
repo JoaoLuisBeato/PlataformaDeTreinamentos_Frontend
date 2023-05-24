@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class CursosCall extends StatefulWidget {
+class ListagemVagasCall extends StatefulWidget {
   @override
-  Cursos createState() => Cursos();
+  ListagemVagas createState() => ListagemVagas();
 }
 
-class Cursos extends State<CursosCall> {
+class ListagemVagas extends State<ListagemVagasCall> {
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
       fontSize: 20,
@@ -38,14 +38,14 @@ class Cursos extends State<CursosCall> {
     fetchDataFromAPI();
   }
 
-  List<dynamic> dataListCursosBD = [];
+  List<dynamic> dataListVagasBD = [];
 
   Future<void> fetchDataFromAPI() async {
     final response =
-        await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
+        await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
 
     setState(() {
-      dataListCursosBD = json.decode(response.body);
+      dataListVagasBD = json.decode(response.body);
     });
   }
 
@@ -56,37 +56,46 @@ class Cursos extends State<CursosCall> {
         Container(
           width: 1200,
           child: ListTile(
-            title: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 50, top: 10),
-                  child: Text(dataListCursosBD[index]['Nome Comercial'],
-                      style: styleTitle),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 50),
-                  child: Text(
-                      '    ID: ${dataListCursosBD[index]['Código do Curso']}',
-                      style: styleSubtitle),
-                ),
-              ],
-            ),
+            title: Row(children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 50, top: 10),
+                child: Text(dataListVagasBD[index]['Titulo da vaga'],
+                    style: styleTitle),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10, left: 50),
+                child: Text(
+                    '    ID: ${dataListVagasBD[index]['id'].toString()}',
+                    style: styleSubtitle),
+              ),
+            ]),
             subtitle: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
+                    padding: const EdgeInsets.only(left: 100, top: 20),
+                    child: Row(
+                      children: [
+                        Text('Empresa que está ofertando: ',
+                            style: styleComplement),
+                        Text('${dataListVagasBD[index]['Empresa']}',
+                            style: styleSubtitle),
+                      ],
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.only(left: 100, top: 10),
-                    child: Text('${dataListCursosBD[index]['Descricao']}',
+                    child: Text('${dataListVagasBD[index]['Descricao']}',
                         style: styleSubtitle),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 100, top: 20),
                     child: Row(
                       children: [
-                        Text('Carga horária: ', style: styleComplement),
+                        Text('Faixa Salarial: ', style: styleComplement),
                         Text(
-                            '${dataListCursosBD[index]['Carga Horária']} Horas',
+                            'De R\$ ${dataListVagasBD[index]['Salário mínimo'].toString()} até R\$ ${dataListVagasBD[index]['Salário máximo'].toString()}',
                             style: styleSubtitle),
                       ],
                     ),
@@ -95,54 +104,22 @@ class Cursos extends State<CursosCall> {
                     padding: const EdgeInsets.only(left: 100, top: 20),
                     child: Row(
                       children: [
-                        Text('Inscrições: ', style: styleComplement),
-                        Text(
-                            '${dataListCursosBD[index]['Início das incricoes']} até ${dataListCursosBD[index]['Final das inscricoes']}',
-                            style: styleSubtitle),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 100, top: 20),
-                    child: Row(
-                      children: [
-                        Text('Treinamentos: ', style: styleComplement),
-                        Text(
-                            '${dataListCursosBD[index]['Início dos treinamentos']} até ${dataListCursosBD[index]['Final dos treinamentos']}',
-                            style: styleSubtitle),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 100, top: 20),
-                    child: Row(
-                      children: [
-                        Text('Quantidade de alunos: ', style: styleComplement),
-                        Text(
-                            '${dataListCursosBD[index]['Quantidade mínima de alunos']} até ${dataListCursosBD[index]['Quantidade máxima de alunos']}',
-                            style: styleSubtitle),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 100, top: 10),
-                    child: Row(
-                      children: [
-                        Text('Quantidade atual de alunos inscritos: ',
+                        Text('Requisitos da candidatura: ',
                             style: styleComplement),
-                        Text(
-                            '${dataListCursosBD[index]['Quantidade atual de alunos']}',
+                        Text('${dataListVagasBD[index]['Pré Requisito']}',
                             style: styleSubtitle),
                       ],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 100, top: 10),
-                    child: Text('Clique aqui para atualizar ou deletar o treinamento',
+                    child: Text('Clique aqui para ver os inscritos na vaga.',
                         style: styleSubtitleSmall),
                   ),
                 ]),
-            onTap: () {},
+            onTap: () {
+              //colocar uma dialog box depois para listar usuários que se inscreveram
+            },
           ),
         ),
         const Padding(
@@ -157,7 +134,7 @@ class Cursos extends State<CursosCall> {
 
     return Scaffold(
       body: ListView.builder(
-        itemCount: dataListCursosBD.length,
+        itemCount: dataListVagasBD.length,
         itemBuilder: (context, index) {
           return returnListTile(index);
         },

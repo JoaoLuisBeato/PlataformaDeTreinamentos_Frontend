@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'crud_treinamentos.dart';
 import 'crud_vagas.dart';
 import 'cursos.dart';
+import 'listagem_vagas.dart';
 
 class AdminPageCall extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class AdminPage extends State<AdminPageCall> {
     CursosCall(),
     const Text('Resultados'),
     const Text('Testes'),
-    const Text('Vagas Divulgadas'),
+    ListagemVagasCall(),
     CrudVagasCall(),
     const Text('Atividades Concluídas'),
   ];
