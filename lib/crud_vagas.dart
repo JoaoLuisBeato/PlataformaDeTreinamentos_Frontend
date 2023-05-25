@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+import 'listagem_vagas.dart';
 
 class CrudVagasCall extends StatefulWidget {
   @override

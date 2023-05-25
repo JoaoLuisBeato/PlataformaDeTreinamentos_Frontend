@@ -32,6 +32,8 @@ class Cursos extends State<CursosCall> {
       fontWeight: FontWeight.normal,
       color: Colors.grey);
 
+  TextStyle styleMainTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+
   @override
   void initState() {
     super.initState();
@@ -112,6 +114,7 @@ class Cursos extends State<CursosCall> {
     );
 
     Column returnListTile(index) {
+
       return Column(children: [
         Container(
           width: 1200,

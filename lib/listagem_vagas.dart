@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:my_app/crud_vagas.dart';
 
@@ -14,6 +16,12 @@ class ListagemVagas extends State<ListagemVagasCall> {
       fontSize: 20,
       fontWeight: FontWeight.normal,
       color: Colors.black12);
+
+  TextStyle styleAltUpdate = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
 
   TextStyle styleTitle = const TextStyle(
       fontFamily: 'Nunito', fontSize: 30.9, fontWeight: FontWeight.bold);
@@ -33,6 +41,9 @@ class ListagemVagas extends State<ListagemVagasCall> {
       fontWeight: FontWeight.normal,
       color: Colors.grey);
 
+  TextStyle styleMainTitle =
+      const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+
   @override
   void initState() {
     super.initState();
@@ -50,41 +61,300 @@ class ListagemVagas extends State<ListagemVagasCall> {
     });
   }
 
+  final fieldText = TextEditingController();
+
+  Timer? _debounce;
+  final Duration _debounceTime = const Duration(seconds: 1);
+
   @override
   Widget build(BuildContext context) {
+    void checkText(minSalario, maxSalario) {
+      if (minSalario != '' && maxSalario != '') {
+        if (int.parse(maxSalario) < int.parse(minSalario) ||
+            int.parse(minSalario) > int.parse(maxSalario)) {
+          fieldText.clear();
+        }
+      }
+    }
 
-    ButtonTheme deleteVaga(index){
+    Column updateField(index) {
+      final TextEditingController textFieldTitleController =
+          TextEditingController(text: dataListVagasBD[index]['Titulo da vaga']);
+      final TextEditingController textFieldCompanyController =
+          TextEditingController(text: dataListVagasBD[index]['Empresa']);
+      final TextEditingController textFieldDescriptionController =
+          TextEditingController(text: dataListVagasBD[index]['Descricao']);
+      final TextEditingController textFieldRequirementsController =
+          TextEditingController(text: dataListVagasBD[index]['Pré Requisito']);
 
-    return ButtonTheme(
-      minWidth: MediaQuery.of(context).size.width,
-      child: ButtonTheme(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32.0),
+      dataListVagasBD[index]['Salário mínimo'] =
+          dataListVagasBD[index]['Salário mínimo'].toString();
+      dataListVagasBD[index]['Salário máximo'] =
+          dataListVagasBD[index]['Salário máximo'].toString();
+
+      return Column(
+        children: [
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              onChanged: (text) {
+                dataListVagasBD[index]['Titulo da vaga'] = text;
+              },
+              controller: textFieldTitleController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Título da vaga",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
             ),
           ),
-          onPressed: () async{
-            Navigator.of(context).pop();
-            final url = Uri.parse('http://127.0.0.1:5000/Delete_vagas');
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              onChanged: (text) {
+                dataListVagasBD[index]['Empresa'] = text;
+              },
+              controller: textFieldCompanyController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Empresa",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              onChanged: (text) {
+                dataListVagasBD[index]['Descricao'] = text;
+              },
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              controller: textFieldDescriptionController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Descrição",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              onChanged: (text) {
+                dataListVagasBD[index]['Pré Requisito'] = text;
+              },
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              controller: textFieldRequirementsController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Pré Requisitos",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              textAlign: TextAlign.center,
+              onChanged: (text) {
+                if (_debounce?.isActive ?? false) _debounce?.cancel();
 
-            final resquest = await http.post(url, body: {'codigo_vaga': dataListVagasBD[index]['id'].toString()});
-            fetchDataFromAPI();
-            ListagemVagasCall();
-          },
-          child: Text(
-            "Excluir",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
+                _debounce = Timer(_debounceTime, () {
+                  dataListVagasBD[index]['Salário mínimo'] = text;
+                  checkText(dataListVagasBD[index]['Salário mínimo'],
+                      dataListVagasBD[index]['Salário máximo']);
+                });
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Salário mínimo",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                suffixText: 'Reais',
+                suffixStyle: styleAltUpdate,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20.0),
+          SizedBox(child: Text('até', style: styleAltUpdate)),
+          const SizedBox(height: 20.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              textAlign: TextAlign.center,
+              onChanged: (text) {
+                if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+                _debounce = Timer(_debounceTime, () {
+                  dataListVagasBD[index]['Salário máximo'] = text;
+                  checkText(dataListVagasBD[index]['Salário mínimo'],
+                      dataListVagasBD[index]['Salário máximo']);
+                });
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              obscureText: false,
+              style: styleAltUpdate,
+              controller: fieldText,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Salário máximo",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                suffixText: 'Reais',
+                suffixStyle: styleAltUpdate,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    ButtonTheme deleteVaga(index) {
+      return ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final url = Uri.parse('http://127.0.0.1:5000/Delete_vagas');
+
+              final resquest = await http.post(url, body: {
+                'codigo_vaga': dataListVagasBD[index]['id'].toString()
+              });
+              fetchDataFromAPI();
+              ListagemVagasCall();
+            },
+            child: Text(
+              "Excluir",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
 
+    Column buttonConfirmUpdates(index) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ButtonTheme(
+              minWidth: MediaQuery.of(context).size.width,
+              child: ButtonTheme(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+
+                    final url = Uri.parse('http://127.0.0.1:5000/Update_vaga');
+
+                    final resquest = await http.post(url, body: {
+                      'id': dataListVagasBD[index]['id'].toString(),
+                      'titulo_vaga': dataListVagasBD[index]['Titulo da vaga'],
+                      'empresa_oferece': dataListVagasBD[index]['Empresa'],
+                      'descricao_vaga': dataListVagasBD[index]['Descricao'],
+                      'pre_requisitos': dataListVagasBD[index]['Pré Requisito'],
+                      'salario_minimo':
+                          dataListVagasBD[index]['Salário mínimo'].toString(),
+                      'salario_maximo':
+                          dataListVagasBD[index]['Salário máximo'].toString()
+                    });
+
+                    fetchDataFromAPI();
+                    ListagemVagasCall();
+                  },
+                  child: Text(
+                    "Atualizar dados",
+                    textAlign: TextAlign.center,
+                    style: style.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]);
+    }
+
+    ButtonTheme buttonUpdate(index) {
+      return ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Usuários inscritos:'),
+                      content: updateField(index),
+                      actions: [buttonConfirmUpdates(index)],
+                    );
+                  });
+            },
+            child: Text(
+              "Atualizar",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+      );
     }
 
     final buttonCancel = ButtonTheme(
@@ -180,14 +450,18 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 ]),
             onTap: () {
               showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Usuários inscritos:'),
-                    //content: const Text('Escolha entre atualizar ou excluir esse curso'), --> colocar um for para imprimir alunos inscritos
-                    actions: [deleteVaga(index), buttonCancel],
-                  );
-                });
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Usuários inscritos:'),
+                      //content: const Text('Escolha entre atualizar ou excluir esse curso'), --> colocar um for para imprimir alunos inscritos
+                      actions: [
+                        buttonUpdate(index),
+                        deleteVaga(index),
+                        buttonCancel
+                      ],
+                    );
+                  });
             },
           ),
         ),
