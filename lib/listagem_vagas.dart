@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_app/crud_vagas.dart';
 
 class ListagemVagasCall extends StatefulWidget {
   @override
@@ -51,6 +52,66 @@ class ListagemVagas extends State<ListagemVagasCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    ButtonTheme deleteVaga(index){
+
+    return ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () async{
+            Navigator.of(context).pop();
+            final url = Uri.parse('http://127.0.0.1:5000/Delete_vagas');
+
+            final resquest = await http.post(url, body: {'codigo_vaga': dataListVagasBD[index]['id'].toString()});
+            fetchDataFromAPI();
+            ListagemVagasCall();
+          },
+          child: Text(
+            "Excluir",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    }
+
+    final buttonCancel = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Voltar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
     Column returnListTile(index) {
       return Column(children: [
         Container(
@@ -118,7 +179,15 @@ class ListagemVagas extends State<ListagemVagasCall> {
                   ),
                 ]),
             onTap: () {
-              //colocar uma dialog box depois para listar usuários que se inscreveram
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Usuários inscritos:'),
+                    //content: const Text('Escolha entre atualizar ou excluir esse curso'), --> colocar um for para imprimir alunos inscritos
+                    actions: [deleteVaga(index), buttonCancel],
+                  );
+                });
             },
           ),
         ),
