@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'dart:async';
 
 class CursosCall extends StatefulWidget {
   @override
@@ -32,7 +35,16 @@ class Cursos extends State<CursosCall> {
       fontWeight: FontWeight.normal,
       color: Colors.grey);
 
-  TextStyle styleMainTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+  TextStyle styleMainTitle =
+      const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+
+  TextStyle styleAltUpdate = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+  final fieldText = TextEditingController();
 
   @override
   void initState() {
@@ -41,6 +53,9 @@ class Cursos extends State<CursosCall> {
   }
 
   List<dynamic> dataListCursosBD = [];
+
+  Timer? _debounce;
+  final Duration _debounceTime = const Duration(seconds: 1);
 
   Future<void> fetchDataFromAPI() async {
     final response =
@@ -53,39 +68,277 @@ class Cursos extends State<CursosCall> {
 
   @override
   Widget build(BuildContext context) {
+    void checkText(minAlunos, maxAlunos) {
+      if (minAlunos != '' && maxAlunos != '') {
+        if (int.parse(maxAlunos) < int.parse(minAlunos) ||
+            int.parse(minAlunos) > int.parse(maxAlunos)) {
+          fieldText.clear();
+        }
+      }
+    }
 
-    ButtonTheme deleteTreinamento(index){
-
-    return ButtonTheme(
-      minWidth: MediaQuery.of(context).size.width,
-      child: ButtonTheme(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32.0),
+    ButtonTheme deleteTreinamento(index) {
+      return ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
             ),
-          ),
-          onPressed: () async{
-            Navigator.of(context).pop();
-            final url = Uri.parse('http://127.0.0.1:5000/Delete_treinamentos');
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final url =
+                  Uri.parse('http://127.0.0.1:5000/Delete_treinamentos');
 
-            final resquest = await http.post(url, body: {'codigo_curso': dataListCursosBD[index]['Código do Curso']});
-            fetchDataFromAPI();
-            CursosCall();
-          },
-          child: Text(
-            "Excluir",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
+              final resquest = await http.post(url, body: {
+                'codigo_curso': dataListCursosBD[index]['Código do Curso']
+              });
+              fetchDataFromAPI();
+              CursosCall();
+            },
+            child: Text(
+              "Excluir",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
 
+    Column updateField(index) {
+      final TextEditingController textFieldTitleController =
+          TextEditingController(
+              text: dataListCursosBD[index]['Nome Comercial']);
+      final TextEditingController textFieldDescriptionController =
+          TextEditingController(text: dataListCursosBD[index]['Descricao']);
+      final TextEditingController textFieldWorkLoadController =
+          TextEditingController(text: dataListCursosBD[index]['Carga Horária']);
+
+      dataListCursosBD[index]['Quantidade mínima de alunos'] =
+          dataListCursosBD[index]['Quantidade mínima de alunos'].toString();
+      dataListCursosBD[index]['Quantidade máxima de alunos'] =
+          dataListCursosBD[index]['Quantidade máxima de alunos'].toString();
+
+      return Column(children: [
+        const SizedBox(height: 30.0),
+        SizedBox(
+          width: 400,
+          child: TextField(
+            onChanged: (text) {
+              dataListCursosBD[index]['Nome Comercial'] = text;
+            },
+            controller: textFieldTitleController,
+            obscureText: false,
+            style: styleAltUpdate,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+              labelText: "Nome comercial do treinamento",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 30.0),
+        SizedBox(
+          width: 400,
+          child: TextField(
+            onChanged: (text) {
+              dataListCursosBD[index]['Descricao'] = text;
+            },
+            controller: textFieldDescriptionController,
+            obscureText: false,
+            style: styleAltUpdate,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+              labelText: "Descrição",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 30.0),
+        SizedBox(
+          width: 400,
+          child: TextField(
+            textAlign: TextAlign.center,
+            onChanged: (text) {
+              dataListCursosBD[index]['Carga Horária'] = text;
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            controller: textFieldWorkLoadController,
+            obscureText: false,
+            style: styleAltUpdate,
+            decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Carga horária",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                suffixText: 'Horas',
+                suffixStyle: styleAltUpdate),
+          ),
+        ),
+        const SizedBox(height: 30.0),
+        SizedBox(
+          width: 400,
+          child: TextField(
+            textAlign: TextAlign.center,
+            onChanged: (text) {
+              if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+              _debounce = Timer(_debounceTime, () {
+                dataListCursosBD[index]['Quantidade mínima de alunos'] = text;
+                checkText(
+                    dataListCursosBD[index]['Quantidade mínima de alunos'],
+                    dataListCursosBD[index]['Quantidade máxima de alunos']);
+              });
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            obscureText: false,
+            style: styleAltUpdate,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+              labelText: "Quantidade mínima de alunos",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              suffixText: 'Alunos',
+              suffixStyle: styleAltUpdate,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20.0),
+        SizedBox(child: Text('até', style: styleAltUpdate)),
+        const SizedBox(height: 20.0),
+        SizedBox(
+          width: 400,
+          child: TextField(
+            textAlign: TextAlign.center,
+            onChanged: (text) {
+              if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+              _debounce = Timer(_debounceTime, () {
+                dataListCursosBD[index]['Quantidade máxima de alunos'] = text;
+                checkText(
+                    dataListCursosBD[index]['Quantidade mínima de alunos'],
+                    dataListCursosBD[index]['Quantidade máxima de alunos']);
+              });
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            obscureText: false,
+            style: styleAltUpdate,
+            controller: fieldText,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+              labelText: "Quantidade máxima de alunos",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              suffixText: 'Alunos',
+              suffixStyle: styleAltUpdate,
+            ),
+          ),
+        ),
+      ]);
+    }
+
+    Column buttonConfirmUpdates(index) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ButtonTheme(
+              minWidth: MediaQuery.of(context).size.width,
+              child: ButtonTheme(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+
+                    final url = Uri.parse('http://127.0.0.1:5000/Update_treinamentos');
+
+                    final resquest = await http.post(url, body: {
+                      'nome_comercial': dataListCursosBD[index]['Nome Comercial'].toString(),
+                      'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString(),
+                      'descricao': dataListCursosBD[index]['Descricao'].toString(),
+                      'carga_horaria': dataListCursosBD[index]['Carga Horária'].toString(),
+                      'inicio_inscricoes': dataListCursosBD[index]['Início das incricoes'].toString(),
+                      'final_inscricoes': dataListCursosBD[index]['Final das inscricoes'].toString(),
+                      'inicio_treinamentos': dataListCursosBD[index]['Início dos treinamentos'].toString(),
+                      'final_treinamentos': dataListCursosBD[index]['Final dos treinamentos'].toString(),
+                      'qnt_min': dataListCursosBD[index]['Quantidade mínima de alunos'].toString(),
+                      'qnt_max': dataListCursosBD[index]['Quantidade máxima de alunos'].toString()
+                    });
+
+                    fetchDataFromAPI();
+                    CursosCall();
+                  },
+                  child: Text(
+                    "Atualizar dados",
+                    textAlign: TextAlign.center,
+                    style: style.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]);
+    }
+
+    ButtonTheme buttonUpdate(index) {
+      return ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Atualize o curso:'),
+                      content: updateField(index),
+                      actions: [buttonConfirmUpdates(index)],
+                    );
+                  });
+            },
+            child: Text(
+              "Atualizar",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+      );
     }
 
     final buttonCancel = ButtonTheme(
@@ -114,7 +367,6 @@ class Cursos extends State<CursosCall> {
     );
 
     Column returnListTile(index) {
-
       return Column(children: [
         Container(
           width: 1200,
@@ -201,20 +453,26 @@ class Cursos extends State<CursosCall> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 100, top: 10),
-                    child: Text('Clique aqui para atualizar ou deletar o treinamento',
+                    child: Text(
+                        'Clique aqui para atualizar ou deletar o treinamento',
                         style: styleSubtitleSmall),
                   ),
                 ]),
             onTap: () {
               showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('O que deseja fazer?'),
-                    content: const Text('Escolha entre atualizar ou excluir esse curso'),
-                    actions: [deleteTreinamento(index), buttonCancel],
-                  );
-                });
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('O que deseja fazer?'),
+                      content: const Text(
+                          'Escolha entre atualizar ou excluir esse curso'),
+                      actions: [
+                        buttonUpdate(index),
+                        deleteTreinamento(index),
+                        buttonCancel
+                      ],
+                    );
+                  });
             },
           ),
         ),

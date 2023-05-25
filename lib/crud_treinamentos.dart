@@ -39,6 +39,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
   @override
   Widget build(BuildContext context) {
+    
     void _showDatePicker(pressedButton) {
       showDatePicker(
         context: context,
