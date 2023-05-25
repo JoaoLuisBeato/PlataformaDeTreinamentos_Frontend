@@ -51,6 +51,66 @@ class Cursos extends State<CursosCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    ButtonTheme deleteTreinamento(index){
+
+    return ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () async{
+            Navigator.of(context).pop();
+            final url = Uri.parse('http://127.0.0.1:5000/Delete_treinamentos');
+
+            final resquest = await http.post(url, body: {'codigo_curso': dataListCursosBD[index]['Código do Curso']});
+            fetchDataFromAPI();
+            CursosCall();
+          },
+          child: Text(
+            "Excluir",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    }
+
+    final buttonCancel = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Voltar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
     Column returnListTile(index) {
       return Column(children: [
         Container(
@@ -142,7 +202,17 @@ class Cursos extends State<CursosCall> {
                         style: styleSubtitleSmall),
                   ),
                 ]),
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('O que deseja fazer?'),
+                    content: const Text('Escolha entre atualizar ou excluir esse curso'),
+                    actions: [deleteTreinamento(index), buttonCancel],
+                  );
+                });
+            },
           ),
         ),
         const Padding(
