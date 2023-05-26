@@ -6,11 +6,19 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 
 class CursosCall extends StatefulWidget {
+
+  final String userType;
+
+  CursosCall({required this.userType});
+
   @override
   Cursos createState() => Cursos();
 }
 
 class Cursos extends State<CursosCall> {
+
+  String _userType = '';
+
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
       fontSize: 20,
@@ -54,6 +62,8 @@ class Cursos extends State<CursosCall> {
 
   List<dynamic> dataListCursosBD = [];
 
+  bool buttonUpdateVisibility = true;
+
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
 
@@ -68,6 +78,13 @@ class Cursos extends State<CursosCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    _userType = widget.userType;
+
+    if(_userType == 'Aluno'){
+      buttonUpdateVisibility = false;
+    }
+
     void checkText(minAlunos, maxAlunos) {
       if (minAlunos != '' && maxAlunos != '') {
         if (int.parse(maxAlunos) < int.parse(minAlunos) ||
@@ -77,8 +94,11 @@ class Cursos extends State<CursosCall> {
       }
     }
 
-    ButtonTheme deleteTreinamento(index) {
-      return ButtonTheme(
+    Visibility deleteTreinamento(index) {
+
+      return Visibility(
+        visible: buttonUpdateVisibility,
+        child: ButtonTheme(
         minWidth: MediaQuery.of(context).size.width,
         child: ButtonTheme(
           child: ElevatedButton(
@@ -97,7 +117,7 @@ class Cursos extends State<CursosCall> {
                 'codigo_curso': dataListCursosBD[index]['Código do Curso']
               });
               fetchDataFromAPI();
-              CursosCall();
+              CursosCall(userType: _userType);
             },
             child: Text(
               "Excluir",
@@ -108,6 +128,7 @@ class Cursos extends State<CursosCall> {
               ),
             ),
           ),
+        ),
         ),
       );
     }
@@ -289,7 +310,7 @@ class Cursos extends State<CursosCall> {
                     });
 
                     fetchDataFromAPI();
-                    CursosCall();
+                    CursosCall(userType: _userType);
                   },
                   child: Text(
                     "Atualizar dados",
@@ -305,8 +326,11 @@ class Cursos extends State<CursosCall> {
           ]);
     }
 
-    ButtonTheme buttonUpdate(index) {
-      return ButtonTheme(
+    Visibility buttonUpdate(index) {
+
+      return Visibility(
+        visible: buttonUpdateVisibility,
+        child: ButtonTheme(
         minWidth: MediaQuery.of(context).size.width,
         child: ButtonTheme(
           child: ElevatedButton(
@@ -337,6 +361,7 @@ class Cursos extends State<CursosCall> {
               ),
             ),
           ),
+        ),
         ),
       );
     }

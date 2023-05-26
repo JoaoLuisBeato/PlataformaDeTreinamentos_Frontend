@@ -9,11 +9,19 @@ import 'dart:math';
 import 'package:my_app/quiz.dart';
 
 class CrudTreinamentosCall extends StatefulWidget {
+
+  final String userType;
+
+  CrudTreinamentosCall({required this.userType});
+
   @override
   CrudTreinamentos createState() => CrudTreinamentos();
 }
 
 class CrudTreinamentos extends State<CrudTreinamentosCall> {
+  
+  String _userType = '';
+
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
 
@@ -39,6 +47,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    _userType = widget.userType;
     
     void _showDatePicker(pressedButton) {
       showDatePicker(
@@ -439,10 +449,10 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
             Navigator.of(context).pop();
 
-            Navigator.push(
+            /*Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AdminPageCall()),
-              );
+              );*/
           },
           child: Text(
             "Continuar",

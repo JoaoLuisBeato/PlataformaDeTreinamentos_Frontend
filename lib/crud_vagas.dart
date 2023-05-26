@@ -5,11 +5,18 @@ import 'dart:async';
 import 'listagem_vagas.dart';
 
 class CrudVagasCall extends StatefulWidget {
+
+  final String userType;
+
+  CrudVagasCall({required this.userType});
+
   @override
   CrudVagas createState() => CrudVagas();
 }
 
 class CrudVagas extends State<CrudVagasCall> {
+
+  String _userType = '';
 
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
@@ -29,6 +36,8 @@ class CrudVagas extends State<CrudVagasCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    _userType = widget.userType;
 
     void checkText(minSalario, maxSalario) {
       

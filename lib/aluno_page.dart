@@ -4,31 +4,28 @@ import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
 
-class AdminPageCall extends StatefulWidget {
-
+class StudentPageCall extends StatefulWidget {
   final String userType;
 
-  AdminPageCall({required this.userType});
+  StudentPageCall({required this.userType});
 
   @override
-  AdminPage createState() => AdminPage();
+  StudentPage createState() => StudentPage();
 }
 
-class AdminPage extends State<AdminPageCall> {
+class StudentPage extends State<StudentPageCall> {
   int _selectedIndex = 0;
   String _userType = '';
 
-  List<Widget> getWidgetOptions() {
+    List<Widget> getWidgetOptions() {
     return [
-      CrudTreinamentosCall(userType: widget.userType),
-      CursosCall(userType: widget.userType),
-      const Text('Resultados'),
+      CursosCall(userType: _userType),
       const Text('Testes'),
-      ListagemVagasCall(userType: widget.userType),
-      CrudVagasCall(userType: widget.userType),
+      ListagemVagasCall(userType: _userType),
       const Text('Atividades Concluídas'),
     ];
   }
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -37,10 +34,6 @@ class AdminPage extends State<AdminPageCall> {
   }
 
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
-
-  //String nomeDisplay;
-
-  //AdminPage({required this.nomeDisplay});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +44,7 @@ class AdminPage extends State<AdminPageCall> {
     return Scaffold(
       appBar: AppBar(
         title:
-            const Text('Bem-vindo ADMINISTRADOR, '), //<-- colocar $nomedisplay
+            Text('Bem-vindo ALUNO, ${_userType}'), //<-- colocar $nomedisplay
         titleTextStyle: style,
       ),
       body: Center(
@@ -64,16 +57,8 @@ class AdminPage extends State<AdminPageCall> {
         iconSize: 30,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'CRUD Treinamentos',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Resultados',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
@@ -82,10 +67,6 @@ class AdminPage extends State<AdminPageCall> {
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
             label: 'Vagas Divulgadas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'CRUD Vagas de Emprego',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check),

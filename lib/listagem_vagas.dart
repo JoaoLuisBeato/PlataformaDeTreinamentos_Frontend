@@ -6,11 +6,19 @@ import 'package:http/http.dart' as http;
 import 'package:my_app/crud_vagas.dart';
 
 class ListagemVagasCall extends StatefulWidget {
+
+  final String userType;
+
+  ListagemVagasCall({required this.userType});
+
   @override
   ListagemVagas createState() => ListagemVagas();
 }
 
 class ListagemVagas extends State<ListagemVagasCall> {
+
+  String _userType = '';
+
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
       fontSize: 20,
@@ -68,6 +76,9 @@ class ListagemVagas extends State<ListagemVagasCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    _userType = widget.userType;
+
     void checkText(minSalario, maxSalario) {
       if (minSalario != '' && maxSalario != '') {
         if (int.parse(maxSalario) < int.parse(minSalario) ||
@@ -256,7 +267,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 'codigo_vaga': dataListVagasBD[index]['id'].toString()
               });
               fetchDataFromAPI();
-              ListagemVagasCall();
+              ListagemVagasCall(userType: _userType);
             },
             child: Text(
               "Excluir",
@@ -304,7 +315,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                     });
 
                     fetchDataFromAPI();
-                    ListagemVagasCall();
+                    ListagemVagasCall(userType: _userType);
                   },
                   child: Text(
                     "Atualizar dados",

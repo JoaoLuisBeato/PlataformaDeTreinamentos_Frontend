@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_app/admin_page.dart';
 import 'cadastro.dart';
 import 'dart:convert';
+import 'aluno_page.dart';
 
 
 class MyHomePage extends StatelessWidget {
@@ -73,16 +74,25 @@ class MyHomePage extends StatelessWidget {
             final jsonData = response.body;
             final parsedJson = jsonDecode(jsonData);
             final verificado = parsedJson['acesso'];
+            final userType = parsedJson['Tipo_aluno'];
 
-            print(verificado);
+            print(userType.runtimeType);
 
             if(verificado == "OK"){
               print("passou");
-              
+
+            if(userType[0] == "Administrador"){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
+                MaterialPageRoute(builder: (context) => AdminPageCall(userType: userType[0])),
               );
+            }
+            if (userType[0] == "Aluno"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentPageCall(userType: userType[0])),
+              );
+            }
             }
           },
           child: Text(
