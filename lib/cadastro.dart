@@ -30,7 +30,7 @@ class Cadastro extends State<MyWidget> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Nome do usuário",
+          labelText: "Nome do usuário",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -46,7 +46,7 @@ class Cadastro extends State<MyWidget> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
+          labelText: "Email",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -62,7 +62,7 @@ class Cadastro extends State<MyWidget> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
+          labelText: "Password",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),

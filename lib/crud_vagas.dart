@@ -62,7 +62,7 @@ class CrudVagas extends State<CrudVagasCall> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Título da vaga",
+          labelText: "Título da vaga",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -78,7 +78,7 @@ class CrudVagas extends State<CrudVagasCall> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Empresa que está ofertando",
+          labelText: "Empresa que está ofertando",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -96,7 +96,7 @@ class CrudVagas extends State<CrudVagasCall> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Descrição da vaga",
+          labelText: "Descrição da vaga",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -114,7 +114,7 @@ class CrudVagas extends State<CrudVagasCall> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Requisitos da vaga",
+          labelText: "Requisitos da vaga",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -139,7 +139,7 @@ class CrudVagas extends State<CrudVagasCall> {
       controller: fieldText,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Salário Máximo",
+        labelText: "Salário Máximo",
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         suffixText: 'Reais',
         suffixStyle: style,
@@ -163,7 +163,7 @@ class CrudVagas extends State<CrudVagasCall> {
       style: style,
       decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Salário Mínimo",
+          labelText: "Salário Mínimo",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
           suffixText: 'Reais',
           suffixStyle: style),
@@ -202,6 +202,7 @@ class CrudVagas extends State<CrudVagasCall> {
 
             final resquest = await http.post(url, body: {'id_vaga': id.toString(), 'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
 
+            Navigator.of(context).pop();
           },
           child: Text(
             "Continuar",

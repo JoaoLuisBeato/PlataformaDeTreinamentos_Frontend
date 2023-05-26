@@ -30,7 +30,7 @@ class MyHomePage extends StatelessWidget {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
+          labelText: "Email",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -46,7 +46,7 @@ class MyHomePage extends StatelessWidget {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
+          labelText: "Password",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
