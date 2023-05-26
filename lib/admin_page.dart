@@ -20,7 +20,6 @@ class AdminPage extends State<AdminPageCall> {
 
   List<Widget> getWidgetOptions() {
     return [
-      CrudTreinamentosCall(userType: widget.userType),
       CursosCall(userType: widget.userType),
       const Text('Resultados'),
       const Text('Testes'),
@@ -63,10 +62,6 @@ class AdminPage extends State<AdminPageCall> {
         unselectedItemColor: Colors.white,
         iconSize: 30,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'CRUD Treinamentos',
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',

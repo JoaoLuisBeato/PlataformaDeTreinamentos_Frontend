@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'crud_treinamentos.dart';
 import 'dart:async';
 import 'listagem_vagas.dart';
+import 'dart:math';
 
 class CrudVagasCall extends StatefulWidget {
 
@@ -17,6 +19,8 @@ class CrudVagasCall extends StatefulWidget {
 class CrudVagas extends State<CrudVagasCall> {
 
   String _userType = '';
+
+  int id = Random().nextInt(200);
 
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
@@ -196,8 +200,8 @@ class CrudVagas extends State<CrudVagasCall> {
 
             final url = Uri.parse('http://127.0.0.1:5000/vaga_emprego');
 
-            final resquest = await http.post(url, body: {'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
-            Navigator.of(context).pop();
+            final resquest = await http.post(url, body: {'id_vaga': id.toString(), 'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
+
           },
           child: Text(
             "Continuar",
@@ -230,6 +234,40 @@ class CrudVagas extends State<CrudVagasCall> {
             style: style.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonCreateTreinee = ButtonTheme(
+
+      minWidth: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 150.0,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            minimumSize: const Size(150, 40),
+          ),
+          onPressed: () {
+             Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CrudTreinamentosCall(userType: _userType, id: id)),
+            );    
+          },
+          child: Text(
+            "Criar TREINAMENTO",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -290,6 +328,8 @@ class CrudVagas extends State<CrudVagasCall> {
             requirements,
             const SizedBox(height: 30.0),
             minMaxWage,
+            const SizedBox(height: 30.0),
+            buttonCreateTreinee, 
             const SizedBox(height: 30.0),
             buttonCreateVacancy
           ],
