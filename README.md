@@ -2,7 +2,7 @@
 
 <p align="justify">Aqui reside o <i>frontend</i> do aplicativo.</p></n>
 <br>
-<p align="justify">Para realizar a modelagem, utilizamos o <i>framework</i> do <i>Fluttler</i>, a linguagem <b>dart</b> e a biblioteca <b>pubspec.yaml</b> pois, nela está contida uma adição de bibliotecas e referências de servidores.
+<p align="justify">Para realizar a modelagem, utilizamos o <i>framework</i> do <i>Flutter</i>, a linguagem <b>dart</b> do lib e a biblioteca <b>pubspec.yaml</b> pois nela está contida uma adição de bibliotecas e referências de servidores.<br>
 Dessa forma, é possível manter a sua estrutura independentemente do dispositivo utilizado, o que a torna uma ferramenta intuitiva e prática para formatação e desenvolvimento de página ou aplicativos, sendo adaptável a qualquer tipo de situação.</p>
 <br>
 
