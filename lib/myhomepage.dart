@@ -75,8 +75,9 @@ class MyHomePage extends StatelessWidget {
             final parsedJson = jsonDecode(jsonData);
             final verificado = parsedJson['acesso'];
             final userType = parsedJson['Tipo_aluno'];
+            final emailUser = parsedJson['email'];
 
-            print(userType.runtimeType);
+            print(emailUser);
 
             if(verificado == "OK"){
               print("passou");
@@ -84,13 +85,13 @@ class MyHomePage extends StatelessWidget {
             if(userType[0] == "Administrador"){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AdminPageCall(userType: userType[0])),
+                MaterialPageRoute(builder: (context) => AdminPageCall(userType: userType[0], emailUser: emailUser)),
               );
             }
             if (userType[0] == "Aluno"){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => StudentPageCall(userType: userType[0])),
+                MaterialPageRoute(builder: (context) => StudentPageCall(userType: userType[0], emailUser: emailUser)),
               );
             }
             }

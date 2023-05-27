@@ -6,18 +6,16 @@ import 'package:http/http.dart' as http;
 import 'package:my_app/crud_vagas.dart';
 
 class ListagemVagasCall extends StatefulWidget {
-
   final String userType;
+  final String emailUser;
 
-  ListagemVagasCall({required this.userType});
+  ListagemVagasCall({required this.userType, required this.emailUser});
 
   @override
   ListagemVagas createState() => ListagemVagas();
 }
 
 class ListagemVagas extends State<ListagemVagasCall> {
-
-  String _userType = '';
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -74,10 +72,24 @@ class ListagemVagas extends State<ListagemVagasCall> {
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
 
+  bool buttonUpdateVisibility = true;
+  bool buttonDeleteVisibility = true;
+  bool buttonSubscribeVisibility = false;
+
+  String _userType = '';
+  String _emailUser = '';
+
   @override
   Widget build(BuildContext context) {
 
     _userType = widget.userType;
+    _emailUser = widget.emailUser;
+
+    if (_userType == 'Aluno') {
+      buttonUpdateVisibility = false;
+      buttonDeleteVisibility = false;
+      buttonSubscribeVisibility = true;
+    }
 
     void checkText(minSalario, maxSalario) {
       if (minSalario != '' && maxSalario != '') {
@@ -248,33 +260,37 @@ class ListagemVagas extends State<ListagemVagasCall> {
       );
     }
 
-    ButtonTheme deleteVaga(index) {
-      return ButtonTheme(
-        minWidth: MediaQuery.of(context).size.width,
-        child: ButtonTheme(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
-              ),
-            ),
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final url = Uri.parse('http://127.0.0.1:5000/Delete_vagas');
+    Visibility deleteVaga(index) {
 
-              final resquest = await http.post(url, body: {
-                'codigo_vaga': dataListVagasBD[index]['id'].toString()
-              });
-              fetchDataFromAPI();
-              ListagemVagasCall(userType: _userType);
-            },
-            child: Text(
-              "Excluir",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
+      return Visibility(
+        visible: buttonDeleteVisibility,
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final url = Uri.parse('http://127.0.0.1:5000/Delete_vagas');
+
+                final resquest = await http.post(url, body: {
+                  'codigo_vaga': dataListVagasBD[index]['id'].toString()
+                });
+                fetchDataFromAPI();
+                ListagemVagasCall(userType: _userType, emailUser: _emailUser);
+              },
+              child: Text(
+                "Excluir",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ),
@@ -315,7 +331,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                     });
 
                     fetchDataFromAPI();
-                    ListagemVagasCall(userType: _userType);
+                    ListagemVagasCall(userType: _userType, emailUser: _emailUser);
                   },
                   child: Text(
                     "Atualizar dados",
@@ -331,36 +347,40 @@ class ListagemVagas extends State<ListagemVagasCall> {
           ]);
     }
 
-    ButtonTheme buttonUpdate(index) {
-      return ButtonTheme(
-        minWidth: MediaQuery.of(context).size.width,
-        child: ButtonTheme(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
+    Visibility buttonUpdate(index) {
 
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Usuários inscritos:'),
-                      content: updateField(index),
-                      actions: [buttonConfirmUpdates(index)],
-                    );
-                  });
-            },
-            child: Text(
-              "Atualizar",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
+      return Visibility(
+        visible: buttonUpdateVisibility,
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Usuários inscritos:'),
+                        content: updateField(index),
+                        actions: [buttonConfirmUpdates(index)],
+                      );
+                    });
+              },
+              child: Text(
+                "Atualizar",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ),
@@ -392,6 +412,42 @@ class ListagemVagas extends State<ListagemVagasCall> {
         ),
       ),
     );
+
+    Visibility subscribeVaga(index){
+
+      return Visibility(
+        visible: buttonSubscribeVisibility,
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final url = Uri.parse('http://127.0.0.1:5000/entrar_vaga_emprego');
+
+                final resquest = await http.post(url, body: {'id_vaga': dataListVagasBD[index]['id'].toString(), 'email': _emailUser});
+                fetchDataFromAPI();
+                ListagemVagasCall(userType: _userType, emailUser: _emailUser);
+              },
+              child: Text(
+                "Inscrever-se",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     Column returnListTile(index) {
       return Column(children: [
@@ -469,6 +525,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                       actions: [
                         buttonUpdate(index),
                         deleteVaga(index),
+                        subscribeVaga(index),
                         buttonCancel
                       ],
                     );

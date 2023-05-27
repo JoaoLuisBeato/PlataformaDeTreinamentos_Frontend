@@ -63,6 +63,7 @@ class Cursos extends State<CursosCall> {
   List<dynamic> dataListCursosBD = [];
 
   bool buttonUpdateVisibility = true;
+  bool buttonDoQuizVisibility= false;
 
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
@@ -83,6 +84,7 @@ class Cursos extends State<CursosCall> {
 
     if(_userType == 'Aluno'){
       buttonUpdateVisibility = false;
+      buttonDoQuizVisibility = true;
     }
 
     void checkText(minAlunos, maxAlunos) {
@@ -366,6 +368,38 @@ class Cursos extends State<CursosCall> {
       );
     }
 
+    Visibility buttonDoQuiz(index) {
+
+      return Visibility(
+        visible: buttonDoQuizVisibility,
+        child: ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              //janelinha do quiz xd
+            },
+            child: Text(
+              "Fazer Quiz",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+        ),
+      );
+    }
+
     final buttonCancel = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
@@ -390,6 +424,15 @@ class Cursos extends State<CursosCall> {
         ),
       ),
     );
+
+    Text returnTextBox(){
+      if(buttonUpdateVisibility == true){
+        return const Text('Escolha entre atualizar ou excluir esse curso');
+      }
+      else{
+        return const Text('Deseja fazer o quiz?');
+      }
+    }
 
     Column returnListTile(index) {
       return Column(children: [
@@ -489,11 +532,11 @@ class Cursos extends State<CursosCall> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text('O que deseja fazer?'),
-                      content: const Text(
-                          'Escolha entre atualizar ou excluir esse curso'),
+                      content: returnTextBox(),
                       actions: [
                         buttonUpdate(index),
                         deleteTreinamento(index),
+                        buttonDoQuiz(index),
                         buttonCancel
                       ],
                     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'crud_treinamentos.dart';
 import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
@@ -7,8 +6,9 @@ import 'listagem_vagas.dart';
 class AdminPageCall extends StatefulWidget {
 
   final String userType;
+  final String emailUser;
 
-  AdminPageCall({required this.userType});
+  AdminPageCall({required this.userType, required this.emailUser});
 
   @override
   AdminPage createState() => AdminPage();
@@ -16,14 +16,13 @@ class AdminPageCall extends StatefulWidget {
 
 class AdminPage extends State<AdminPageCall> {
   int _selectedIndex = 0;
-  String _userType = '';
 
   List<Widget> getWidgetOptions() {
     return [
       CursosCall(userType: widget.userType),
       const Text('Resultados'),
       const Text('Testes'),
-      ListagemVagasCall(userType: widget.userType),
+      ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
       CrudVagasCall(userType: widget.userType),
       const Text('Atividades Concluídas'),
     ];
@@ -44,7 +43,7 @@ class AdminPage extends State<AdminPageCall> {
   @override
   Widget build(BuildContext context) {
 
-    _userType = widget.userType;
+    final _userType = widget.userType;
     final _widgetOptions = getWidgetOptions();
 
     return Scaffold(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'crud_treinamentos.dart';
-import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
 
 class StudentPageCall extends StatefulWidget {
   final String userType;
+  final String emailUser;
 
-  StudentPageCall({required this.userType});
+  StudentPageCall({required this.userType, required this.emailUser});
 
   @override
   StudentPage createState() => StudentPage();
@@ -16,12 +15,13 @@ class StudentPageCall extends StatefulWidget {
 class StudentPage extends State<StudentPageCall> {
   int _selectedIndex = 0;
   String _userType = '';
+  String _emailUser = '';
 
     List<Widget> getWidgetOptions() {
     return [
       CursosCall(userType: _userType),
       const Text('Testes'),
-      ListagemVagasCall(userType: _userType),
+      ListagemVagasCall(userType: _userType, emailUser: _emailUser),
       const Text('Atividades Concluídas'),
     ];
   }
@@ -39,12 +39,14 @@ class StudentPage extends State<StudentPageCall> {
   Widget build(BuildContext context) {
 
     _userType = widget.userType;
+    _emailUser = widget.emailUser;
+    
     final _widgetOptions = getWidgetOptions();
 
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('Bem-vindo ALUNO, ${_userType}'), //<-- colocar $nomedisplay
+            Text('Bem-vindo ALUNO, $_userType'), //<-- colocar $nomedisplay
         titleTextStyle: style,
       ),
       body: Center(
