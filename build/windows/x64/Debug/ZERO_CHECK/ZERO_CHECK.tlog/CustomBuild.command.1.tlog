@@ -1,0 +1,10 @@
+^C:\USERS\JOAOL\ONEDRIVE\DOCUMENTOS\GITHUB\APP_TAREFA07_PRINCIPAL\PROJETO\APP_TAREFA07_FRONTEND\BUILD\WINDOWS\CMAKEFILES\7130EB05411C6237E8B0C4C3E3595548\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/joaol/OneDrive/Documentos/GitHub/app_tarefa07_principal/projeto/app_tarefa07_frontend/windows -BC:/Users/joaol/OneDrive/Documentos/GitHub/app_tarefa07_principal/projeto/app_tarefa07_frontend/build/windows --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/joaol/OneDrive/Documentos/GitHub/app_tarefa07_principal/projeto/app_tarefa07_frontend/build/windows/my_app.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,110 +1,186 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_app/admin_page.dart';
+import 'cadastro.dart';
+import 'dart:convert';
 
 
 class MyHomePage extends StatelessWidget {
+  
+  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9, fontWeight: FontWeight.normal);
 
-  TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.9);
+  TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
 
   String email = '';
   String password = '';
+  String nome = '';
 
-  
+  MyHomePage({required this.nome});
 
   @override
   Widget build(BuildContext context) {
-     
-    final emailField = TextField(
-        onChanged: (text){
+    final emailField = SizedBox(
+      width: 500,
+      child: TextField(
+        onChanged: (text) {
           email = text;
         },
         obscureText: false,
         style: style,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))
-        ), 
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
     );
 
-    final passwordField = TextField(
-        onChanged: (text){
+    final passwordField = SizedBox(
+      width: 500,
+      child: TextField(
+        onChanged: (text) {
           password = text;
         },
         obscureText: true,
         style: style,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Password",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))
-        ), 
-    );
-
-    final buttonCadastro = ButtonTheme(
-      minWidth: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-      child: Container(
-        child: ElevatedButton(
-          child: Text("Cadastrar", textAlign: TextAlign.center,
-          style: style.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold
-          )),
-          onPressed: ((){
-            final url = Uri.parse('http://127.0.0.1:5000/cadastro');
-            http.post(url, body: {'email': email, 'password': password});
-
-          }),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
-         
     );
 
     final buttonLogin = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-      child: Container(
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 150.0,
         child: ElevatedButton(
-          child: Text("Login", textAlign: TextAlign.center,
-          style: style.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold
-          )),
-          onPressed: ((){
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            minimumSize: const Size(150, 40),
+          ),
+          onPressed: () async{
             final url = Uri.parse('http://127.0.0.1:5000/login');
-            http.post(url, body: {'email': email, 'password': password});
-          
-          }),
+
+            final response = await http.post(url, body: {'email': email, 'password': password});
+
+            final jsonData = response.body;
+            final parsedJson = jsonDecode(jsonData);
+            final verificado = parsedJson['acesso'];
+
+            print(verificado);
+
+            if(verificado == "OK"){
+              print("passou");
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
+              );
+            }
+          },
+          child: Text(
+            "Login",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
-         
     );
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login")
+
+    final buttonCadastro = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 150.0,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+            minimumSize: const Size(150, 40),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyWidget()),
+            );
+          },
+          child: Text(
+            "Cadastrar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
+    );
 
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          padding: const EdgeInsets.all(40.0),
-          child: Column(
-            children: [
-              SizedBox(height: 30.0),emailField,
-              SizedBox(height: 30.0),passwordField,
-              SizedBox(height: 30.0),buttonCadastro,
-              SizedBox(height: 30.0),buttonLogin,
-
-              Text('')
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.yellow[200]!,
+              Colors.white,
             ],
           ),
-
         ),
-      )
-
-      
-
+        child: Center(
+          child: SizedBox(
+            width: 700,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    spreadRadius: 4,
+                    blurRadius: 7,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Container(
+                  constraints: const BoxConstraints.expand(),
+                  padding: const EdgeInsets.fromLTRB(30.0, 250.0, 30.0, 150.0),
+                  child: Column(
+                    children: [
+                      Text('Login', style: styleTitle),
+                      const SizedBox(height: 30.0),
+                      emailField,
+                      const SizedBox(height: 30.0),
+                      passwordField,
+                      const SizedBox(height: 30.0),
+                      buttonLogin,
+                      const SizedBox(height: 30.0),
+                      buttonCadastro,
+                      const SizedBox(height: 30.0)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
