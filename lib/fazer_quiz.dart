@@ -52,13 +52,20 @@ class FazerQuiz extends State<FazerQuizCall> {
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI();
+    //fetchDataFromAPI();
   }
 
-  Future<void> fetchDataFromAPI() async {
+Future<void> fetchDataFromAPI() async {
 
-      //probleminha no request --> ta bateno cabeça essa porr
-    }
+
+      final url = Uri.parse('http://127.0.0.1:5000/Listar_teste');
+      final response = await http.post(url, body: {'id': widget.randId.toString()});
+
+      setState(() {
+        dataListQuestoesBD = json.decode(response.body);
+      });
+   
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +104,7 @@ class FazerQuiz extends State<FazerQuizCall> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               FloatingActionButton(
                 onPressed: () {
+                  fetchDataFromAPI();
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
