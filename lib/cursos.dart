@@ -6,18 +6,18 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 
 class CursosCall extends StatefulWidget {
-
   final String userType;
+  final String emailUser;
 
-  CursosCall({required this.userType});
+  CursosCall({required this.userType, required this.emailUser});
 
   @override
   Cursos createState() => Cursos();
 }
 
 class Cursos extends State<CursosCall> {
-
   String _userType = '';
+  String _emailUser = '';
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -63,26 +63,37 @@ class Cursos extends State<CursosCall> {
   List<dynamic> dataListCursosBD = [];
 
   bool buttonUpdateVisibility = true;
-  bool buttonDoQuizVisibility= false;
+  bool buttonDoQuizVisibility = false;
 
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
 
   Future<void> fetchDataFromAPI() async {
-    final response =
-        await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
+    if (widget.userType == "Aluno") {
 
-    setState(() {
-      dataListCursosBD = json.decode(response.body);
-    });
+      final url = Uri.parse('http://127.0.0.1:5000/Listar_treinamentos_aluno');
+      final response = await http.post(url, body: {'email': widget.emailUser});
+
+      setState(() {
+        dataListCursosBD = json.decode(response.body);
+      });
+    }
+
+    else if (widget.userType == "Administrador"){
+      final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
+
+      setState(() {
+        dataListCursosBD = json.decode(response.body);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     _userType = widget.userType;
+    _emailUser = widget.emailUser;
 
-    if(_userType == 'Aluno'){
+    if (_userType == 'Aluno') {
       buttonUpdateVisibility = false;
       buttonDoQuizVisibility = true;
     }
@@ -97,40 +108,39 @@ class Cursos extends State<CursosCall> {
     }
 
     Visibility deleteTreinamento(index) {
-
       return Visibility(
         visible: buttonUpdateVisibility,
         child: ButtonTheme(
-        minWidth: MediaQuery.of(context).size.width,
-        child: ButtonTheme(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
               ),
-            ),
-            onPressed: () async {
-              Navigator.of(context).pop();
-              final url =
-                  Uri.parse('http://127.0.0.1:5000/Delete_treinamentos');
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final url =
+                    Uri.parse('http://127.0.0.1:5000/Delete_treinamentos');
 
-              final resquest = await http.post(url, body: {
-                'codigo_curso': dataListCursosBD[index]['Código do Curso']
-              });
-              fetchDataFromAPI();
-              CursosCall(userType: _userType);
-            },
-            child: Text(
-              "Excluir",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
+                final resquest = await http.post(url, body: {
+                  'codigo_curso': dataListCursosBD[index]['Código do Curso']
+                });
+                fetchDataFromAPI();
+                CursosCall(userType: _userType, emailUser: _emailUser);
+              },
+              child: Text(
+                "Excluir",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ),
-        ),
         ),
       );
     }
@@ -296,23 +306,40 @@ class Cursos extends State<CursosCall> {
                   onPressed: () async {
                     Navigator.of(context).pop();
 
-                    final url = Uri.parse('http://127.0.0.1:5000/Update_treinamentos');
+                    final url =
+                        Uri.parse('http://127.0.0.1:5000/Update_treinamentos');
 
                     final resquest = await http.post(url, body: {
-                      'nome_comercial': dataListCursosBD[index]['Nome Comercial'].toString(),
-                      'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString(),
-                      'descricao': dataListCursosBD[index]['Descricao'].toString(),
-                      'carga_horaria': dataListCursosBD[index]['Carga Horária'].toString(),
-                      'inicio_inscricoes': dataListCursosBD[index]['Início das incricoes'].toString(),
-                      'final_inscricoes': dataListCursosBD[index]['Final das inscricoes'].toString(),
-                      'inicio_treinamentos': dataListCursosBD[index]['Início dos treinamentos'].toString(),
-                      'final_treinamentos': dataListCursosBD[index]['Final dos treinamentos'].toString(),
-                      'qnt_min': dataListCursosBD[index]['Quantidade mínima de alunos'].toString(),
-                      'qnt_max': dataListCursosBD[index]['Quantidade máxima de alunos'].toString()
+                      'nome_comercial':
+                          dataListCursosBD[index]['Nome Comercial'].toString(),
+                      'codigo_curso':
+                          dataListCursosBD[index]['Código do Curso'].toString(),
+                      'descricao':
+                          dataListCursosBD[index]['Descricao'].toString(),
+                      'carga_horaria':
+                          dataListCursosBD[index]['Carga Horária'].toString(),
+                      'inicio_inscricoes': dataListCursosBD[index]
+                              ['Início das incricoes']
+                          .toString(),
+                      'final_inscricoes': dataListCursosBD[index]
+                              ['Final das inscricoes']
+                          .toString(),
+                      'inicio_treinamentos': dataListCursosBD[index]
+                              ['Início dos treinamentos']
+                          .toString(),
+                      'final_treinamentos': dataListCursosBD[index]
+                              ['Final dos treinamentos']
+                          .toString(),
+                      'qnt_min': dataListCursosBD[index]
+                              ['Quantidade mínima de alunos']
+                          .toString(),
+                      'qnt_max': dataListCursosBD[index]
+                              ['Quantidade máxima de alunos']
+                          .toString()
                     });
 
                     fetchDataFromAPI();
-                    CursosCall(userType: _userType);
+                    CursosCall(userType: _userType, emailUser: _emailUser);
                   },
                   child: Text(
                     "Atualizar dados",
@@ -329,73 +356,71 @@ class Cursos extends State<CursosCall> {
     }
 
     Visibility buttonUpdate(index) {
-
       return Visibility(
         visible: buttonUpdateVisibility,
         child: ButtonTheme(
-        minWidth: MediaQuery.of(context).size.width,
-        child: ButtonTheme(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
               ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Atualize o curso:'),
-                      content: updateField(index),
-                      actions: [buttonConfirmUpdates(index)],
-                    );
-                  });
-            },
-            child: Text(
-              "Atualizar",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
+              onPressed: () {
+                Navigator.of(context).pop();
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Atualize o curso:'),
+                        content: updateField(index),
+                        actions: [buttonConfirmUpdates(index)],
+                      );
+                    });
+              },
+              child: Text(
+                "Atualizar",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ),
-        ),
         ),
       );
     }
 
     Visibility buttonDoQuiz(index) {
-
       return Visibility(
         visible: buttonDoQuizVisibility,
         child: ButtonTheme(
-        minWidth: MediaQuery.of(context).size.width,
-        child: ButtonTheme(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
               ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-              //janelinha do quiz xd
-            },
-            child: Text(
-              "Fazer Quiz",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
+              onPressed: () {
+                Navigator.of(context).pop();
+                //janelinha do quiz xd
+              },
+              child: Text(
+                "Fazer Quiz",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
           ),
-        ),
         ),
       );
     }
@@ -425,11 +450,10 @@ class Cursos extends State<CursosCall> {
       ),
     );
 
-    Text returnTextBox(){
-      if(buttonUpdateVisibility == true){
+    Text returnTextBox() {
+      if (buttonUpdateVisibility == true) {
         return const Text('Escolha entre atualizar ou excluir esse curso');
-      }
-      else{
+      } else {
         return const Text('Deseja fazer o quiz?');
       }
     }

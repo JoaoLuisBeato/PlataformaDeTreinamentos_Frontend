@@ -19,7 +19,7 @@ class StudentPage extends State<StudentPageCall> {
 
     List<Widget> getWidgetOptions() {
     return [
-      CursosCall(userType: _userType),
+      CursosCall(userType: _userType, emailUser: _emailUser),
       const Text('Testes'),
       ListagemVagasCall(userType: _userType, emailUser: _emailUser),
       const Text('Atividades Concluídas'),

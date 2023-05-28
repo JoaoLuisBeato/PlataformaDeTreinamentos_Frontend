@@ -19,7 +19,7 @@ class AdminPage extends State<AdminPageCall> {
 
   List<Widget> getWidgetOptions() {
     return [
-      CursosCall(userType: widget.userType),
+      CursosCall(userType: widget.userType, emailUser: widget.emailUser),
       const Text('Resultados'),
       const Text('Testes'),
       ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
