@@ -66,30 +66,19 @@ class FazerQuiz extends State<FazerQuizCall> {
       dataListQuestoesBD = json.decode(response.body);
 
       for (int i = 0; i < dataListQuestoesBD.length; i++) {
-    
-      dataListQuestoesBD[i]['alternativa_a'] = false;
-      dataListQuestoesBD[i]['alternativa_b'] = false;
-      dataListQuestoesBD[i]['alternativa_c'] = false;
-    }
+        dataListQuestoesBD[i]['alternativa_a'] = false;
+        dataListQuestoesBD[i]['alternativa_b'] = false;
+        dataListQuestoesBD[i]['alternativa_c'] = false;
+        dataListRespostas.add('alternativa_a');
+      }
     });
   }
-
-  bool checkAlternativaA = false;
-  bool checkAlternativaB = false;
-  bool checkAlternativaC = false;
 
   @override
   Widget build(BuildContext context) {
     randId = widget.randId;
 
-    checkAlternativaA = false;
-    checkAlternativaB = false;
-    checkAlternativaC = false;
-
     Column returnAnswers(index, listAnswers, listAnswersToAPI) {
-
-      print(listAnswers[index]['alternativa_a']);
-      
       return Column(
         children: [
           SizedBox(
@@ -106,7 +95,12 @@ class FazerQuiz extends State<FazerQuizCall> {
             onChanged: (bool? value) {
               setState(() {
                 listAnswersToAPI[index] = 'alternativa_a';
+
                 listAnswers[index]['alternativa_a'] = value!;
+                listAnswers[index]['alternativa_b'] = false;
+                listAnswers[index]['alternativa_c'] = false;
+
+                print(listAnswersToAPI);
               });
             },
             title: SizedBox(
@@ -114,8 +108,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                   Text(listAnswers[index]['resposta_a'], style: styleAltUpdate),
             ),
           ),
-
-
           CheckboxListTile(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 220, vertical: 5),
@@ -124,6 +116,9 @@ class FazerQuiz extends State<FazerQuizCall> {
               setState(() {
                 listAnswersToAPI[index] = 'alternativa_b';
                 listAnswers[index]['alternativa_b'] = value!;
+                listAnswers[index]['alternativa_a'] = false;
+                listAnswers[index]['alternativa_c'] = false;
+                print(listAnswersToAPI);
               });
             },
             title: SizedBox(
@@ -131,8 +126,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                   Text(listAnswers[index]['resposta_b'], style: styleAltUpdate),
             ),
           ),
-
-
           CheckboxListTile(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 220, vertical: 5),
@@ -141,6 +134,9 @@ class FazerQuiz extends State<FazerQuizCall> {
               setState(() {
                 listAnswersToAPI[index] = 'alternativa_c';
                 listAnswers[index]['alternativa_c'] = value!;
+                listAnswers[index]['alternativa_b'] = false;
+                listAnswers[index]['alternativa_a'] = false;
+                print(listAnswersToAPI);
               });
             },
             title: SizedBox(
