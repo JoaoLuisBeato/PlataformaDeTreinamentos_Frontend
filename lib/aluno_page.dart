@@ -40,13 +40,13 @@ class StudentPage extends State<StudentPageCall> {
 
     _userType = widget.userType;
     _emailUser = widget.emailUser;
-    
+
     final _widgetOptions = getWidgetOptions();
 
     return Scaffold(
       appBar: AppBar(
         title:
-            Text('Bem-vindo ALUNO, $_userType'), //<-- colocar $nomedisplay
+            Text('Bem-vindo ALUNO, $_emailUser'), //<-- colocar $nomedisplay
         titleTextStyle: style,
       ),
       body: Center(

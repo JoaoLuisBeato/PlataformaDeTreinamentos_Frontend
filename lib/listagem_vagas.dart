@@ -75,6 +75,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
   bool buttonUpdateVisibility = true;
   bool buttonDeleteVisibility = true;
   bool buttonSubscribeVisibility = false;
+  bool buttonUnsubscribeVisibility = false;
 
   String _userType = '';
   String _emailUser = '';
@@ -89,6 +90,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
       buttonUpdateVisibility = false;
       buttonDeleteVisibility = false;
       buttonSubscribeVisibility = true;
+      buttonUnsubscribeVisibility = true;
     }
 
     void checkText(minSalario, maxSalario) {
@@ -449,6 +451,44 @@ class ListagemVagas extends State<ListagemVagasCall> {
       );
     }
 
+    Visibility unsubscribeVaga(index){
+
+      return Visibility(
+
+        visible: buttonUnsubscribeVisibility,
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final url = Uri.parse('http://127.0.0.1:5000/sair_vaga_emprego');
+
+                final resquest = await http.post(url, body: {'id_vaga': dataListVagasBD[index]['id'].toString(), 'email': _emailUser});
+
+                fetchDataFromAPI();
+                ListagemVagasCall(userType: _userType, emailUser: _emailUser);
+              },
+              child: Text(
+                "Desinscrever-se",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     Column returnListTile(index) {
       return Column(children: [
         Container(
@@ -526,6 +566,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                         buttonUpdate(index),
                         deleteVaga(index),
                         subscribeVaga(index),
+                        unsubscribeVaga(index),
                         buttonCancel
                       ],
                     );
