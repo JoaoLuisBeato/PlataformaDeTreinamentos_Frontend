@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'dart:async';
+import 'fazer_quiz.dart';
+
+import 'package:my_app/fazer_quiz.dart';
 
 class CursosCall extends StatefulWidget {
   final String userType;
@@ -409,7 +411,9 @@ class Cursos extends State<CursosCall> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                //janelinha do quiz xd
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FazerQuizCall(randId: int.parse(dataListCursosBD[index]['Código do Curso']))));
               },
               child: Text(
                 "Fazer Quiz",
