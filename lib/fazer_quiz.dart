@@ -52,7 +52,7 @@ class FazerQuiz extends State<FazerQuizCall> {
   @override
   void initState() {
     super.initState();
-    //fetchDataFromAPI();
+    fetchDataFromAPI();
   }
 
 Future<void> fetchDataFromAPI() async {
@@ -104,7 +104,6 @@ Future<void> fetchDataFromAPI() async {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               FloatingActionButton(
                 onPressed: () {
-                  fetchDataFromAPI();
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
