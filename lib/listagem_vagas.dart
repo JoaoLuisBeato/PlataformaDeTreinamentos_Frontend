@@ -16,7 +16,6 @@ class ListagemVagasCall extends StatefulWidget {
 }
 
 class ListagemVagas extends State<ListagemVagasCall> {
-
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
       fontSize: 20,
@@ -57,13 +56,23 @@ class ListagemVagas extends State<ListagemVagasCall> {
   }
 
   List<dynamic> dataListVagasBD = [];
+  List<dynamic> subscribedUsersBD = [];
 
   Future<void> fetchDataFromAPI() async {
-
-    final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
+    final response =
+        await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
 
     setState(() {
       dataListVagasBD = json.decode(response.body);
+    });
+  }
+
+  Future<void> receiveUsers(index) async {
+    final url = Uri.parse('http://127.0.0.1:5000/Listar_inscritos_vaga');
+    final response = await http.post(url, body: {'id': dataListVagasBD[index]['id'].toString()});
+
+    setState(() {
+      subscribedUsersBD = json.decode(response.body);
     });
   }
 
@@ -82,7 +91,6 @@ class ListagemVagas extends State<ListagemVagasCall> {
 
   @override
   Widget build(BuildContext context) {
-
     _userType = widget.userType;
     _emailUser = widget.emailUser;
 
@@ -263,7 +271,6 @@ class ListagemVagas extends State<ListagemVagasCall> {
     }
 
     Visibility deleteVaga(index) {
-
       return Visibility(
         visible: buttonDeleteVisibility,
         child: ButtonTheme(
@@ -333,7 +340,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
                     });
 
                     fetchDataFromAPI();
-                    ListagemVagasCall(userType: _userType, emailUser: _emailUser);
+                    ListagemVagasCall(
+                        userType: _userType, emailUser: _emailUser);
                   },
                   child: Text(
                     "Atualizar dados",
@@ -350,7 +358,6 @@ class ListagemVagas extends State<ListagemVagasCall> {
     }
 
     Visibility buttonUpdate(index) {
-
       return Visibility(
         visible: buttonUpdateVisibility,
         child: ButtonTheme(
@@ -390,6 +397,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
       );
     }
 
+
     final buttonCancel = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
@@ -415,8 +423,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
       ),
     );
 
-    Visibility subscribeVaga(index){
-
+    Visibility subscribeVaga(index) {
       return Visibility(
         visible: buttonSubscribeVisibility,
         child: ButtonTheme(
@@ -431,9 +438,13 @@ class ListagemVagas extends State<ListagemVagasCall> {
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
-                final url = Uri.parse('http://127.0.0.1:5000/entrar_vaga_emprego');
+                final url =
+                    Uri.parse('http://127.0.0.1:5000/entrar_vaga_emprego');
 
-                final resquest = await http.post(url, body: {'id_vaga': dataListVagasBD[index]['id'].toString(), 'email': _emailUser});
+                final resquest = await http.post(url, body: {
+                  'id_vaga': dataListVagasBD[index]['id'].toString(),
+                  'email': _emailUser
+                });
                 fetchDataFromAPI();
                 ListagemVagasCall(userType: _userType, emailUser: _emailUser);
               },
@@ -451,10 +462,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
       );
     }
 
-    Visibility unsubscribeVaga(index){
-
+    Visibility unsubscribeVaga(index) {
       return Visibility(
-
         visible: buttonUnsubscribeVisibility,
         child: ButtonTheme(
           minWidth: MediaQuery.of(context).size.width,
@@ -468,9 +477,13 @@ class ListagemVagas extends State<ListagemVagasCall> {
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
-                final url = Uri.parse('http://127.0.0.1:5000/sair_vaga_emprego');
+                final url =
+                    Uri.parse('http://127.0.0.1:5000/sair_vaga_emprego');
 
-                final resquest = await http.post(url, body: {'id_vaga': dataListVagasBD[index]['id'].toString(), 'email': _emailUser});
+                final resquest = await http.post(url, body: {
+                  'id_vaga': dataListVagasBD[index]['id'].toString(),
+                  'email': _emailUser
+                });
 
                 fetchDataFromAPI();
                 ListagemVagasCall(userType: _userType, emailUser: _emailUser);
@@ -556,12 +569,30 @@ class ListagemVagas extends State<ListagemVagasCall> {
                   ),
                 ]),
             onTap: () {
-              showDialog(
+
+              receiveUsers(index).then((_) {showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text('Usuários inscritos:'),
-                      //content: const Text('Escolha entre atualizar ou excluir esse curso'), --> colocar um for para imprimir alunos inscritos
+                      content: Center(
+                        child: Container(
+                          height: 400,
+                          width: 300,
+                          child: ListView.builder(
+                              itemCount: subscribedUsersBD.length,
+                              itemBuilder: (BuildContext context, index) {
+                                return SizedBox(
+                                  height: 20,
+                                  width: 500,
+                                  child: ListTile(
+                                    title: Text(subscribedUsersBD[index]['email'],
+                                        style: styleAltUpdate),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ),
                       actions: [
                         buttonUpdate(index),
                         deleteVaga(index),
@@ -571,6 +602,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                       ],
                     );
                   });
+              });
             },
           ),
         ),

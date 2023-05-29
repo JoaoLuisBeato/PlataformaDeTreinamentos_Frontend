@@ -5,8 +5,6 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'fazer_quiz.dart';
 
-import 'package:my_app/fazer_quiz.dart';
-
 class CursosCall extends StatefulWidget {
   final String userType;
   final String emailUser;
