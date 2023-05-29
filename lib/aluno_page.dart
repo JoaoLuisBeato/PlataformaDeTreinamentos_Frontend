@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
+import 'atividades_concluidas.dart';
 
 class StudentPageCall extends StatefulWidget {
   final String userType;
@@ -20,9 +21,8 @@ class StudentPage extends State<StudentPageCall> {
     List<Widget> getWidgetOptions() {
     return [
       CursosCall(userType: _userType, emailUser: _emailUser),
-      const Text('Testes'),
       ListagemVagasCall(userType: _userType, emailUser: _emailUser),
-      const Text('Atividades Concluídas'),
+      CompletedPageCall(emailUser: _emailUser)
     ];
   }
 
@@ -61,10 +61,6 @@ class StudentPage extends State<StudentPageCall> {
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Testes',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.work),
