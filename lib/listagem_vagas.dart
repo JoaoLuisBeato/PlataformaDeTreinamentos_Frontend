@@ -583,8 +583,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
                               itemCount: subscribedUsersBD.length,
                               itemBuilder: (BuildContext context, index) {
                                 return SizedBox(
-                                  height: 20,
-                                  width: 500,
+                                  height: 50,
+                                  width: 400,
                                   child: ListTile(
                                     title: Text(subscribedUsersBD[index]['email'],
                                         style: styleAltUpdate),

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 
 class CompletedPageCall extends StatefulWidget {
-
   String emailUser;
 
   CompletedPageCall({required this.emailUser});
@@ -14,7 +13,6 @@ class CompletedPageCall extends StatefulWidget {
 }
 
 class CompletedPage extends State<CompletedPageCall> {
-
   String emailUser = '';
 
   TextStyle style = const TextStyle(
@@ -59,7 +57,6 @@ class CompletedPage extends State<CompletedPageCall> {
   List<dynamic> relatorioAlunoBD = [];
 
   Future<void> fetchDataFromAPI() async {
-
     final url = Uri.parse('http://127.0.0.1:5000/Historico_aluno');
     final response = await http.post(url, body: {'email': widget.emailUser});
 
@@ -70,41 +67,45 @@ class CompletedPage extends State<CompletedPageCall> {
 
   @override
   Widget build(BuildContext context) {
-
     emailUser = widget.emailUser;
 
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 200.0, vertical: 50),
-        child: ListView.builder(
-          itemCount: relatorioAlunoBD.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                Row(children: [
+      padding: const EdgeInsets.symmetric(horizontal: 70.0, vertical: 50),
+      child: ListView.builder(
+        itemCount: relatorioAlunoBD.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              Row(
+                children: [
                   Text('Email do aluno:  ', style: styleTitle),
                   Text(relatorioAlunoBD[index]['email'], style: styleAltUpdate),
                   const SizedBox(width: 30),
                   Text('ID do curso:  ', style: styleTitle),
-                  Text(relatorioAlunoBD[index]['Codigo do curso'].toString(), style: styleAltUpdate),
+                  Text(relatorioAlunoBD[index]['Codigo do curso'].toString(),
+                      style: styleAltUpdate),
                   const SizedBox(width: 30),
                   Text('Status:  ', style: styleTitle),
-                  Text(relatorioAlunoBD[index]['Status'], style: styleAltUpdate),
+                  Text(relatorioAlunoBD[index]['Status'],
+                      style: styleAltUpdate),
                   const SizedBox(width: 30),
                   Text('Nota:  ', style: styleTitle),
-                  Text(relatorioAlunoBD[index]['Nota'].toString(), style: styleAltUpdate),
+                  Text(relatorioAlunoBD[index]['Nota'].toString(),
+                      style: styleAltUpdate),
                   const SizedBox(width: 30),
-                ],),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Divider(
-                    color: Colors.amber,
-                    height: 2.0,
-                  ),
+                ],
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: Divider(
+                  color: Colors.amber,
+                  height: 2.0,
                 ),
-              ],
-            );
-          },
-        ),
-      );
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
