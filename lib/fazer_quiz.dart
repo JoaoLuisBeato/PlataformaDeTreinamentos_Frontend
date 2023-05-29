@@ -6,8 +6,9 @@ import 'dart:core';
 
 class FazerQuizCall extends StatefulWidget {
   final int randId;
+  final String emailUser;
 
-  FazerQuizCall({required this.randId});
+  FazerQuizCall({required this.randId, required this.emailUser});
 
   @override
   FazerQuiz createState() => FazerQuiz();
@@ -15,6 +16,8 @@ class FazerQuizCall extends StatefulWidget {
 
 class FazerQuiz extends State<FazerQuizCall> {
   int randId = 0;
+  String emailUser = '';
+
   List<dynamic> dataListQuestoesBD = [];
   List<String> dataListRespostas = [];
 
@@ -77,6 +80,7 @@ class FazerQuiz extends State<FazerQuizCall> {
   @override
   Widget build(BuildContext context) {
     randId = widget.randId;
+    emailUser = widget.emailUser;
 
     Column returnAnswers(index, listAnswers, listAnswersToAPI) {
       return Column(
@@ -146,72 +150,65 @@ class FazerQuiz extends State<FazerQuizCall> {
           ),
         ],
       );
-      /*
-          CheckboxListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
-            value: listAnswers[index].alternativaB,
-            onChanged: (bool? value) {
-              setState(() {
-                listAnswers[index].alternativaB = value!;
-                checkAlternativaB = listAnswers[index].alternativaB;
-                listAnswers[index].alternativaA = false;
-                listAnswers[index].alternativaC = false;
-              });
-            },
-            title: SizedBox(
-              child: TextField(
-                onChanged: (text) {
-                  listAnswers[index].respostaDaAlternativaB = text;
-                  respostaB = listAnswers[index].respostaDaAlternativaB;
-                },
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                obscureText: false,
-                style: style,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  labelText: "Resposta da alternativa B",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-            ),
-          ),
-          CheckboxListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
-            value: listAnswers[index].alternativaC,
-            onChanged: (bool? value) {
-              setState(() {
-                listAnswers[index].alternativaC = value!;
-                checkAlternativaC = listAnswers[index].alternativaC;
-                listAnswers[index].alternativaA = false;
-                listAnswers[index].alternativaB = false;
-              });
-            },
-            title: SizedBox(
-              child: TextField(
-                onChanged: (text) {
-                  listAnswers[index].respostaDaAlternativaC = text;
-                  respostaC = listAnswers[index].respostaDaAlternativaC;
-                },
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                obscureText: false,
-                style: style,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  labelText: "Resposta da alternativa C",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
-              ),
-            ),
-          ),
-        ],
-      );*/
     }
+
+    final buttonCancel = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Voltar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonSendAnswers = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () async {
+
+            final url = Uri.parse('http://127.0.0.1:5000/Corrigir_teste');
+
+            var encodeListaRespostas = jsonEncode(dataListRespostas);
+
+            final response = await http.post(url, body: {'id': widget.randId.toString(), 'lista_respostas': encodeListaRespostas, 'email': widget.emailUser.toString()});
+
+            Navigator.of(context).pop();
+            Navigator.pop(context);
+          },
+          child: Text(
+            "Enviar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -252,10 +249,11 @@ class FazerQuiz extends State<FazerQuizCall> {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return const AlertDialog(
-                          title: Text('Enviar QUIZ?'),
-                          content: Text('As alternativas foram assinaladas?'),
-                          actions: [/*submit e cancel*/],
+                        return AlertDialog(
+                          title: const Text('Enviar QUIZ?'),
+                          content: const Text(
+                              'As alternativas foram assinaladas?'),
+                          actions: [buttonSendAnswers, buttonCancel],
                         );
                       });
                 },

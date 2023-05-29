@@ -413,7 +413,7 @@ class Cursos extends State<CursosCall> {
                 Navigator.of(context).pop();
                 Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FazerQuizCall(randId: int.parse(dataListCursosBD[index]['Código do Curso']))));
+                MaterialPageRoute(builder: (context) => FazerQuizCall(randId: int.parse(dataListCursosBD[index]['Código do Curso']), emailUser: _emailUser)));
               },
               child: Text(
                 "Fazer Quiz",
