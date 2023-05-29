@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'crud_treinamentos.dart';
 import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
 
 class AdminPageCall extends StatefulWidget {
+
+  final String userType;
+  final String emailUser;
+
+  AdminPageCall({required this.userType, required this.emailUser});
+
   @override
   AdminPage createState() => AdminPage();
 }
@@ -12,15 +17,16 @@ class AdminPageCall extends StatefulWidget {
 class AdminPage extends State<AdminPageCall> {
   int _selectedIndex = 0;
 
-  final _widgetOptions = [
-    CrudTreinamentosCall(),
-    CursosCall(),
-    const Text('Resultados'),
-    const Text('Testes'),
-    ListagemVagasCall(),
-    CrudVagasCall(),
-    const Text('Atividades Concluídas'),
-  ];
+  List<Widget> getWidgetOptions() {
+    return [
+      CursosCall(userType: widget.userType, emailUser: widget.emailUser),
+      const Text('Resultados'),
+      const Text('Testes'),
+      ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
+      CrudVagasCall(userType: widget.userType),
+      const Text('Atividades Concluídas'),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,6 +42,10 @@ class AdminPage extends State<AdminPageCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    final _userType = widget.userType;
+    final _widgetOptions = getWidgetOptions();
+
     return Scaffold(
       appBar: AppBar(
         title:
@@ -51,10 +61,6 @@ class AdminPage extends State<AdminPageCall> {
         unselectedItemColor: Colors.white,
         iconSize: 30,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'CRUD Treinamentos',
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',
