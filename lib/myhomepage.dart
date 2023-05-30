@@ -5,6 +5,7 @@ import 'cadastro.dart';
 import 'dart:convert';
 import 'aluno_page.dart';
 import 'mentor_page.dart';
+import 'empresa_page.dart';
 
 
 class MyHomePage extends StatelessWidget {
@@ -99,6 +100,12 @@ class MyHomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => MentorPageCall(userType: userType[0], emailUser: emailUser)),
+              );
+            }
+            if (userType[0] == "Empresa"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CompanyPageCall(userType: userType[0], emailUser: emailUser)),
               );
             }
             }

@@ -169,7 +169,7 @@ class MentorPage extends State<MentorPageCall> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bem-vindo Mentor, $_emailUser'), //<-- colocar $nomedisplay
+        title: Text('Bem-vindo MENTOR, $_emailUser'), //<-- colocar $nomedisplay
         titleTextStyle: styleAltUpdate,
       ),
       body: SingleChildScrollView(
