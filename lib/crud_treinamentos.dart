@@ -10,19 +10,14 @@ import 'package:my_app/quiz.dart';
 
 class CrudTreinamentosCall extends StatefulWidget {
 
-  final String userType;
-  final int id;
-
-  CrudTreinamentosCall({required this.userType, required this.id});
-
   @override
   CrudTreinamentos createState() => CrudTreinamentos();
 }
 
 class CrudTreinamentos extends State<CrudTreinamentosCall> {
-  
-  String _userType = '';
-  int _id = 0;
+
+
+  int id = Random().nextInt(200);
 
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
@@ -47,9 +42,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
   @override
   Widget build(BuildContext context) {
-
-    _userType = widget.userType;
-    _id = widget.id;
     
     void _showDatePicker(pressedButton) {
       showDatePicker(
@@ -407,7 +399,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => QuizCall(randId: _id)),
+                  builder: (context) => QuizCall(randId: id)),
             );
           },
           child: Text(
@@ -437,7 +429,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
             final resquest = await http.post(url, body: {
               'nome_comercial': nomeComercial.toString(),
-              'codigo_curso': _id.toString(),
+              'codigo_curso': id.toString(),
               'descricao': descricao.toString(),
               'carga_horaria': cargaHoraria.toString(),
               'inicio_inscricoes': dataInicioInscricao.toString(),
@@ -449,7 +441,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             });
 
             Navigator.of(context).pop();
-            Navigator.pop(context);
+            CrudTreinamentosCall();
 
             /*Navigator.push(
                 context,
@@ -520,7 +512,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
                 });
           },
           child: Text(
-            "Enviar TREINAMENTO",
+            "Criar TREINAMENTO",
             textAlign: TextAlign.center,
             style: style.copyWith(
               color: Colors.white,
@@ -531,12 +523,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       ),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text('Criar TREINAMENTO'),
-          titleTextStyle: style,
-          automaticallyImplyLeading: false),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
       child: Center(
         child: Container(
           padding: const EdgeInsets.fromLTRB(30.0, 50.0, 30.0, 0),
@@ -568,7 +555,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
           ),
         ),
       ),
-    ),
     );
   }
 }

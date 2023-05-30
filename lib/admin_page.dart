@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/crud_treinamentos.dart';
 import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
@@ -19,6 +20,7 @@ class AdminPage extends State<AdminPageCall> {
 
   List<Widget> getWidgetOptions() {
     return [
+      CrudTreinamentosCall(),
       CursosCall(userType: widget.userType, emailUser: widget.emailUser),
       const Text('Resultados'),
       const Text('Testes'),
@@ -61,6 +63,10 @@ class AdminPage extends State<AdminPageCall> {
         unselectedItemColor: Colors.white,
         iconSize: 30,
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit),
+            label: 'CRUD de Treinamentos',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',
