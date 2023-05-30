@@ -4,6 +4,7 @@ import 'package:my_app/admin_page.dart';
 import 'cadastro.dart';
 import 'dart:convert';
 import 'aluno_page.dart';
+import 'mentor_page.dart';
 
 
 class MyHomePage extends StatelessWidget {
@@ -92,6 +93,12 @@ class MyHomePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => StudentPageCall(userType: userType[0], emailUser: emailUser)),
+              );
+            }
+            if (userType[0] == "Mentor"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MentorPageCall(userType: userType[0], emailUser: emailUser)),
               );
             }
             }
