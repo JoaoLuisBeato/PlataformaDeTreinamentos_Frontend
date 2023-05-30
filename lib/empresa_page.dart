@@ -19,7 +19,7 @@ class CompanyPage extends State<CompanyPageCall> {
   List<Widget> getWidgetOptions() {
     return [
       const Text('Resultados'),
-      CrudVagasCall(userType: widget.userType),
+      CrudVagasCall(userType: widget.userType, emailUser: widget.emailUser),
       AlunoSearchCall(userType: widget.userType, emailUser: widget.emailUser)
     ];
   }

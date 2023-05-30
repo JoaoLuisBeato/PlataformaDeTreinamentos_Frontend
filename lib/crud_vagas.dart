@@ -6,8 +6,9 @@ import 'dart:convert';
 
 class CrudVagasCall extends StatefulWidget {
   final String userType;
+  final String emailUser;
 
-  const CrudVagasCall({required this.userType});
+  const CrudVagasCall({required this.userType, required this.emailUser});
 
   @override
   CrudVagas createState() => CrudVagas();
@@ -61,6 +62,20 @@ class CrudVagas extends State<CrudVagasCall> {
         idsDosTreinamentos.add(nomesTreinamentosEIDBD[i]['Código do Curso']);
       }
     });
+  }
+
+  Future<void> fetchSendVagaEmpresa(id) async {
+
+    final url = Uri.parse('http://127.0.0.1:5000/vaga_empresa_criar');
+
+    await http.post(url, body: {'id_empresa': id, 'email_empresa': widget.emailUser});
+  }
+
+  Future<void> fetchNovaVaga(id) async {
+
+    final url = Uri.parse('http://127.0.0.1:5000/vaga_emprego');
+
+    await http.post(url, body: {'id_vaga': id, 'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
   }
 
   String treinamentoEscolhido = 'Escolha o treinamento';
@@ -222,10 +237,11 @@ class CrudVagas extends State<CrudVagasCall> {
             ),
           ),
           onPressed: () async {
-            final url = Uri.parse('http://127.0.0.1:5000/vaga_emprego');
+           
+            await fetchSendVagaEmpresa(idsDosTreinamentos[selectedIndex].toString());
 
-            await http.post(url, body: {'id_vaga': idsDosTreinamentos[selectedIndex].toString(), 'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
-
+            await fetchNovaVaga(idsDosTreinamentos[selectedIndex].toString());
+            
             Navigator.of(context).pop();
           },
           child: Text(

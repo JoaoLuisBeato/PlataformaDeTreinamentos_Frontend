@@ -26,7 +26,7 @@ class AdminPage extends State<AdminPageCall> {
       const Text('Resultados'),
       const Text('Testes'),
       ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
-      CrudVagasCall(userType: widget.userType),
+      CrudVagasCall(userType: widget.userType, emailUser: widget.emailUser),
       const Text('Atividades Concluídas'),
     ];
   }
