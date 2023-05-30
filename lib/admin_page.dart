@@ -9,13 +9,14 @@ class AdminPageCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  AdminPageCall({required this.userType, required this.emailUser});
+  const AdminPageCall({required this.userType, required this.emailUser});
 
   @override
   AdminPage createState() => AdminPage();
 }
 
 class AdminPage extends State<AdminPageCall> {
+  
   int _selectedIndex = 0;
 
   List<Widget> getWidgetOptions() {
@@ -45,8 +46,7 @@ class AdminPage extends State<AdminPageCall> {
   @override
   Widget build(BuildContext context) {
 
-    final _userType = widget.userType;
-    final _widgetOptions = getWidgetOptions();
+    final widgetOptions = getWidgetOptions();
 
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +55,7 @@ class AdminPage extends State<AdminPageCall> {
         titleTextStyle: style,
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

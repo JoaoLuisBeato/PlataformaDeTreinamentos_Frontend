@@ -9,7 +9,7 @@ class CursosCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  CursosCall({required this.userType, required this.emailUser});
+  const CursosCall({required this.userType, required this.emailUser});
 
   @override
   Cursos createState() => Cursos();
@@ -125,7 +125,7 @@ class Cursos extends State<CursosCall> {
                 final url =
                     Uri.parse('http://127.0.0.1:5000/Delete_treinamentos');
 
-                final resquest = await http.post(url, body: {
+                await http.post(url, body: {
                   'codigo_curso': dataListCursosBD[index]['Código do Curso']
                 });
                 fetchDataFromAPI();

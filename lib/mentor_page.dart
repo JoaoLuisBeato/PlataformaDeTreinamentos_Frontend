@@ -9,7 +9,7 @@ class MentorPageCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  MentorPageCall({required this.userType, required this.emailUser});
+  const MentorPageCall({required this.userType, required this.emailUser});
 
   @override
   MentorPage createState() => MentorPage();

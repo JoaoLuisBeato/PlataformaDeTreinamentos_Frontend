@@ -7,7 +7,7 @@ class CompanyPageCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  CompanyPageCall({required this.userType, required this.emailUser});
+  const CompanyPageCall({required this.userType, required this.emailUser});
 
   @override
   CompanyPage createState() => CompanyPage();
@@ -39,8 +39,7 @@ class CompanyPage extends State<CompanyPageCall> {
   @override
   Widget build(BuildContext context) {
 
-    final _userType = widget.userType;
-    final _widgetOptions = getWidgetOptions();
+    final widgetOptions = getWidgetOptions();
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +48,7 @@ class CompanyPage extends State<CompanyPageCall> {
         titleTextStyle: style,
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

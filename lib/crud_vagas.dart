@@ -7,14 +7,13 @@ import 'dart:convert';
 class CrudVagasCall extends StatefulWidget {
   final String userType;
 
-  CrudVagasCall({required this.userType});
+  const CrudVagasCall({required this.userType});
 
   @override
   CrudVagas createState() => CrudVagas();
 }
 
 class CrudVagas extends State<CrudVagasCall> {
-  String _userType = '';
 
   List<dynamic> nomesTreinamentosEIDBD = [];
   List<String> nomesDeTreinamentos = [];
@@ -68,7 +67,6 @@ class CrudVagas extends State<CrudVagasCall> {
 
   @override
   Widget build(BuildContext context) {
-    _userType = widget.userType;
 
     void checkText(minSalario, maxSalario) {
       if (minSalario != '' && maxSalario != '') {
@@ -226,7 +224,7 @@ class CrudVagas extends State<CrudVagasCall> {
           onPressed: () async {
             final url = Uri.parse('http://127.0.0.1:5000/vaga_emprego');
 
-            final resquest = await http.post(url, body: {'id_vaga': idsDosTreinamentos[selectedIndex].toString(), 'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
+            await http.post(url, body: {'id_vaga': idsDosTreinamentos[selectedIndex].toString(), 'titulo_vaga': tituloDaVaga, 'empresa_oferece': empresaQueOferta, 'descricao_vaga': descricaoDaVaga, 'pre_requisitos': requisitosDaVaga, 'salario_minimo': minSalario, 'salario_maximo': maxSalario});
 
             Navigator.of(context).pop();
           },
@@ -282,8 +280,6 @@ class CrudVagas extends State<CrudVagasCall> {
             minimumSize: const Size(150, 40),
           ),
           onPressed: () {
-            print(nomesDeTreinamentos);
-            print(idsDosTreinamentos);
             showDialog(
                 context: context,
                 builder: (BuildContext context) {

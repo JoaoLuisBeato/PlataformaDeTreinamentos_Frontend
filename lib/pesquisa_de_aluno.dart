@@ -8,14 +8,13 @@ class AlunoSearchCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  AlunoSearchCall({required this.userType, required this.emailUser});
+  const AlunoSearchCall({required this.userType, required this.emailUser});
 
   @override
   AlunoSearchPage createState() => AlunoSearchPage();
 }
 
 class AlunoSearchPage extends State<AlunoSearchCall> {
-  String _emailUser = '';
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -88,7 +87,6 @@ class AlunoSearchPage extends State<AlunoSearchCall> {
 
   @override
   Widget build(BuildContext context) {
-    _emailUser = widget.emailUser;
 
     Padding listagemDeAtividadesDoAluno() {
       return Padding(

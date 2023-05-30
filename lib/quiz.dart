@@ -5,7 +5,7 @@ import 'dart:async';
 class QuizCall extends StatefulWidget {
   final int randId;
 
-  QuizCall({required this.randId});
+  const QuizCall({required this.randId});
 
   @override
   Quiz createState() => Quiz();
@@ -52,7 +52,7 @@ class Quiz extends State<QuizCall> {
   Future<void> enviaQuestao(itemsRespostas, transferIndex) async {
     final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
 
-    final resquest = await http.post(url, body: {
+    await http.post(url, body: {
       'id_treinamento_quiz':
           itemsRespostas[transferIndex].idTreinamentoQuiz.toString(),
       'questao': itemsRespostas[transferIndex].questao

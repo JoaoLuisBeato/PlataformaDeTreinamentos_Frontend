@@ -426,7 +426,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
           onPressed: () async {
             final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
 
-            final resquest = await http.post(url, body: {
+            await http.post(url, body: {
               'nome_comercial': nomeComercial.toString(),
               'codigo_curso': id.toString(),
               'descricao': descricao.toString(),

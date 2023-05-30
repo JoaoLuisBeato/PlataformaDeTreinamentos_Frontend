@@ -79,8 +79,6 @@ class MyHomePage extends StatelessWidget {
             final userType = parsedJson['Tipo_aluno'];
             final emailUser = parsedJson['email'];
 
-            print(emailUser);
-
             if(verificado == "OK"){
               print("passou");
 
