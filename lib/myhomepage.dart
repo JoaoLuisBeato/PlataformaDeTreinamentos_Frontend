@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:my_app/admin_page.dart';
 import 'cadastro.dart';
 import 'dart:convert';
+import 'aluno_page.dart';
+import 'mentor_page.dart';
+import 'empresa_page.dart';
 
 
 class MyHomePage extends StatelessWidget {
@@ -29,7 +32,7 @@ class MyHomePage extends StatelessWidget {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Email",
+          labelText: "Email",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -45,7 +48,7 @@ class MyHomePage extends StatelessWidget {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Password",
+          labelText: "Password",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -73,16 +76,36 @@ class MyHomePage extends StatelessWidget {
             final jsonData = response.body;
             final parsedJson = jsonDecode(jsonData);
             final verificado = parsedJson['acesso'];
-
-            print(verificado);
+            final userType = parsedJson['Tipo_aluno'];
+            final emailUser = parsedJson['email'];
 
             if(verificado == "OK"){
               print("passou");
-              
+
+            if(userType[0] == "Administrador"){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AdminPageCall(/*nomeDisplay: nome*/)),
+                MaterialPageRoute(builder: (context) => AdminPageCall(userType: userType[0], emailUser: emailUser)),
               );
+            }
+            if (userType[0] == "Aluno"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentPageCall(userType: userType[0], emailUser: emailUser)),
+              );
+            }
+            if (userType[0] == "Mentor"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MentorPageCall(userType: userType[0], emailUser: emailUser)),
+              );
+            }
+            if (userType[0] == "Empresa"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CompanyPageCall(userType: userType[0], emailUser: emailUser)),
+              );
+            }
             }
           },
           child: Text(

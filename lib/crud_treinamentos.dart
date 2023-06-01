@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_app/admin_page.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -9,15 +8,18 @@ import 'dart:math';
 import 'package:my_app/quiz.dart';
 
 class CrudTreinamentosCall extends StatefulWidget {
+
   @override
   CrudTreinamentos createState() => CrudTreinamentos();
 }
 
 class CrudTreinamentos extends State<CrudTreinamentosCall> {
+
+
+  int id = Random().nextInt(200);
+
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
   TextStyle styleTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
-
-  int id_treinamento = Random().nextInt(200);
 
   String nomeComercial = '';
   String descricao = '';
@@ -39,6 +41,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
 
   @override
   Widget build(BuildContext context) {
+    
     void _showDatePicker(pressedButton) {
       showDatePicker(
         context: context,
@@ -74,7 +77,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Nome comercial do treinamento",
+          labelText: "Nome comercial do treinamento",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -92,7 +95,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
         style: style,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Descrição",
+          labelText: "Descrição",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
@@ -113,7 +116,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
         style: style,
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-            hintText: "Carga horária",
+            labelText: "Carga horária",
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
             suffixText: 'Horas',
             suffixStyle: style),
@@ -148,7 +151,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       controller: fieldText,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Máximo de candidatos",
+        labelText: "Máximo de candidatos",
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         suffixText: 'Candidatos',
         suffixStyle: style,
@@ -172,7 +175,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       style: style,
       decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Mínimo de candidatos",
+          labelText: "Mínimo de candidatos",
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
           suffixText: 'Candidatos',
           suffixStyle: style),
@@ -395,7 +398,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => QuizCall(randId: id_treinamento)),
+                  builder: (context) => QuizCall(randId: id)),
             );
           },
           child: Text(
@@ -423,25 +426,26 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
           onPressed: () async {
             final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
 
-            final resquest = await http.post(url, body: {
+            await http.post(url, body: {
               'nome_comercial': nomeComercial.toString(),
-              'codigo_curso': id_treinamento.toString(),
+              'codigo_curso': id.toString(),
               'descricao': descricao.toString(),
               'carga_horaria': cargaHoraria.toString(),
               'inicio_inscricoes': dataInicioInscricao.toString(),
               'final_inscricoes': dataFinalInscricao.toString(),
-              'inicio_treinamentos': dataInicioInscricao.toString(),
-              'final_treinamentos': dataFinalInscricao.toString(),
+              'inicio_treinamentos': dataInicioTreinamento.toString(),
+              'final_treinamentos': dataFinalTreinamento.toString(),
               'qnt_min': minCandidatos.toString(),
               'qnt_max': maxCandidatos.toString()
             });
 
             Navigator.of(context).pop();
+            CrudTreinamentosCall();
 
-            Navigator.push(
+            /*Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AdminPageCall()),
-              );
+              );*/
           },
           child: Text(
             "Continuar",
@@ -507,7 +511,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
                 });
           },
           child: Text(
-            "Enviar TREINAMENTO",
+            "Criar TREINAMENTO",
             textAlign: TextAlign.center,
             style: style.copyWith(
               color: Colors.white,

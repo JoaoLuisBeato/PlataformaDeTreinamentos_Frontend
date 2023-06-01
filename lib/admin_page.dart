@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
-import 'crud_treinamentos.dart';
+import 'package:my_app/crud_treinamentos.dart';
 import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
+import 'pesquisa_de_aluno.dart';
 
 class AdminPageCall extends StatefulWidget {
+
+  final String userType;
+  final String emailUser;
+
+  const AdminPageCall({required this.userType, required this.emailUser});
+
   @override
   AdminPage createState() => AdminPage();
 }
 
 class AdminPage extends State<AdminPageCall> {
+  
   int _selectedIndex = 0;
 
-  final _widgetOptions = [
-    CrudTreinamentosCall(),
-    CursosCall(),
-    const Text('Resultados'),
-    const Text('Testes'),
-    ListagemVagasCall(),
-    CrudVagasCall(),
-    const Text('Atividades Concluídas'),
-  ];
+  List<Widget> getWidgetOptions() {
+    return [
+      CrudTreinamentosCall(),
+      CursosCall(userType: widget.userType, emailUser: widget.emailUser),
+      ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
+      CrudVagasCall(userType: widget.userType, emailUser: widget.emailUser),
+      AlunoSearchCall(userType: widget.userType, emailUser: widget.emailUser)
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,6 +44,9 @@ class AdminPage extends State<AdminPageCall> {
 
   @override
   Widget build(BuildContext context) {
+
+    final widgetOptions = getWidgetOptions();
+
     return Scaffold(
       appBar: AppBar(
         title:
@@ -43,7 +54,7 @@ class AdminPage extends State<AdminPageCall> {
         titleTextStyle: style,
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -52,20 +63,12 @@ class AdminPage extends State<AdminPageCall> {
         iconSize: 30,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'CRUD Treinamentos',
+            icon: Icon(Icons.edit),
+            label: 'CRUD de Treinamentos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Resultados',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Testes',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.work),

@@ -5,7 +5,7 @@ import 'dart:async';
 class QuizCall extends StatefulWidget {
   final int randId;
 
-  QuizCall({required this.randId});
+  const QuizCall({required this.randId});
 
   @override
   Quiz createState() => Quiz();
@@ -52,7 +52,7 @@ class Quiz extends State<QuizCall> {
   Future<void> enviaQuestao(itemsRespostas, transferIndex) async {
     final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
 
-    final resquest = await http.post(url, body: {
+    await http.post(url, body: {
       'id_treinamento_quiz':
           itemsRespostas[transferIndex].idTreinamentoQuiz.toString(),
       'questao': itemsRespostas[transferIndex].questao
@@ -99,7 +99,7 @@ class Quiz extends State<QuizCall> {
               style: style,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                hintText: "Pergunta da questão",
+                labelText: "Pergunta da questão",
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
               ),
@@ -129,7 +129,7 @@ class Quiz extends State<QuizCall> {
                 style: style,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  hintText: "Resposta da alternativa A",
+                  labelText: "Resposta da alternativa A",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
                 ),
@@ -160,7 +160,7 @@ class Quiz extends State<QuizCall> {
                 style: style,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  hintText: "Resposta da alternativa B",
+                  labelText: "Resposta da alternativa B",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
                 ),
@@ -191,7 +191,7 @@ class Quiz extends State<QuizCall> {
                 style: style,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  hintText: "Resposta da alternativa C",
+                  labelText: "Resposta da alternativa C",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20)),
                 ),
