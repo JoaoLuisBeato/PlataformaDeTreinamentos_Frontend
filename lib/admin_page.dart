@@ -3,6 +3,7 @@ import 'package:my_app/crud_treinamentos.dart';
 import 'crud_vagas.dart';
 import 'cursos.dart';
 import 'listagem_vagas.dart';
+import 'pesquisa_de_aluno.dart';
 
 class AdminPageCall extends StatefulWidget {
 
@@ -23,11 +24,9 @@ class AdminPage extends State<AdminPageCall> {
     return [
       CrudTreinamentosCall(),
       CursosCall(userType: widget.userType, emailUser: widget.emailUser),
-      const Text('Resultados'),
-      const Text('Testes'),
       ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
       CrudVagasCall(userType: widget.userType, emailUser: widget.emailUser),
-      const Text('Atividades Concluídas'),
+      AlunoSearchCall(userType: widget.userType, emailUser: widget.emailUser)
     ];
   }
 
@@ -70,14 +69,6 @@ class AdminPage extends State<AdminPageCall> {
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
             label: 'Cursos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Resultados',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Testes',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.work),

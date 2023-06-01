@@ -51,7 +51,12 @@ class ListagemVagas extends State<ListagemVagasCall> {
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI();
+    if(widget.userType == 'Aluno'){
+      fetchDataFromAPI();
+    }
+    else{
+      fetchDataFromAPIForAdmins();
+    }
   }
 
   List<dynamic> dataListVagasBD = [];
@@ -61,6 +66,14 @@ class ListagemVagas extends State<ListagemVagasCall> {
     final url = Uri.parse('http://127.0.0.1:5000/Listar_vaga_aluno');
 
     final response = await http.post(url, body:{'email': widget.emailUser});
+
+    setState(() {
+      dataListVagasBD = json.decode(response.body);
+    });
+  }
+
+  Future<void> fetchDataFromAPIForAdmins() async {
+    final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
 
     setState(() {
       dataListVagasBD = json.decode(response.body);
