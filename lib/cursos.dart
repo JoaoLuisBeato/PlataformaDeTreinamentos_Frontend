@@ -61,6 +61,7 @@ class Cursos extends State<CursosCall> {
   }
 
   List<dynamic> dataListCursosBD = [];
+  List<dynamic> subscribedUsersBD = [];
 
   bool buttonUpdateVisibility = true;
   bool buttonDoQuizVisibility = false;
@@ -71,11 +72,23 @@ class Cursos extends State<CursosCall> {
   final Duration _debounceTime = const Duration(seconds: 1);
 
   Future<void> fetchDataFromAPI() async {
-      final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
+    final response =
+        await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
 
-      setState(() {
-        dataListCursosBD = json.decode(response.body);
-      });
+    setState(() {
+      dataListCursosBD = json.decode(response.body);
+    });
+  }
+
+  Future<void> receiveUsers(index) async {
+    final url = Uri.parse('http://127.0.0.1:5000/Listar_inscritos_treinamento');
+    final response = await http.post(url, body: {
+      'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString()
+    });
+
+    setState(() {
+      subscribedUsersBD = json.decode(response.body);
+    });
   }
 
   @override
@@ -402,8 +415,12 @@ class Cursos extends State<CursosCall> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FazerQuizCall(randId: int.parse(dataListCursosBD[index]['Código do Curso']), emailUser: _emailUser)));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FazerQuizCall(
+                            randId: int.parse(
+                                dataListCursosBD[index]['Código do Curso']),
+                            emailUser: _emailUser)));
               },
               child: Text(
                 "Fazer o Curso",
@@ -444,14 +461,6 @@ class Cursos extends State<CursosCall> {
       ),
     );
 
-    Text returnTextBox() {
-      if (buttonUpdateVisibility == true) {
-        return const Text('Escolha entre atualizar ou excluir esse curso');
-      } else {
-        return const Text('O que deseja fazer?');
-      }
-    }
-
     Visibility subscribeTreinamento(index) {
       return Visibility(
         visible: buttonSubscribeVisibility,
@@ -471,7 +480,8 @@ class Cursos extends State<CursosCall> {
                     Uri.parse('http://127.0.0.1:5000/entrar_treinamento');
 
                 await http.post(url, body: {
-                  'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString(),
+                  'codigo_curso':
+                      dataListCursosBD[index]['Código do Curso'].toString(),
                   'email': _emailUser
                 });
                 fetchDataFromAPI();
@@ -506,11 +516,11 @@ class Cursos extends State<CursosCall> {
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
-                final url =
-                    Uri.parse('http://127.0.0.1:5000/sair_treinamento');
+                final url = Uri.parse('http://127.0.0.1:5000/sair_treinamento');
 
                 await http.post(url, body: {
-                  'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString(),
+                  'codigo_curso':
+                      dataListCursosBD[index]['Código do Curso'].toString(),
                   'email': _emailUser
                 });
 
@@ -624,12 +634,30 @@ class Cursos extends State<CursosCall> {
                   ),
                 ]),
             onTap: () {
+              receiveUsers(index).then((_) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text('O que deseja fazer?'),
-                      content: returnTextBox(),
+                      title: const Text('O que deseja fazer? Usuários inscritos:'),
+                      content: Center(
+                        child: Container(
+                          height: 400,
+                          width: 300,
+                          child: ListView.builder(
+                              itemCount: subscribedUsersBD.length,
+                              itemBuilder: (BuildContext context, index) {
+                                return SizedBox(
+                                  height: 50,
+                                  width: 400,
+                                  child: ListTile(
+                                    title: Text(subscribedUsersBD[index]['email'],
+                                        style: styleAltUpdate),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ), 
                       actions: [
                         buttonUpdate(index),
                         deleteTreinamento(index),
@@ -640,7 +668,8 @@ class Cursos extends State<CursosCall> {
                       ],
                     );
                   });
-            },
+                },
+            );},
           ),
         ),
         const Padding(

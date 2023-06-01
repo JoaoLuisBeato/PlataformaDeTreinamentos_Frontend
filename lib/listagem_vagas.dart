@@ -58,8 +58,9 @@ class ListagemVagas extends State<ListagemVagasCall> {
   List<dynamic> subscribedUsersBD = [];
 
   Future<void> fetchDataFromAPI() async {
-    final response =
-        await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
+    final url = Uri.parse('http://127.0.0.1:5000/Listar_vaga_aluno');
+
+    final response = await http.post(url, body:{'email': widget.emailUser});
 
     setState(() {
       dataListVagasBD = json.decode(response.body);
