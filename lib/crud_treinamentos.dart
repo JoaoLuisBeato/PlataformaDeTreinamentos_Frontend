@@ -482,10 +482,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             Navigator.of(context).pop();
             CrudTreinamentosCall();
 
-            /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminPageCall()),
-              );*/
           },
           child: Text(
             "Continuar",

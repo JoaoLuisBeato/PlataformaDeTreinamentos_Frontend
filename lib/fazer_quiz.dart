@@ -19,6 +19,9 @@ class FazerQuiz extends State<FazerQuizCall> {
 
   List<dynamic> dataListQuestoesBD = [];
   List<String> dataListRespostas = [];
+  List<dynamic> dataListTesteDeAptidao = [];
+  List<dynamic> dataListCase1 =[];
+  List<dynamic> dataListCase2 =[];
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -73,6 +76,13 @@ class FazerQuiz extends State<FazerQuizCall> {
         dataListQuestoesBD[i]['alternativa_c'] = false;
         dataListRespostas.add('alternativa_a');
       }
+
+      int tamanhoParte1 = (dataListQuestoesBD.length / 3).ceil();
+      int tamanhoParte2 = (dataListQuestoesBD.length / 3).floor();
+
+      dataListTesteDeAptidao = dataListQuestoesBD.sublist(0, tamanhoParte1);
+      dataListCase1 = dataListQuestoesBD.sublist(tamanhoParte1, tamanhoParte1 + tamanhoParte2);
+      dataListCase2 = dataListQuestoesBD.sublist(tamanhoParte1 + tamanhoParte2);
     });
   }
 
@@ -102,7 +112,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                 listAnswers[index]['alternativa_a'] = value!;
                 listAnswers[index]['alternativa_b'] = false;
                 listAnswers[index]['alternativa_c'] = false;
-
               });
             },
             title: SizedBox(
@@ -184,15 +193,19 @@ class FazerQuiz extends State<FazerQuizCall> {
             ),
           ),
           onPressed: () async {
-
             final url = Uri.parse('http://127.0.0.1:5000/Corrigir_teste');
 
             var encodeListaRespostas = jsonEncode(dataListRespostas);
 
-            await http.post(url, body: {'id': widget.randId.toString(), 'lista_respostas': encodeListaRespostas, 'email': widget.emailUser.toString()});
+            await http.post(url, body: {
+              'id': widget.randId.toString(),
+              'lista_respostas': encodeListaRespostas,
+              'email': widget.emailUser.toString()
+            });
 
             Navigator.of(context).pop();
-            Navigator.pop(context);
+
+            //if nota do mano for paia
           },
           child: Text(
             "Enviar",
@@ -208,52 +221,65 @@ class FazerQuiz extends State<FazerQuizCall> {
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Fazer QUIZ'),
+          title: const Text('Fazer CURSO'),
           titleTextStyle: styleAltUpdate,
           automaticallyImplyLeading: false),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 200.0),
-        child: ListView.builder(
-          itemCount: dataListQuestoesBD.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                ListTile(
-                  title: Text(dataListQuestoesBD[index]['numero_questao'],
-                      style: styleTitle),
+          padding: const EdgeInsets.symmetric(horizontal: 200.0, vertical: 50),
+          child: Column(
+            children: [
+              Center(
+                child: Text('Teste de aptidão', style: styleMainTitle),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: dataListQuestoesBD.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                              dataListQuestoesBD[index]['numero_questao'],
+                              style: styleTitle),
+                        ),
+                        returnAnswers(
+                            index, dataListQuestoesBD, dataListRespostas),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Divider(
+                            color: Colors.amber,
+                            height: 2.0,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                returnAnswers(index, dataListQuestoesBD, dataListRespostas),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Divider(
-                    color: Colors.amber,
-                    height: 2.0,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+              ),
+            ],
+          )),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              FloatingActionButton(
+              FloatingActionButton.extended(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+                label: const Text('Próximo'),
                 onPressed: () {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Enviar QUIZ?'),
-                          content: const Text(
-                              'As alternativas foram assinaladas?'),
+                          content:
+                              const Text('As alternativas foram assinaladas?'),
                           actions: [buttonSendAnswers, buttonCancel],
                         );
                       });
                 },
-                child: const Text('Enviar'),
               ),
               const SizedBox(width: 30),
             ]),
