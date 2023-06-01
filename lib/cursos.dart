@@ -64,28 +64,18 @@ class Cursos extends State<CursosCall> {
 
   bool buttonUpdateVisibility = true;
   bool buttonDoQuizVisibility = false;
+  bool buttonSubscribeVisibility = false;
+  bool buttonUnsubscribeVisibility = false;
 
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
 
   Future<void> fetchDataFromAPI() async {
-    if (widget.userType == "Aluno") {
-
-      final url = Uri.parse('http://127.0.0.1:5000/Listar_treinamentos_aluno');
-      final response = await http.post(url, body: {'email': widget.emailUser});
-
-      setState(() {
-        dataListCursosBD = json.decode(response.body);
-      });
-    }
-
-    else if (widget.userType == "Administrador"){
       final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_treinamentos'));
 
       setState(() {
         dataListCursosBD = json.decode(response.body);
       });
-    }
   }
 
   @override
@@ -96,6 +86,8 @@ class Cursos extends State<CursosCall> {
     if (_userType == 'Aluno') {
       buttonUpdateVisibility = false;
       buttonDoQuizVisibility = true;
+      buttonSubscribeVisibility = true;
+      buttonUnsubscribeVisibility = true;
     }
 
     void checkText(minAlunos, maxAlunos) {
@@ -414,7 +406,7 @@ class Cursos extends State<CursosCall> {
                 MaterialPageRoute(builder: (context) => FazerQuizCall(randId: int.parse(dataListCursosBD[index]['Código do Curso']), emailUser: _emailUser)));
               },
               child: Text(
-                "Fazer Quiz",
+                "Fazer o Curso",
                 textAlign: TextAlign.center,
                 style: style.copyWith(
                   color: Colors.white,
@@ -456,8 +448,87 @@ class Cursos extends State<CursosCall> {
       if (buttonUpdateVisibility == true) {
         return const Text('Escolha entre atualizar ou excluir esse curso');
       } else {
-        return const Text('Deseja fazer o quiz?');
+        return const Text('O que deseja fazer?');
       }
+    }
+
+    Visibility subscribeTreinamento(index) {
+      return Visibility(
+        visible: buttonSubscribeVisibility,
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final url =
+                    Uri.parse('http://127.0.0.1:5000/entrar_treinamento');
+
+                await http.post(url, body: {
+                  'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString(),
+                  'email': _emailUser
+                });
+                fetchDataFromAPI();
+                CursosCall(userType: _userType, emailUser: _emailUser);
+              },
+              child: Text(
+                "Inscrever-se",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Visibility unsubscribeTreinamento(index) {
+      return Visibility(
+        visible: buttonUnsubscribeVisibility,
+        child: ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width,
+          child: ButtonTheme(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final url =
+                    Uri.parse('http://127.0.0.1:5000/sair_treinamento');
+
+                await http.post(url, body: {
+                  'codigo_curso': dataListCursosBD[index]['Código do Curso'].toString(),
+                  'email': _emailUser
+                });
+
+                fetchDataFromAPI();
+                CursosCall(userType: _userType, emailUser: _emailUser);
+              },
+              child: Text(
+                "Desinscrever-se",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
     }
 
     Column returnListTile(index) {
@@ -563,6 +634,8 @@ class Cursos extends State<CursosCall> {
                         buttonUpdate(index),
                         deleteTreinamento(index),
                         buttonDoQuiz(index),
+                        subscribeTreinamento(index),
+                        unsubscribeTreinamento(index),
                         buttonCancel
                       ],
                     );

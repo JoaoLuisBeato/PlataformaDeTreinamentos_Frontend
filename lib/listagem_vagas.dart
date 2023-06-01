@@ -595,8 +595,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
                       actions: [
                         buttonUpdate(index),
                         deleteVaga(index),
-                        subscribeVaga(index),
-                        unsubscribeVaga(index),
+                        //subscribeVaga(index),
+                        //unsubscribeVaga(index),
                         buttonCancel
                       ],
                     );
