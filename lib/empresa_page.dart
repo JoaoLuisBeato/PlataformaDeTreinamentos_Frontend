@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'crud_vagas.dart';
 import 'pesquisa_de_aluno.dart';
+import 'results_empresa.dart';
 
 class CompanyPageCall extends StatefulWidget {
 
@@ -18,7 +19,7 @@ class CompanyPage extends State<CompanyPageCall> {
 
   List<Widget> getWidgetOptions() {
     return [
-      const Text('Resultados'),
+      ResultsSearchCall(userType: widget.userType, emailUser: widget.emailUser),
       CrudVagasCall(userType: widget.userType, emailUser: widget.emailUser),
       AlunoSearchCall(userType: widget.userType, emailUser: widget.emailUser)
     ];
