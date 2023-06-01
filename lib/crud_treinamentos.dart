@@ -24,6 +24,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   String nomeComercial = '';
   String descricao = '';
   String cargaHoraria = '';
+  String cursoIntrodutorio = '';
+  String cursoAvancado = '';
 
   DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
   DateTime dataInicioInscricao = DateTime.now();
@@ -380,6 +382,42 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       ],
     );
 
+    final cursosIntrodutoriosField = SizedBox(
+      width: 600,
+      child: TextField(
+        onChanged: (text) {
+          cursoIntrodutorio = text;
+        },
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          labelText: "Texto do curso introdutório",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+
+    final cursosAvancadosField = SizedBox(
+      width: 600,
+      child: TextField(
+        onChanged: (text) {
+          cursoAvancado = text;
+        },
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          labelText: "Texto do curso avançado",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+
     final buttonQuiz = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -436,7 +474,9 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               'inicio_treinamentos': dataInicioTreinamento.toString(),
               'final_treinamentos': dataFinalTreinamento.toString(),
               'qnt_min': minCandidatos.toString(),
-              'qnt_max': maxCandidatos.toString()
+              'qnt_max': maxCandidatos.toString(),
+              'curso_inicial': cursoIntrodutorio.toString(),
+              'curso_avancado': cursoAvancado.toString()
             });
 
             Navigator.of(context).pop();
@@ -547,6 +587,10 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               minMaxCandidates,
               const SizedBox(height: 30.0),
               buttonQuiz,
+              const SizedBox(height: 30.0),
+              cursosIntrodutoriosField,
+              const SizedBox(height: 30.0),
+              cursosAvancadosField,
               const SizedBox(height: 30.0),
               buttonSendTreinee,
               const SizedBox(height: 40)
