@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 
@@ -8,7 +7,7 @@ class FazerQuizCall extends StatefulWidget {
   final int randId;
   final String emailUser;
 
-  FazerQuizCall({required this.randId, required this.emailUser});
+  const FazerQuizCall({required this.randId, required this.emailUser});
 
   @override
   FazerQuiz createState() => FazerQuiz();
@@ -104,7 +103,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                 listAnswers[index]['alternativa_b'] = false;
                 listAnswers[index]['alternativa_c'] = false;
 
-                print(listAnswersToAPI);
               });
             },
             title: SizedBox(
@@ -122,7 +120,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                 listAnswers[index]['alternativa_b'] = value!;
                 listAnswers[index]['alternativa_a'] = false;
                 listAnswers[index]['alternativa_c'] = false;
-                print(listAnswersToAPI);
               });
             },
             title: SizedBox(
@@ -140,7 +137,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                 listAnswers[index]['alternativa_c'] = value!;
                 listAnswers[index]['alternativa_b'] = false;
                 listAnswers[index]['alternativa_a'] = false;
-                print(listAnswersToAPI);
               });
             },
             title: SizedBox(
@@ -193,7 +189,7 @@ class FazerQuiz extends State<FazerQuizCall> {
 
             var encodeListaRespostas = jsonEncode(dataListRespostas);
 
-            final response = await http.post(url, body: {'id': widget.randId.toString(), 'lista_respostas': encodeListaRespostas, 'email': widget.emailUser.toString()});
+            await http.post(url, body: {'id': widget.randId.toString(), 'lista_respostas': encodeListaRespostas, 'email': widget.emailUser.toString()});
 
             Navigator.of(context).pop();
             Navigator.pop(context);

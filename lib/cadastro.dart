@@ -87,16 +87,16 @@ class Cadastro extends State<MyWidget> {
            final url = Uri.parse('http://127.0.0.1:5000/cadastro');
 
             if(checkValueAdministrador){
-              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Administrador', 'nome': nomeCadastro});
+              await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Administrador', 'nome': nomeCadastro});
               
             } else if(checkValueAluno){
-              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Aluno', 'nome': nomeCadastro});
+              await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Aluno', 'nome': nomeCadastro});
               
             } else if(checkValueEmpresas){
-              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Empresa', 'nome': nomeCadastro});
+              await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Empresa', 'nome': nomeCadastro});
               
             } else if(checkValueMentores){
-              final resquest = await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Mentor', 'nome': nomeCadastro});
+              await http.post(url, body: {'email': emailCadastro, 'password': passwordCadastro, 'tipo_usuario': 'Mentor', 'nome': nomeCadastro});
             }
 
             Navigator.push(

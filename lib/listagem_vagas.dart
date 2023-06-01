@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:my_app/crud_vagas.dart';
 
 class ListagemVagasCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  ListagemVagasCall({required this.userType, required this.emailUser});
+  const ListagemVagasCall({required this.userType, required this.emailUser});
 
   @override
   ListagemVagas createState() => ListagemVagas();
@@ -52,15 +51,29 @@ class ListagemVagas extends State<ListagemVagasCall> {
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI();
+    if(widget.userType == 'Aluno'){
+      fetchDataFromAPI();
+    }
+    else{
+      fetchDataFromAPIForAdmins();
+    }
   }
 
   List<dynamic> dataListVagasBD = [];
   List<dynamic> subscribedUsersBD = [];
 
   Future<void> fetchDataFromAPI() async {
-    final response =
-        await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
+    final url = Uri.parse('http://127.0.0.1:5000/Listar_vaga_aluno');
+
+    final response = await http.post(url, body:{'email': widget.emailUser});
+
+    setState(() {
+      dataListVagasBD = json.decode(response.body);
+    });
+  }
+
+  Future<void> fetchDataFromAPIForAdmins() async {
+    final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
 
     setState(() {
       dataListVagasBD = json.decode(response.body);
@@ -287,7 +300,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 Navigator.of(context).pop();
                 final url = Uri.parse('http://127.0.0.1:5000/Delete_vagas');
 
-                final resquest = await http.post(url, body: {
+                await http.post(url, body: {
                   'codigo_vaga': dataListVagasBD[index]['id'].toString()
                 });
                 fetchDataFromAPI();
@@ -327,7 +340,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
 
                     final url = Uri.parse('http://127.0.0.1:5000/Update_vaga');
 
-                    final resquest = await http.post(url, body: {
+                    await http.post(url, body: {
                       'id': dataListVagasBD[index]['id'].toString(),
                       'titulo_vaga': dataListVagasBD[index]['Titulo da vaga'],
                       'empresa_oferece': dataListVagasBD[index]['Empresa'],
@@ -441,7 +454,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 final url =
                     Uri.parse('http://127.0.0.1:5000/entrar_vaga_emprego');
 
-                final resquest = await http.post(url, body: {
+                await http.post(url, body: {
                   'id_vaga': dataListVagasBD[index]['id'].toString(),
                   'email': _emailUser
                 });
@@ -449,7 +462,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 ListagemVagasCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
-                "Inscrever-se",
+                "Candidatar-se",
                 textAlign: TextAlign.center,
                 style: style.copyWith(
                   color: Colors.white,
@@ -480,7 +493,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 final url =
                     Uri.parse('http://127.0.0.1:5000/sair_vaga_emprego');
 
-                final resquest = await http.post(url, body: {
+                await http.post(url, body: {
                   'id_vaga': dataListVagasBD[index]['id'].toString(),
                   'email': _emailUser
                 });
@@ -489,7 +502,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 ListagemVagasCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
-                "Desinscrever-se",
+                "Cancelar candidatura",
                 textAlign: TextAlign.center,
                 style: style.copyWith(
                   color: Colors.white,
@@ -574,7 +587,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text('Usuários inscritos:'),
+                      title: const Text('Usuários que se candidataram:'),
                       content: Center(
                         child: Container(
                           height: 400,

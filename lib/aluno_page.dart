@@ -7,7 +7,7 @@ class StudentPageCall extends StatefulWidget {
   final String userType;
   final String emailUser;
 
-  StudentPageCall({required this.userType, required this.emailUser});
+  const StudentPageCall({required this.userType, required this.emailUser});
 
   @override
   StudentPage createState() => StudentPage();
@@ -41,7 +41,7 @@ class StudentPage extends State<StudentPageCall> {
     _userType = widget.userType;
     _emailUser = widget.emailUser;
 
-    final _widgetOptions = getWidgetOptions();
+    final widgetOptions = getWidgetOptions();
 
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +50,7 @@ class StudentPage extends State<StudentPageCall> {
         titleTextStyle: style,
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
