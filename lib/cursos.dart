@@ -98,7 +98,6 @@ class Cursos extends State<CursosCall> {
 
     if (_userType == 'Aluno') {
       buttonUpdateVisibility = false;
-      buttonDoQuizVisibility = true;
       buttonSubscribeVisibility = true;
       buttonUnsubscribeVisibility = true;
     }
@@ -485,6 +484,7 @@ class Cursos extends State<CursosCall> {
                   'email': _emailUser
                 });
                 fetchDataFromAPI();
+                buttonDoQuizVisibility = true;
                 CursosCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
@@ -525,6 +525,7 @@ class Cursos extends State<CursosCall> {
                 });
 
                 fetchDataFromAPI();
+                buttonDoQuizVisibility = false;
                 CursosCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(

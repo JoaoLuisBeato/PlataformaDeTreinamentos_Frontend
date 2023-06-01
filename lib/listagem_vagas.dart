@@ -449,7 +449,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 ListagemVagasCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
-                "Inscrever-se",
+                "Candidatar-se",
                 textAlign: TextAlign.center,
                 style: style.copyWith(
                   color: Colors.white,
@@ -489,7 +489,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 ListagemVagasCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
-                "Desinscrever-se",
+                "Cancelar candidatura",
                 textAlign: TextAlign.center,
                 style: style.copyWith(
                   color: Colors.white,
@@ -574,7 +574,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text('Usuários inscritos:'),
+                      title: const Text('Usuários que se candidataram:'),
                       content: Center(
                         child: Container(
                           height: 400,
@@ -596,8 +596,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
                       actions: [
                         buttonUpdate(index),
                         deleteVaga(index),
-                        //subscribeVaga(index),
-                        //unsubscribeVaga(index),
+                        subscribeVaga(index),
+                        unsubscribeVaga(index),
                         buttonCancel
                       ],
                     );
