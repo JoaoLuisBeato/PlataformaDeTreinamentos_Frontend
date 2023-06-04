@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:core';
+import 'curso_introdutorio.dart';
 
 class FazerQuizCall extends StatefulWidget {
   final int randId;
@@ -20,8 +21,8 @@ class FazerQuiz extends State<FazerQuizCall> {
   List<dynamic> dataListQuestoesBD = [];
   List<String> dataListRespostas = [];
   List<dynamic> dataListTesteDeAptidao = [];
-  List<dynamic> dataListCase1 =[];
-  List<dynamic> dataListCase2 =[];
+  List<dynamic> dataListCase1 = [];
+  List<dynamic> dataListCase2 = [];
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -98,8 +99,12 @@ class FazerQuiz extends State<FazerQuizCall> {
             width: 800,
             height: 50,
             child: Text(
-                '${index + 1}-) ${dataListQuestoesBD[index]['questao']}',
-                style: styleAltUpdate),
+                '${dataListTesteDeAptidao[index]['questao']}',
+                style: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
           ),
           CheckboxListTile(
             contentPadding:
@@ -199,13 +204,14 @@ class FazerQuiz extends State<FazerQuizCall> {
 
             await http.post(url, body: {
               'id': widget.randId.toString(),
-              'lista_respostas': encodeListaRespostas,
+              'lista_respostas': encodeListaRespostas,      //--> precisa filtrar para corrigir no backend
               'email': widget.emailUser.toString()
             });
 
             Navigator.of(context).pop();
 
-            //if nota do mano for paia
+            //if nota do mano for paia precisa fechar
+            await Navigator.push(context,MaterialPageRoute(builder: (context) => CursoIntrodutorioCall(randId: widget.randId, emailUser: widget.emailUser)));
           },
           child: Text(
             "Enviar",
@@ -233,17 +239,17 @@ class FazerQuiz extends State<FazerQuizCall> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: dataListQuestoesBD.length,
+                  itemCount: dataListTesteDeAptidao.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
                         ListTile(
                           title: Text(
-                              dataListQuestoesBD[index]['numero_questao'],
+                              '${index + 1}-)',
                               style: styleTitle),
                         ),
                         returnAnswers(
-                            index, dataListQuestoesBD, dataListRespostas),
+                            index, dataListTesteDeAptidao, dataListRespostas),
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),
                           child: Divider(
