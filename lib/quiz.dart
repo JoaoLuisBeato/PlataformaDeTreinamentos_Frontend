@@ -31,7 +31,32 @@ class Quiz extends State<QuizCall> {
     });
   }
 
-  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
+  TextStyle style = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+  TextStyle styleTitle = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 30.9, fontWeight: FontWeight.bold);
+
+  TextStyle styleComplement = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 20, fontWeight: FontWeight.bold);
+
+  TextStyle styleSubtitle = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.grey);
+
+  TextStyle styleSubtitleSmall = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+      color: Colors.grey);
+
+  TextStyle styleMainTitle =
+      const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
 
   String pergunta = '';
 
@@ -108,7 +133,7 @@ class Quiz extends State<QuizCall> {
           ),
           CheckboxListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 320, vertical: 5),
             value: listAnswers[index].alternativaA,
             onChanged: (bool? value) {
               setState(() {
@@ -139,7 +164,7 @@ class Quiz extends State<QuizCall> {
           ),
           CheckboxListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 320, vertical: 5),
             value: listAnswers[index].alternativaB,
             onChanged: (bool? value) {
               setState(() {
@@ -170,7 +195,7 @@ class Quiz extends State<QuizCall> {
           ),
           CheckboxListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 320, vertical: 5),
             value: listAnswers[index].alternativaC,
             onChanged: (bool? value) {
               setState(() {
@@ -290,29 +315,38 @@ class Quiz extends State<QuizCall> {
           title: const Text('Criar QUIZ'),
           titleTextStyle: style,
           automaticallyImplyLeading: false),
-      body: ListView.builder(
-        itemCount: itemsRespostas.length,
-        itemBuilder: (context, index) {
-          transferIndex = index;
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(itemsRespostas[index].questao, style: style),
+      body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 50),
+          child: Column(
+            children: [
+              Center(
+                child: Text('Crie o quiz', style: styleMainTitle),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: itemsRespostas.length,
+                  itemBuilder: (context, index) {
+          	  transferIndex = index;
+                    return Column(
+                      children: [
+                        ListTile(
+                  		title: Text(itemsRespostas[index].questao, style: style),
+                	),
+                        returnCheckbox(index, itemsRespostas),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Divider(
+                            color: Colors.amber,
+                            height: 2.0,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                returnCheckbox(index, itemsRespostas),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Divider(
-                    color: Colors.amber,
-                    height: 2.0,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          )),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:core';
+import 'curso_avancado.dart';
 
 class FazerTesteIntrodutorioCall extends StatefulWidget {
   final int randId;
@@ -197,7 +198,7 @@ class FazerTesteIntrodutorio extends State<FazerTesteIntrodutorioCall> {
             ),
           ),
           onPressed: () async {
-            final url = Uri.parse('http://127.0.0.1:5000/Corrigir_teste');
+            /*final url = Uri.parse('http://127.0.0.1:5000/Corrigir_teste');
 
             var encodeListaRespostas = jsonEncode(dataListRespostas);
 
@@ -205,11 +206,12 @@ class FazerTesteIntrodutorio extends State<FazerTesteIntrodutorioCall> {
               'id': widget.randId.toString(),
               'lista_respostas': encodeListaRespostas,      //--> precisa filtrar para corrigir no backend
               'email': widget.emailUser.toString()
-            });
+            });*/
 
             Navigator.of(context).pop();
 
             //if nota do mano for paia precisa fechar
+            await Navigator.push(context,MaterialPageRoute(builder: (context) => CursoAvancadoCall(randId: widget.randId, emailUser: widget.emailUser)));
             //await Navigator.push(context,MaterialPageRoute(builder: (context) => CursoIntrodutorioCall(randId: widget.randId, emailUser: widget.emailUser)));
           },
           child: Text(
