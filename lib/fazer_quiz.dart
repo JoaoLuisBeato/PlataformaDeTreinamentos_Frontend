@@ -71,19 +71,16 @@ class FazerQuiz extends State<FazerQuizCall> {
     setState(() {
       dataListQuestoesBD = json.decode(response.body);
 
-      for (int i = 0; i < dataListQuestoesBD.length; i++) {
+      int tamanhoParte1 = (dataListQuestoesBD.length / 3).ceil();
+
+      dataListTesteDeAptidao = dataListQuestoesBD.sublist(0, tamanhoParte1);
+
+      for (int i = 0; i < dataListTesteDeAptidao.length; i++) {
         dataListQuestoesBD[i]['alternativa_a'] = false;
         dataListQuestoesBD[i]['alternativa_b'] = false;
         dataListQuestoesBD[i]['alternativa_c'] = false;
         dataListRespostas.add('alternativa_a');
       }
-
-      int tamanhoParte1 = (dataListQuestoesBD.length / 3).ceil();
-      int tamanhoParte2 = (dataListQuestoesBD.length / 3).floor();
-
-      dataListTesteDeAptidao = dataListQuestoesBD.sublist(0, tamanhoParte1);
-      dataListCase1 = dataListQuestoesBD.sublist(tamanhoParte1, tamanhoParte1 + tamanhoParte2);
-      dataListCase2 = dataListQuestoesBD.sublist(tamanhoParte1 + tamanhoParte2);
     });
   }
 

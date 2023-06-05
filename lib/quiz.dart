@@ -55,7 +55,8 @@ class Quiz extends State<QuizCall> {
     await http.post(url, body: {
       'id_treinamento_quiz':
           itemsRespostas[transferIndex].idTreinamentoQuiz.toString(),
-      'questao': itemsRespostas[transferIndex].questao
+      'questao': itemsRespostas[transferIndex]
+          .questao
           .toString(), // na criação da nova tabela, isso tem que ser a pk
       'pergunta': itemsRespostas[transferIndex].pergunta,
       'respostaDaAlternativaA':
@@ -293,20 +294,22 @@ class Quiz extends State<QuizCall> {
         itemCount: itemsRespostas.length,
         itemBuilder: (context, index) {
           transferIndex = index;
-          return Column(
-            children: [
-              ListTile(
-                title: Text(itemsRespostas[index].questao, style: style),
-              ),
-              returnCheckbox(index, itemsRespostas),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: Divider(
-                  color: Colors.amber,
-                  height: 2.0,
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text(itemsRespostas[index].questao, style: style),
                 ),
-              ),
-            ],
+                returnCheckbox(index, itemsRespostas),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: Divider(
+                    color: Colors.amber,
+                    height: 2.0,
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:core';
+import 'fazer_teste_introdutorio.dart';
 
 class CursoIntrodutorioCall extends StatefulWidget {
   final int randId;
@@ -100,6 +101,33 @@ class CursoIntrodutorio extends State<CursoIntrodutorioCall> {
       ),
     );
 
+    final buttonGoToTest = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+
+            Navigator.push(context,MaterialPageRoute(builder: (context) => FazerTesteIntrodutorioCall(randId: widget.randId, emailUser: widget.emailUser)));
+          },
+          child: Text(
+            "Ir",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Curso introdutório'),
@@ -143,9 +171,7 @@ class CursoIntrodutorio extends State<CursoIntrodutorioCall> {
                               'Deseja ir para o teste do curso introdutório?'),
                           content:
                               const Text('Você não voltará para essa tela'),
-                          actions: [
-                            /*aqui vai entrar a chamada da outra página*/ buttonCancel
-                          ],
+                          actions: [buttonGoToTest, buttonCancel],
                         );
                       });
                 },
