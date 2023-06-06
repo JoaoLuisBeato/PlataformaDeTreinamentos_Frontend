@@ -4,8 +4,9 @@ import 'dart:async';
 
 class QuizCall extends StatefulWidget {
   final int randId;
+  final int flag;
 
-  const QuizCall({required this.randId});
+  const QuizCall({required this.randId, required this.flag});
 
   @override
   Quiz createState() => Quiz();
@@ -58,6 +59,13 @@ class Quiz extends State<QuizCall> {
   TextStyle styleMainTitle =
       const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
 
+  TextStyle styleAltUpdate = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+
   String pergunta = '';
 
   String respostaA = '';
@@ -74,8 +82,17 @@ class Quiz extends State<QuizCall> {
 
   int questionCounter = 0;
 
-  Future<void> enviaQuestao(itemsRespostas, transferIndex) async {
-    final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
+  Future<void> enviaQuestao(itemsRespostas, transferIndex, flag) async {
+
+    final url;
+
+    if(flag == 0){
+      url = Uri.parse('http://127.0.0.1:5000/criar_questao_aptidao'); //mudar rota para teste de aptidao
+    } else if (flag == 1){
+      url = Uri.parse('http://127.0.0.1:5000/criar_questao_prova1'); //mudar rota para prova 1
+    } else {
+      url = Uri.parse('http://127.0.0.1:5000/criar_questao_prova2'); //mudar rota para prova 2
+    }
 
     await http.post(url, body: {
       'id_treinamento_quiz':
@@ -98,7 +115,7 @@ class Quiz extends State<QuizCall> {
 
   @override
   Widget build(BuildContext context) {
-    
+
     Column returnCheckbox(index, listAnswers) {
       checkAlternativaA = false;
       checkAlternativaB = false;
@@ -241,7 +258,8 @@ class Quiz extends State<QuizCall> {
           onPressed: () async {
             addResposta();
             questionCounter++;
-            enviaQuestao(itemsRespostas, transferIndex);
+            enviaQuestao(itemsRespostas, transferIndex, widget.flag);
+          
             Navigator.of(context).pop();
           },
           child: Text(
@@ -269,7 +287,8 @@ class Quiz extends State<QuizCall> {
               ),
             ),
             onPressed: () {
-              enviaQuestao(itemsRespostas, transferIndex);
+              enviaQuestao(itemsRespostas, transferIndex, widget.flag);
+
               Navigator.of(context).pop();
             },
             child: Text(
@@ -310,9 +329,19 @@ class Quiz extends State<QuizCall> {
       ),
     );
 
+    String changeTitleNameMaster(flag){
+
+        if(flag == 0){
+          return 'Criar Teste de Aptidão';
+        } else if(flag == 1){
+          return 'Criar Teste do Case 1';
+        } 
+        else { return 'Criar Teste do Case 2'; }
+    }
+
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Criar QUIZ'),
+          title: Text(changeTitleNameMaster(widget.flag), style: styleAltUpdate),
           titleTextStyle: style,
           automaticallyImplyLeading: false),
       body: Padding(
@@ -320,18 +349,19 @@ class Quiz extends State<QuizCall> {
           child: Column(
             children: [
               Center(
-                child: Text('Crie o quiz', style: styleMainTitle),
+                child: Text(changeTitleNameMaster(widget.flag), style: styleMainTitle),
               ),
               Expanded(
                 child: ListView.builder(
                   itemCount: itemsRespostas.length,
                   itemBuilder: (context, index) {
-          	  transferIndex = index;
+                    transferIndex = index;
                     return Column(
                       children: [
                         ListTile(
-                  		title: Text(itemsRespostas[index].questao, style: style),
-                	),
+                          title:
+                              Text(itemsRespostas[index].questao, style: style),
+                        ),
                         returnCheckbox(index, itemsRespostas),
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),

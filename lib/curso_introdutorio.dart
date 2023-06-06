@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:core';
-import 'fazer_teste_introdutorio.dart';
+import 'fazer_quiz.dart';
 
 class CursoIntrodutorioCall extends StatefulWidget {
   final int randId;
   final String emailUser;
+  final int flag;
 
-  const CursoIntrodutorioCall({required this.randId, required this.emailUser});
+  const CursoIntrodutorioCall({required this.randId, required this.emailUser, required this.flag});
 
   @override
   CursoIntrodutorio createState() => CursoIntrodutorio();
@@ -17,6 +18,7 @@ class CursoIntrodutorioCall extends StatefulWidget {
 class CursoIntrodutorio extends State<CursoIntrodutorioCall> {
   int randId = 0;
   String emailUser = '';
+  int flagToSend = 1;
   List<dynamic> curso_introdutorio = [];
   String curso_introdutorio_texto = '';
 
@@ -113,8 +115,9 @@ class CursoIntrodutorio extends State<CursoIntrodutorioCall> {
           ),
           onPressed: () {
             Navigator.of(context).pop();
+            Navigator.pop(context);
 
-            Navigator.push(context,MaterialPageRoute(builder: (context) => FazerTesteIntrodutorioCall(randId: widget.randId, emailUser: widget.emailUser)));
+            Navigator.push(context,MaterialPageRoute(builder: (context) => FazerQuizCall(randId: widget.randId, emailUser: widget.emailUser, flag: flagToSend)));
           },
           child: Text(
             "Ir",

@@ -3,12 +3,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:core';
 import 'curso_introdutorio.dart';
+import 'curso_avancado.dart';
 
 class FazerQuizCall extends StatefulWidget {
   final int randId;
   final String emailUser;
+  final int flag;
 
-  const FazerQuizCall({required this.randId, required this.emailUser});
+  const FazerQuizCall(
+      {required this.randId, required this.emailUser, required this.flag});
 
   @override
   FazerQuiz createState() => FazerQuiz();
@@ -20,9 +23,6 @@ class FazerQuiz extends State<FazerQuizCall> {
 
   List<dynamic> dataListQuestoesBD = [];
   List<String> dataListRespostas = [];
-  List<dynamic> dataListTesteDeAptidao = [];
-  List<dynamic> dataListCase1 = [];
-  List<dynamic> dataListCase2 = [];
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -60,27 +60,59 @@ class FazerQuiz extends State<FazerQuizCall> {
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI();
+    fetchDataFromAPI(widget.flag);
   }
 
-  Future<void> fetchDataFromAPI() async {
-    final url = Uri.parse('http://127.0.0.1:5000/Listar_teste');
+  Future<void> fetchDataFromAPI(flag) async {
+    final url;
+
+    if (flag == 0) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Listar_teste'); // mudar rota das questoes conforme flag
+    } else if (flag == 1) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Listar_teste_prova1'); //mudar rota para prova 1
+    } else {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Listar_teste_prova2'); //mudar rota para prova 2
+    }
+
     final response =
         await http.post(url, body: {'id': widget.randId.toString()});
 
     setState(() {
       dataListQuestoesBD = json.decode(response.body);
 
-      int tamanhoParte1 = (dataListQuestoesBD.length / 3).ceil();
-
-      dataListTesteDeAptidao = dataListQuestoesBD.sublist(0, tamanhoParte1);
-
-      for (int i = 0; i < dataListTesteDeAptidao.length; i++) {
+      for (int i = 0; i < dataListQuestoesBD.length; i++) {
         dataListQuestoesBD[i]['alternativa_a'] = false;
         dataListQuestoesBD[i]['alternativa_b'] = false;
         dataListQuestoesBD[i]['alternativa_c'] = false;
         dataListRespostas.add('alternativa_a');
       }
+    });
+  }
+
+  Future<void> corrigirTeste(flag, dataListRespostas) async {
+    final url;
+
+    if (flag == 0) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Corrigir_teste_aptidao'); //mudar rota para teste de aptidao
+    } else if (flag == 1) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Corrigir_teste_prova1'); //mudar rota para prova 1
+    } else {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Corrigir_teste_prova2'); //mudar rota para prova 2
+    }
+
+    var encodeListaRespostas = jsonEncode(dataListRespostas);
+
+    await http.post(url, body: {
+      'id': widget.randId.toString(),
+      'lista_respostas':
+          encodeListaRespostas, //--> precisa filtrar para corrigir no backend
+      'email': widget.emailUser.toString(),
     });
   }
 
@@ -95,8 +127,7 @@ class FazerQuiz extends State<FazerQuizCall> {
           SizedBox(
             width: 800,
             height: 50,
-            child: Text(
-                '${dataListTesteDeAptidao[index]['questao']}',
+            child: Text('${dataListQuestoesBD[index]['questao']}',
                 style: const TextStyle(
                     fontFamily: 'Nunito',
                     fontSize: 20,
@@ -195,20 +226,21 @@ class FazerQuiz extends State<FazerQuizCall> {
             ),
           ),
           onPressed: () async {
-            final url = Uri.parse('http://127.0.0.1:5000/Corrigir_teste');
-
-            var encodeListaRespostas = jsonEncode(dataListRespostas);
-
-            await http.post(url, body: {
-              'id': widget.randId.toString(),
-              'lista_respostas': encodeListaRespostas,      //--> precisa filtrar para corrigir no backend
-              'email': widget.emailUser.toString()
-            });
-
             Navigator.of(context).pop();
 
             //if nota do mano for paia precisa fechar
-            await Navigator.push(context,MaterialPageRoute(builder: (context) => CursoIntrodutorioCall(randId: widget.randId, emailUser: widget.emailUser)));
+            if (widget.flag == 0) {
+              await corrigirTeste(widget.flag, dataListRespostas);
+              Navigator.pop(context);
+              await Navigator.push(context, MaterialPageRoute( builder: (context) => CursoIntrodutorioCall(randId: widget.randId,emailUser: widget.emailUser,flag: widget.flag)));
+            } else if (widget.flag == 1) {
+              await corrigirTeste(widget.flag, dataListRespostas);
+              Navigator.pop(context);
+              await Navigator.push(context,MaterialPageRoute( builder: (context) => CursoAvancadoCall(randId: widget.randId,emailUser: widget.emailUser,flag: widget.flag)));
+            } else {
+              await corrigirTeste(widget.flag, dataListRespostas);
+              Navigator.pop(context);
+            }
           },
           child: Text(
             "Enviar",
@@ -222,6 +254,16 @@ class FazerQuiz extends State<FazerQuizCall> {
       ),
     );
 
+    String changeTitleNameMaster(flag) {
+      if (flag == 0) {
+        return 'Teste de Aptidão';
+      } else if (flag == 1) {
+        return 'Teste do Case 1';
+      } else {
+        return 'Teste do Case 2';
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
           title: const Text('Fazer CURSO'),
@@ -232,21 +274,20 @@ class FazerQuiz extends State<FazerQuizCall> {
           child: Column(
             children: [
               Center(
-                child: Text('Teste de aptidão', style: styleMainTitle),
+                child: Text(changeTitleNameMaster(widget.flag),
+                    style: styleMainTitle),
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: dataListTesteDeAptidao.length,
+                  itemCount: dataListQuestoesBD.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
                         ListTile(
-                          title: Text(
-                              '${index + 1}-)',
-                              style: styleTitle),
+                          title: Text('${index + 1}-)', style: styleTitle),
                         ),
                         returnAnswers(
-                            index, dataListTesteDeAptidao, dataListRespostas),
+                            index, dataListQuestoesBD, dataListRespostas),
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),
                           child: Divider(

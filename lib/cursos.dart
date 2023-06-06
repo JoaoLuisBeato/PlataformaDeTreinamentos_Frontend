@@ -18,6 +18,7 @@ class CursosCall extends StatefulWidget {
 class Cursos extends State<CursosCall> {
   String _userType = '';
   String _emailUser = '';
+  int flag = 0;
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -419,7 +420,7 @@ class Cursos extends State<CursosCall> {
                         builder: (context) => FazerQuizCall(
                             randId: int.parse(
                                 dataListCursosBD[index]['Código do Curso']),
-                            emailUser: _emailUser)));
+                            emailUser: _emailUser, flag: flag)));
               },
               child: Text(
                 "Fazer o Curso",
