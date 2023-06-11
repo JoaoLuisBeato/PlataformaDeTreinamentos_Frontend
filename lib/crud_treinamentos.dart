@@ -546,6 +546,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             ),
           ),
           onPressed: () async {
+            Navigator.of(context).pop();
+
             final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
 
             await http.post(url, body: {
@@ -563,7 +565,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               'curso_avancado': cursoAvancado.toString()
             });
 
-            Navigator.of(context).pop();
             CrudTreinamentosCall();
           },
           child: Text(

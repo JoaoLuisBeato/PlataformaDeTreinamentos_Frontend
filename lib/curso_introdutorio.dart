@@ -143,6 +143,7 @@ class CursoIntrodutorio extends State<CursoIntrodutorioCall> {
               Center(
                 child: Text('Curso introdutório', style: styleMainTitle),
               ),
+              SizedBox(height: 50),
               Center(
                 child: Expanded(
                   child: Column(
