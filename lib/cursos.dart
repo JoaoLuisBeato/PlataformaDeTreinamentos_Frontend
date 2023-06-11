@@ -314,7 +314,7 @@ class Cursos extends State<CursosCall> {
                     final url =
                         Uri.parse('http://127.0.0.1:5000/Update_treinamentos');
 
-                    final resquest = await http.post(url, body: {
+                    await http.post(url, body: {
                       'nome_comercial':
                           dataListCursosBD[index]['Nome Comercial'].toString(),
                       'codigo_curso':
@@ -420,7 +420,8 @@ class Cursos extends State<CursosCall> {
                         builder: (context) => FazerQuizCall(
                             randId: int.parse(
                                 dataListCursosBD[index]['Código do Curso']),
-                            emailUser: _emailUser, flag: flag)));
+                            emailUser: _emailUser,
+                            flag: flag)));
               },
               child: Text(
                 "Fazer o Curso",
@@ -543,6 +544,23 @@ class Cursos extends State<CursosCall> {
       );
     }
 
+    Padding returnTextEdit() {
+      if (widget.userType != "Aluno") {
+        return Padding(
+          padding: const EdgeInsets.only(left: 100, top: 10),
+          child: Text('Clique aqui para atualizar ou deletar o treinamento',
+              style: styleSubtitleSmall),
+        );
+      }
+      else {
+        return Padding(
+          padding: const EdgeInsets.only(left: 100, top: 10),
+          child: Text('Clique aqui para se inscrever e fazer o curso',
+              style: styleSubtitleSmall),
+        );
+      }
+    }
+
     Column returnListTile(index) {
       return Column(children: [
         Container(
@@ -628,50 +646,49 @@ class Cursos extends State<CursosCall> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 100, top: 10),
-                    child: Text(
-                        'Clique aqui para atualizar ou deletar o treinamento',
-                        style: styleSubtitleSmall),
-                  ),
+                  returnTextEdit(),
                 ]),
             onTap: () {
-              receiveUsers(index).then((_) {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('O que deseja fazer? Usuários inscritos:'),
-                      content: Center(
-                        child: Container(
-                          height: 400,
-                          width: 300,
-                          child: ListView.builder(
-                              itemCount: subscribedUsersBD.length,
-                              itemBuilder: (BuildContext context, index) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: 400,
-                                  child: ListTile(
-                                    title: Text(subscribedUsersBD[index]['email'],
-                                        style: styleAltUpdate),
-                                  ),
-                                );
-                              }),
-                        ),
-                      ), 
-                      actions: [
-                        buttonUpdate(index),
-                        deleteTreinamento(index),
-                        buttonDoQuiz(index),
-                        subscribeTreinamento(index),
-                        unsubscribeTreinamento(index),
-                        buttonCancel
-                      ],
-                    );
-                  });
+              receiveUsers(index).then(
+                (_) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text(
+                              'O que deseja fazer? Usuários inscritos:'),
+                          content: Center(
+                            child: Container(
+                              height: 400,
+                              width: 300,
+                              child: ListView.builder(
+                                  itemCount: subscribedUsersBD.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    return SizedBox(
+                                      height: 50,
+                                      width: 400,
+                                      child: ListTile(
+                                        title: Text(
+                                            subscribedUsersBD[index]['email'],
+                                            style: styleAltUpdate),
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                          actions: [
+                            buttonUpdate(index),
+                            deleteTreinamento(index),
+                            buttonDoQuiz(index),
+                            subscribeTreinamento(index),
+                            unsubscribeTreinamento(index),
+                            buttonCancel
+                          ],
+                        );
+                      });
                 },
-            );},
+              );
+            },
           ),
         ),
         const Padding(

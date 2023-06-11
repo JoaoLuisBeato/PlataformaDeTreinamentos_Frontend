@@ -51,10 +51,9 @@ class ListagemVagas extends State<ListagemVagasCall> {
   @override
   void initState() {
     super.initState();
-    if(widget.userType == 'Aluno'){
+    if (widget.userType == 'Aluno') {
       fetchDataFromAPI();
-    }
-    else{
+    } else {
       fetchDataFromAPIForAdmins();
     }
   }
@@ -65,7 +64,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
   Future<void> fetchDataFromAPI() async {
     final url = Uri.parse('http://127.0.0.1:5000/Listar_vaga_aluno');
 
-    final response = await http.post(url, body:{'email': widget.emailUser});
+    final response = await http.post(url, body: {'email': widget.emailUser});
 
     setState(() {
       dataListVagasBD = json.decode(response.body);
@@ -73,7 +72,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
   }
 
   Future<void> fetchDataFromAPIForAdmins() async {
-    final response = await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
+    final response =
+        await http.post(Uri.parse('http://127.0.0.1:5000/listar_vaga_emprego'));
 
     setState(() {
       dataListVagasBD = json.decode(response.body);
@@ -82,7 +82,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
 
   Future<void> receiveUsers(index) async {
     final url = Uri.parse('http://127.0.0.1:5000/Listar_inscritos_vaga');
-    final response = await http.post(url, body: {'id': dataListVagasBD[index]['id'].toString()});
+    final response = await http
+        .post(url, body: {'id': dataListVagasBD[index]['id'].toString()});
 
     setState(() {
       subscribedUsersBD = json.decode(response.body);
@@ -110,8 +111,6 @@ class ListagemVagas extends State<ListagemVagasCall> {
     if (_userType == 'Aluno') {
       buttonUpdateVisibility = false;
       buttonDeleteVisibility = false;
-      buttonSubscribeVisibility = true;
-      buttonUnsubscribeVisibility = true;
     }
 
     void checkText(minSalario, maxSalario) {
@@ -410,7 +409,6 @@ class ListagemVagas extends State<ListagemVagasCall> {
       );
     }
 
-
     final buttonCancel = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
@@ -582,39 +580,58 @@ class ListagemVagas extends State<ListagemVagasCall> {
                   ),
                 ]),
             onTap: () {
+              receiveUsers(index).then((_) {
+                
+                for (int i = 0; i <= subscribedUsersBD.length; i++) {
+                  if (subscribedUsersBD.isNotEmpty) {
+                    if (widget.emailUser == subscribedUsersBD[i]['email']) {
+                      setState(() {
+                        buttonSubscribeVisibility = false;
+                        buttonUnsubscribeVisibility = true;
+                      });
+                      break;
+                    }
+                  } else {
+                      setState(() {
+                        buttonSubscribeVisibility = true;
+                        buttonUnsubscribeVisibility = false;
+                      });
+                    }
+                }
 
-              receiveUsers(index).then((_) {showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Usuários que se candidataram:'),
-                      content: Center(
-                        child: Container(
-                          height: 400,
-                          width: 300,
-                          child: ListView.builder(
-                              itemCount: subscribedUsersBD.length,
-                              itemBuilder: (BuildContext context, index) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: 400,
-                                  child: ListTile(
-                                    title: Text(subscribedUsersBD[index]['email'],
-                                        style: styleAltUpdate),
-                                  ),
-                                );
-                              }),
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Usuários que se candidataram:'),
+                        content: Center(
+                          child: Container(
+                            height: 400,
+                            width: 300,
+                            child: ListView.builder(
+                                itemCount: subscribedUsersBD.length,
+                                itemBuilder: (BuildContext context, index) {
+                                  return SizedBox(
+                                    height: 50,
+                                    width: 400,
+                                    child: ListTile(
+                                      title: Text(
+                                          subscribedUsersBD[index]['email'],
+                                          style: styleAltUpdate),
+                                    ),
+                                  );
+                                }),
+                          ),
                         ),
-                      ),
-                      actions: [
-                        buttonUpdate(index),
-                        deleteVaga(index),
-                        subscribeVaga(index),
-                        unsubscribeVaga(index),
-                        buttonCancel
-                      ],
-                    );
-                  });
+                        actions: [
+                          buttonUpdate(index),
+                          deleteVaga(index),
+                          subscribeVaga(index),
+                          unsubscribeVaga(index),
+                          buttonCancel
+                        ],
+                      );
+                    });
               });
             },
           ),
