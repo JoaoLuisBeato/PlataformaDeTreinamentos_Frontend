@@ -485,7 +485,6 @@ class Cursos extends State<CursosCall> {
                   'email': _emailUser
                 });
                 fetchDataFromAPI();
-                buttonDoQuizVisibility = true;
                 CursosCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
@@ -568,12 +567,14 @@ class Cursos extends State<CursosCall> {
             setState(() {
               buttonSubscribeVisibility = false;
               buttonUnsubscribeVisibility = true;
+              buttonDoQuizVisibility = true;
             });
             break;
           } else {
             setState(() {
               buttonSubscribeVisibility = true;
               buttonUnsubscribeVisibility = false;
+              buttonDoQuizVisibility = false;
             });
           }
         } else {
@@ -581,6 +582,7 @@ class Cursos extends State<CursosCall> {
             setState(() {
               buttonSubscribeVisibility = true;
               buttonUnsubscribeVisibility = false;
+              buttonDoQuizVisibility = false;
             });
           }
           else {
