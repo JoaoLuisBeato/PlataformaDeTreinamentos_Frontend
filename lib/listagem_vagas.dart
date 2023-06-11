@@ -514,7 +514,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
     }
 
     void decideButtonVisibility() {
-      for (int i = 0; i <= subscribedUsersBD.length; i++) {
+      for (int i = 0; i < subscribedUsersBD.length; i++) {
         if (widget.userType == "Aluno" && subscribedUsersBD.isNotEmpty) {
           if (widget.emailUser == subscribedUsersBD[i]['email']) {
             setState(() {
@@ -522,6 +522,11 @@ class ListagemVagas extends State<ListagemVagasCall> {
               buttonUnsubscribeVisibility = true;
             });
             break;
+          } else {
+            setState(() {
+              buttonSubscribeVisibility = true;
+              buttonUnsubscribeVisibility = false;
+            });
           }
         } else {
           if (widget.userType == "Aluno") {

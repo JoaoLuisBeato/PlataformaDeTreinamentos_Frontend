@@ -44,8 +44,7 @@ class Cursos extends State<CursosCall> {
       fontWeight: FontWeight.normal,
       color: Colors.grey);
 
-  TextStyle styleMainTitle =
-      const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+  TextStyle styleMainTitle = const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
 
   TextStyle styleAltUpdate = const TextStyle(
       fontFamily: 'Nunito',
@@ -561,6 +560,39 @@ class Cursos extends State<CursosCall> {
       }
     }
 
+    void decideButtonVisibility() {
+
+      for (int i = 0; i < subscribedUsersBD.length; i++) {
+        if (widget.userType == "Aluno" && subscribedUsersBD.isNotEmpty) {
+          if (widget.emailUser == subscribedUsersBD[i]['email']) { 
+            setState(() {
+              buttonSubscribeVisibility = false;
+              buttonUnsubscribeVisibility = true;
+            });
+            break;
+          } else {
+            setState(() {
+              buttonSubscribeVisibility = true;
+              buttonUnsubscribeVisibility = false;
+            });
+          }
+        } else {
+          if (widget.userType == "Aluno") {
+            setState(() {
+              buttonSubscribeVisibility = true;
+              buttonUnsubscribeVisibility = false;
+            });
+          }
+          else {
+            setState(() {
+              buttonSubscribeVisibility = false;
+              buttonUnsubscribeVisibility = false;
+            });
+          }
+        }
+      }
+    }
+
     Column returnListTile(index) {
       return Column(children: [
         Container(
@@ -649,8 +681,10 @@ class Cursos extends State<CursosCall> {
                   returnTextEdit(),
                 ]),
             onTap: () {
-              receiveUsers(index).then(
-                (_) {
+              receiveUsers(index).then((_) {
+
+                decideButtonVisibility();
+                
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
