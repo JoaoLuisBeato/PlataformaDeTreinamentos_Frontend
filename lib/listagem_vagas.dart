@@ -513,6 +513,33 @@ class ListagemVagas extends State<ListagemVagasCall> {
       );
     }
 
+    void decideButtonVisibility() {
+      for (int i = 0; i <= subscribedUsersBD.length; i++) {
+        if (widget.userType == "Aluno" && subscribedUsersBD.isNotEmpty) {
+          if (widget.emailUser == subscribedUsersBD[i]['email']) {
+            setState(() {
+              buttonSubscribeVisibility = false;
+              buttonUnsubscribeVisibility = true;
+            });
+            break;
+          }
+        } else {
+          if (widget.userType == "Aluno") {
+            setState(() {
+              buttonSubscribeVisibility = true;
+              buttonUnsubscribeVisibility = false;
+            });
+          }
+          else {
+            setState(() {
+              buttonSubscribeVisibility = false;
+              buttonUnsubscribeVisibility = false;
+            });
+          }
+        }
+      }
+    }
+
     Column returnListTile(index) {
       return Column(children: [
         Container(
@@ -581,23 +608,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
                 ]),
             onTap: () {
               receiveUsers(index).then((_) {
-                
-                for (int i = 0; i <= subscribedUsersBD.length; i++) {
-                  if (subscribedUsersBD.isNotEmpty) {
-                    if (widget.emailUser == subscribedUsersBD[i]['email']) {
-                      setState(() {
-                        buttonSubscribeVisibility = false;
-                        buttonUnsubscribeVisibility = true;
-                      });
-                      break;
-                    }
-                  } else {
-                      setState(() {
-                        buttonSubscribeVisibility = true;
-                        buttonUnsubscribeVisibility = false;
-                      });
-                    }
-                }
+                decideButtonVisibility();
 
                 showDialog(
                     context: context,
