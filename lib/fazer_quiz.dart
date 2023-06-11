@@ -20,6 +20,7 @@ class FazerQuizCall extends StatefulWidget {
 class FazerQuiz extends State<FazerQuizCall> {
   int randId = 0;
   String emailUser = '';
+  String result = '';
 
   List<dynamic> dataListQuestoesBD = [];
   List<String> dataListRespostas = [];
@@ -108,11 +109,17 @@ class FazerQuiz extends State<FazerQuizCall> {
 
     var encodeListaRespostas = jsonEncode(dataListRespostas);
 
-    await http.post(url, body: {
+    final response = await http.post(url, body: {
       'id': widget.randId.toString(),
       'lista_respostas':
           encodeListaRespostas, //--> precisa filtrar para corrigir no backend
       'email': widget.emailUser.toString(),
+    });
+
+    var decodeResponse = json.decode(response.body);
+    setState(() {
+      result = decodeResponse['status'];
+      print(result);
     });
   }
 
@@ -215,6 +222,44 @@ class FazerQuiz extends State<FazerQuizCall> {
       ),
     );
 
+    void dialogReprovado(BuildContext context) {
+
+      final buttonOk = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Ok",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Você não acertou questões suficientes'),
+              content: const Text('Decidimos não prosseguir com o curso.'),
+              actions: [buttonOk],
+            );
+          });
+    }
+
     final buttonSendAnswers = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
@@ -228,15 +273,25 @@ class FazerQuiz extends State<FazerQuizCall> {
           onPressed: () async {
             Navigator.of(context).pop();
 
-            //if nota do mano for paia precisa fechar
             if (widget.flag == 0) {
               await corrigirTeste(widget.flag, dataListRespostas);
               Navigator.pop(context);
-              await Navigator.push(context, MaterialPageRoute( builder: (context) => CursoIntrodutorioCall(randId: widget.randId,emailUser: widget.emailUser,flag: widget.flag)));
+
+              if (result == "Aprovado") {
+                await Navigator.push(context, MaterialPageRoute( builder: (context) => CursoIntrodutorioCall( randId: widget.randId, emailUser: widget.emailUser, flag: widget.flag)));
+              } else {
+               dialogReprovado(context);
+              }
             } else if (widget.flag == 1) {
               await corrigirTeste(widget.flag, dataListRespostas);
               Navigator.pop(context);
-              await Navigator.push(context,MaterialPageRoute( builder: (context) => CursoAvancadoCall(randId: widget.randId,emailUser: widget.emailUser,flag: widget.flag)));
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CursoAvancadoCall(
+                          randId: widget.randId,
+                          emailUser: widget.emailUser,
+                          flag: widget.flag)));
             } else {
               await corrigirTeste(widget.flag, dataListRespostas);
               Navigator.pop(context);
