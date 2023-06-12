@@ -348,7 +348,8 @@ class CrudVagas extends State<CrudVagasCall> {
       );
     }
 
-    return Center(
+    return SingleChildScrollView(
+    child: Center(
       child: Container(
         padding: const EdgeInsets.fromLTRB(30.0, 50.0, 30.0, 0),
         child: Column(
@@ -367,10 +368,12 @@ class CrudVagas extends State<CrudVagasCall> {
             const SizedBox(height: 30.0),
             dropDownButtonTreinamentos(),
             const SizedBox(height: 30.0),
-            buttonCreateVacancy
+            buttonCreateVacancy,
+            const SizedBox(height: 50.0),
           ],
         ),
       ),
+    ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,7 @@ class CursosCall extends StatefulWidget {
 class Cursos extends State<CursosCall> {
   String _userType = '';
   String _emailUser = '';
+  int flag = 0;
 
   TextStyle style = const TextStyle(
       fontFamily: 'Nunito',
@@ -68,6 +70,17 @@ class Cursos extends State<CursosCall> {
   bool buttonSubscribeVisibility = false;
   bool buttonUnsubscribeVisibility = false;
 
+  DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
+  DateTime dataInicioInscricao = DateTime.now();
+  DateTime dataFinalInscricao = DateTime.now();
+  DateTime dataInicioTreinamento = DateTime.now();
+  DateTime dataFinalTreinamento = DateTime.now();
+
+  bool buttonInicioInscricaoVisibility = true;
+  bool buttonIFinalInscricaoVisibility = true;
+  bool buttonInicioTreinamentoVisibility = true;
+  bool buttonFinalTreinamentoVisibility = true;
+
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
 
@@ -98,8 +111,39 @@ class Cursos extends State<CursosCall> {
 
     if (_userType == 'Aluno') {
       buttonUpdateVisibility = false;
-      buttonSubscribeVisibility = true;
-      buttonUnsubscribeVisibility = true;
+    }
+
+    void _showDatePicker(pressedButton) {
+      showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2030),
+      ).then((value) {
+        setState(() {
+          if (value != null) {
+            if (pressedButton == 'Inicio') {
+              setState(() {
+                dataInicioInscricao = value;
+              });
+            } else if (pressedButton == 'Final' &&
+                value.isAfter(dataInicioInscricao)) {
+              setState(() {
+                dataFinalInscricao = value;
+              });
+            } else if (pressedButton == 'TreinamentoInicio') {
+              setState(() {
+                dataInicioTreinamento = value;
+              });
+            } else if (pressedButton == 'TreinamentoFinal' &&
+                value.isAfter(dataInicioTreinamento)) {
+              setState(() {
+                dataFinalTreinamento = value;
+              });
+            }
+          }
+        });
+      });
     }
 
     void checkText(minAlunos, maxAlunos) {
@@ -149,7 +193,7 @@ class Cursos extends State<CursosCall> {
       );
     }
 
-    Column updateField(index) {
+    SingleChildScrollView updateField(index) {
       final TextEditingController textFieldTitleController =
           TextEditingController(
               text: dataListCursosBD[index]['Nome Comercial']);
@@ -163,133 +207,273 @@ class Cursos extends State<CursosCall> {
       dataListCursosBD[index]['Quantidade máxima de alunos'] =
           dataListCursosBD[index]['Quantidade máxima de alunos'].toString();
 
-      return Column(children: [
-        const SizedBox(height: 30.0),
-        SizedBox(
-          width: 400,
-          child: TextField(
-            onChanged: (text) {
-              dataListCursosBD[index]['Nome Comercial'] = text;
-            },
-            controller: textFieldTitleController,
-            obscureText: false,
-            style: styleAltUpdate,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-              labelText: "Nome comercial do treinamento",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-            ),
-          ),
-        ),
-        const SizedBox(height: 30.0),
-        SizedBox(
-          width: 400,
-          child: TextField(
-            onChanged: (text) {
-              dataListCursosBD[index]['Descricao'] = text;
-            },
-            controller: textFieldDescriptionController,
-            obscureText: false,
-            style: styleAltUpdate,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-              labelText: "Descrição",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-            ),
-          ),
-        ),
-        const SizedBox(height: 30.0),
-        SizedBox(
-          width: 400,
-          child: TextField(
-            textAlign: TextAlign.center,
-            onChanged: (text) {
-              dataListCursosBD[index]['Carga Horária'] = text;
-            },
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            controller: textFieldWorkLoadController,
-            obscureText: false,
-            style: styleAltUpdate,
-            decoration: InputDecoration(
+      return SingleChildScrollView(
+        child: Column(children: [
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              onChanged: (text) {
+                dataListCursosBD[index]['Nome Comercial'] = text;
+              },
+              controller: textFieldTitleController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
                 contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                labelText: "Carga horária",
+                labelText: "Nome comercial do treinamento",
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                suffixText: 'Horas',
-                suffixStyle: styleAltUpdate),
-          ),
-        ),
-        const SizedBox(height: 30.0),
-        SizedBox(
-          width: 400,
-          child: TextField(
-            textAlign: TextAlign.center,
-            onChanged: (text) {
-              if (_debounce?.isActive ?? false) _debounce?.cancel();
-
-              _debounce = Timer(_debounceTime, () {
-                dataListCursosBD[index]['Quantidade mínima de alunos'] = text;
-                checkText(
-                    dataListCursosBD[index]['Quantidade mínima de alunos'],
-                    dataListCursosBD[index]['Quantidade máxima de alunos']);
-              });
-            },
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            obscureText: false,
-            style: styleAltUpdate,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-              labelText: "Quantidade mínima de alunos",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-              suffixText: 'Alunos',
-              suffixStyle: styleAltUpdate,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 20.0),
-        SizedBox(child: Text('até', style: styleAltUpdate)),
-        const SizedBox(height: 20.0),
-        SizedBox(
-          width: 400,
-          child: TextField(
-            textAlign: TextAlign.center,
-            onChanged: (text) {
-              if (_debounce?.isActive ?? false) _debounce?.cancel();
-
-              _debounce = Timer(_debounceTime, () {
-                dataListCursosBD[index]['Quantidade máxima de alunos'] = text;
-                checkText(
-                    dataListCursosBD[index]['Quantidade mínima de alunos'],
-                    dataListCursosBD[index]['Quantidade máxima de alunos']);
-              });
-            },
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            obscureText: false,
-            style: styleAltUpdate,
-            controller: fieldText,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-              labelText: "Quantidade máxima de alunos",
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-              suffixText: 'Alunos',
-              suffixStyle: styleAltUpdate,
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              onChanged: (text) {
+                dataListCursosBD[index]['Descricao'] = text;
+              },
+              controller: textFieldDescriptionController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Descrição",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              ),
             ),
           ),
-        ),
-      ]);
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              textAlign: TextAlign.center,
+              onChanged: (text) {
+                dataListCursosBD[index]['Carga Horária'] = text;
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              controller: textFieldWorkLoadController,
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  labelText: "Carga horária",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  suffixText: 'Horas',
+                  suffixStyle: styleAltUpdate),
+            ),
+          ),
+          const SizedBox(height: 30.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              textAlign: TextAlign.center,
+              onChanged: (text) {
+                if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+                _debounce = Timer(_debounceTime, () {
+                  dataListCursosBD[index]['Quantidade mínima de alunos'] = text;
+                  checkText(
+                      dataListCursosBD[index]['Quantidade mínima de alunos'],
+                      dataListCursosBD[index]['Quantidade máxima de alunos']);
+                });
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              obscureText: false,
+              style: styleAltUpdate,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Quantidade mínima de alunos",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                suffixText: 'Alunos',
+                suffixStyle: styleAltUpdate,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20.0),
+          SizedBox(child: Text('até', style: styleAltUpdate)),
+          const SizedBox(height: 20.0),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              textAlign: TextAlign.center,
+              onChanged: (text) {
+                if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+                _debounce = Timer(_debounceTime, () {
+                  dataListCursosBD[index]['Quantidade máxima de alunos'] = text;
+                  checkText(
+                      dataListCursosBD[index]['Quantidade mínima de alunos'],
+                      dataListCursosBD[index]['Quantidade máxima de alunos']);
+                });
+              },
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              obscureText: false,
+              style: styleAltUpdate,
+              controller: fieldText,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                labelText: "Quantidade máxima de alunos",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                suffixText: 'Alunos',
+                suffixStyle: styleAltUpdate,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20.0),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Visibility(
+                  visible: buttonInicioInscricaoVisibility,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: ButtonTheme(
+                      minWidth: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                      child: ButtonTheme(
+                        minWidth: 200.0,
+                        height: 150.0,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32.0),
+                            ),
+                            minimumSize: const Size(150, 40),
+                          ),
+                          onPressed: () {
+                            _showDatePicker('Inicio');
+                          },
+                          child: Text(
+                            "Selecione INÍCIO das inscrições",
+                            textAlign: TextAlign.center,
+                            style: style.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )),
+              const SizedBox(height: 20.0),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: ButtonTheme(
+                  minWidth: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                  child: ButtonTheme(
+                    minWidth: 200.0,
+                    height: 150.0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                        ),
+                        minimumSize: const Size(150, 40),
+                      ),
+                      onPressed: () {
+                        _showDatePicker('Final');
+                      },
+                      child: Text(
+                        "Selecione FIM das inscrições",
+                        textAlign: TextAlign.center,
+                        style: style.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20.0),
+          Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ButtonTheme(
+                minWidth: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                child: ButtonTheme(
+                  minWidth: 200.0,
+                  height: 150.0,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32.0),
+                      ),
+                      minimumSize: const Size(150, 40),
+                    ),
+                    onPressed: () {
+                      _showDatePicker('TreinamentoInicio');
+                    },
+                    child: Text(
+                      "Selecione INÍCIO do treinamento",
+                      textAlign: TextAlign.center,
+                      style: style.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ButtonTheme(
+                minWidth: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                child: ButtonTheme(
+                  minWidth: 200.0,
+                  height: 150.0,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32.0),
+                      ),
+                      minimumSize: const Size(150, 40),
+                    ),
+                    onPressed: () {
+                      _showDatePicker('TreinamentoFinal');
+                    },
+                    child: Text(
+                      "Selecione FIM do treinamento",
+                      textAlign: TextAlign.center,
+                      style: style.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 20.0),
+        ]),
+      );
     }
 
     Column buttonConfirmUpdates(index) {
@@ -313,7 +497,7 @@ class Cursos extends State<CursosCall> {
                     final url =
                         Uri.parse('http://127.0.0.1:5000/Update_treinamentos');
 
-                    final resquest = await http.post(url, body: {
+                    await http.post(url, body: {
                       'nome_comercial':
                           dataListCursosBD[index]['Nome Comercial'].toString(),
                       'codigo_curso':
@@ -322,18 +506,10 @@ class Cursos extends State<CursosCall> {
                           dataListCursosBD[index]['Descricao'].toString(),
                       'carga_horaria':
                           dataListCursosBD[index]['Carga Horária'].toString(),
-                      'inicio_inscricoes': dataListCursosBD[index]
-                              ['Início das incricoes']
-                          .toString(),
-                      'final_inscricoes': dataListCursosBD[index]
-                              ['Final das inscricoes']
-                          .toString(),
-                      'inicio_treinamentos': dataListCursosBD[index]
-                              ['Início dos treinamentos']
-                          .toString(),
-                      'final_treinamentos': dataListCursosBD[index]
-                              ['Final dos treinamentos']
-                          .toString(),
+                      'inicio_inscricoes': dataInicioInscricao.toString(),
+                      'final_inscricoes': dataFinalInscricao.toString(),
+                      'inicio_treinamentos': dataInicioTreinamento.toString(),
+                      'final_treinamentos': dataFinalTreinamento.toString(),
                       'qnt_min': dataListCursosBD[index]
                               ['Quantidade mínima de alunos']
                           .toString(),
@@ -419,7 +595,8 @@ class Cursos extends State<CursosCall> {
                         builder: (context) => FazerQuizCall(
                             randId: int.parse(
                                 dataListCursosBD[index]['Código do Curso']),
-                            emailUser: _emailUser)));
+                            emailUser: _emailUser,
+                            flag: flag)));
               },
               child: Text(
                 "Fazer o Curso",
@@ -484,7 +661,6 @@ class Cursos extends State<CursosCall> {
                   'email': _emailUser
                 });
                 fetchDataFromAPI();
-                buttonDoQuizVisibility = true;
                 CursosCall(userType: _userType, emailUser: _emailUser);
               },
               child: Text(
@@ -540,6 +716,64 @@ class Cursos extends State<CursosCall> {
           ),
         ),
       );
+    }
+
+    Padding returnTextEdit() {
+      if (widget.userType != "Aluno") {
+        return Padding(
+          padding: const EdgeInsets.only(left: 100, top: 10),
+          child: Text('Clique aqui para atualizar ou deletar o treinamento',
+              style: styleSubtitleSmall),
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsets.only(left: 100, top: 10),
+          child: Text('Clique aqui para se inscrever e fazer o curso',
+              style: styleSubtitleSmall),
+        );
+      }
+    }
+
+    void decideButtonVisibility() {
+      if (subscribedUsersBD.isNotEmpty) {
+        for (int i = 0; i < subscribedUsersBD.length; i++) {
+          if (widget.userType == "Aluno") {
+            if (widget.emailUser == subscribedUsersBD[i]['email']) {
+              setState(() {
+                buttonSubscribeVisibility = false;
+                buttonUnsubscribeVisibility = true;
+                buttonDoQuizVisibility = true;
+              });
+              break;
+            } else {
+              setState(() {
+                buttonSubscribeVisibility = true;
+                buttonUnsubscribeVisibility = false;
+                buttonDoQuizVisibility = false;
+              });
+            }
+          } else {
+            setState(() {
+              buttonSubscribeVisibility = false;
+              buttonUnsubscribeVisibility = false;
+            });
+          }
+        }
+      } else {
+        if (widget.userType == "Aluno") {
+          setState(() {
+            buttonSubscribeVisibility = true;
+            buttonUnsubscribeVisibility = false;
+            buttonDoQuizVisibility = false;
+          });
+        } else {
+          setState(() {
+            buttonSubscribeVisibility = false;
+            buttonUnsubscribeVisibility = false;
+            buttonDoQuizVisibility = false;
+          });
+        }
+      }
     }
 
     Column returnListTile(index) {
@@ -627,50 +861,49 @@ class Cursos extends State<CursosCall> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 100, top: 10),
-                    child: Text(
-                        'Clique aqui para atualizar ou deletar o treinamento',
-                        style: styleSubtitleSmall),
-                  ),
+                  returnTextEdit(),
                 ]),
             onTap: () {
               receiveUsers(index).then((_) {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('O que deseja fazer? Usuários inscritos:'),
-                      content: Center(
-                        child: Container(
-                          height: 400,
-                          width: 300,
-                          child: ListView.builder(
-                              itemCount: subscribedUsersBD.length,
-                              itemBuilder: (BuildContext context, index) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: 400,
-                                  child: ListTile(
-                                    title: Text(subscribedUsersBD[index]['email'],
-                                        style: styleAltUpdate),
-                                  ),
-                                );
-                              }),
-                        ),
-                      ), 
-                      actions: [
-                        buttonUpdate(index),
-                        deleteTreinamento(index),
-                        buttonDoQuiz(index),
-                        subscribeTreinamento(index),
-                        unsubscribeTreinamento(index),
-                        buttonCancel
-                      ],
-                    );
-                  });
+                  decideButtonVisibility();
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text(
+                              'O que deseja fazer? Usuários inscritos:'),
+                          content: Center(
+                            child: Container(
+                              height: 400,
+                              width: 300,
+                              child: ListView.builder(
+                                  itemCount: subscribedUsersBD.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    return SizedBox(
+                                      height: 50,
+                                      width: 400,
+                                      child: ListTile(
+                                        title: Text(
+                                            subscribedUsersBD[index]['email'],
+                                            style: styleAltUpdate),
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                          actions: [
+                            buttonUpdate(index),
+                            deleteTreinamento(index),
+                            buttonDoQuiz(index),
+                            subscribeTreinamento(index),
+                            unsubscribeTreinamento(index),
+                            buttonCancel
+                          ],
+                        );
+                      });
                 },
-            );},
+              );
+            },
           ),
         ),
         const Padding(

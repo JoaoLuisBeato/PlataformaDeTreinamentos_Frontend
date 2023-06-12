@@ -79,7 +79,7 @@ class MentorPage extends State<MentorPageCall> {
   }
 
   Future<void> fetchDadosDoAluno(email) async {
-    final url = Uri.parse('http://127.0.0.1:5000/Historico_aluno');
+    final url = Uri.parse('http://127.0.0.1:5000/Listar_historio_para_mentor');
     final response = await http.post(url, body: {'email': email});
 
     setState(() {

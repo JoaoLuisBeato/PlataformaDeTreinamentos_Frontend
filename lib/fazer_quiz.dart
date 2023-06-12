@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:core';
+import 'curso_introdutorio.dart';
+import 'curso_avancado.dart';
 
 class FazerQuizCall extends StatefulWidget {
   final int randId;
   final String emailUser;
+  final int flag;
 
-  const FazerQuizCall({required this.randId, required this.emailUser});
+  const FazerQuizCall(
+      {required this.randId, required this.emailUser, required this.flag});
 
   @override
   FazerQuiz createState() => FazerQuiz();
@@ -16,6 +20,7 @@ class FazerQuizCall extends StatefulWidget {
 class FazerQuiz extends State<FazerQuizCall> {
   int randId = 0;
   String emailUser = '';
+  String result = '';
 
   List<dynamic> dataListQuestoesBD = [];
   List<String> dataListRespostas = [];
@@ -56,11 +61,23 @@ class FazerQuiz extends State<FazerQuizCall> {
   @override
   void initState() {
     super.initState();
-    fetchDataFromAPI();
+    fetchDataFromAPI(widget.flag);
   }
 
-  Future<void> fetchDataFromAPI() async {
-    final url = Uri.parse('http://127.0.0.1:5000/Listar_teste');
+  Future<void> fetchDataFromAPI(flag) async {
+    final url;
+
+    if (flag == 0) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Listar_teste'); // mudar rota das questoes conforme flag
+    } else if (flag == 1) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Listar_teste_prova1'); //mudar rota para prova 1
+    } else {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Listar_teste_prova2'); //mudar rota para prova 2
+    }
+
     final response =
         await http.post(url, body: {'id': widget.randId.toString()});
 
@@ -76,6 +93,36 @@ class FazerQuiz extends State<FazerQuizCall> {
     });
   }
 
+  Future<void> corrigirTeste(flag, dataListRespostas) async {
+    final url;
+
+    if (flag == 0) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Corrigir_teste_aptidao'); //mudar rota para teste de aptidao
+    } else if (flag == 1) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Corrigir_teste_prova1'); //mudar rota para prova 1
+    } else {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/Corrigir_teste_prova2'); //mudar rota para prova 2
+    }
+
+    var encodeListaRespostas = jsonEncode(dataListRespostas);
+
+    final response = await http.post(url, body: {
+      'id': widget.randId.toString(),
+      'lista_respostas':
+          encodeListaRespostas, //--> precisa filtrar para corrigir no backend
+      'email': widget.emailUser.toString(),
+    });
+
+    var decodeResponse = json.decode(response.body);
+    setState(() {
+      result = decodeResponse['status'];
+      print(result);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     randId = widget.randId;
@@ -87,9 +134,12 @@ class FazerQuiz extends State<FazerQuizCall> {
           SizedBox(
             width: 800,
             height: 50,
-            child: Text(
-                '${index + 1}-) ${dataListQuestoesBD[index]['questao']}',
-                style: styleAltUpdate),
+            child: Text('${dataListQuestoesBD[index]['questao']}',
+                style: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
           ),
           CheckboxListTile(
             contentPadding:
@@ -102,7 +152,6 @@ class FazerQuiz extends State<FazerQuizCall> {
                 listAnswers[index]['alternativa_a'] = value!;
                 listAnswers[index]['alternativa_b'] = false;
                 listAnswers[index]['alternativa_c'] = false;
-
               });
             },
             title: SizedBox(
@@ -173,6 +222,44 @@ class FazerQuiz extends State<FazerQuizCall> {
       ),
     );
 
+    void dialogReprovado(BuildContext context) {
+
+      final buttonOk = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
+      child: ButtonTheme(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Ok",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Você não acertou questões suficientes'),
+              content: const Text('Decidimos não prosseguir com o curso.'),
+              actions: [buttonOk],
+            );
+          });
+    }
+
     final buttonSendAnswers = ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
@@ -184,15 +271,31 @@ class FazerQuiz extends State<FazerQuizCall> {
             ),
           ),
           onPressed: () async {
-
-            final url = Uri.parse('http://127.0.0.1:5000/Corrigir_teste');
-
-            var encodeListaRespostas = jsonEncode(dataListRespostas);
-
-            await http.post(url, body: {'id': widget.randId.toString(), 'lista_respostas': encodeListaRespostas, 'email': widget.emailUser.toString()});
-
             Navigator.of(context).pop();
-            Navigator.pop(context);
+
+            if (widget.flag == 0) {
+              await corrigirTeste(widget.flag, dataListRespostas);
+              Navigator.pop(context);
+
+              if (result == "Aprovado") {
+                await Navigator.push(context, MaterialPageRoute( builder: (context) => CursoIntrodutorioCall( randId: widget.randId, emailUser: widget.emailUser, flag: widget.flag)));
+              } else {
+               dialogReprovado(context);
+              }
+            } else if (widget.flag == 1) {
+              await corrigirTeste(widget.flag, dataListRespostas);
+              Navigator.pop(context);
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CursoAvancadoCall(
+                          randId: widget.randId,
+                          emailUser: widget.emailUser,
+                          flag: widget.flag)));
+            } else {
+              await corrigirTeste(widget.flag, dataListRespostas);
+              Navigator.pop(context);
+            }
           },
           child: Text(
             "Enviar",
@@ -206,54 +309,76 @@ class FazerQuiz extends State<FazerQuizCall> {
       ),
     );
 
+    String changeTitleNameMaster(flag) {
+      if (flag == 0) {
+        return 'Teste de Aptidão';
+      } else if (flag == 1) {
+        return 'Teste do Case 1';
+      } else {
+        return 'Teste do Case 2';
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Fazer QUIZ'),
+          title: const Text('Fazer CURSO'),
           titleTextStyle: styleAltUpdate,
           automaticallyImplyLeading: false),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 200.0),
-        child: ListView.builder(
-          itemCount: dataListQuestoesBD.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                ListTile(
-                  title: Text(dataListQuestoesBD[index]['numero_questao'],
-                      style: styleTitle),
+          padding: const EdgeInsets.symmetric(horizontal: 200.0, vertical: 50),
+          child: Column(
+            children: [
+              Center(
+                child: Text(changeTitleNameMaster(widget.flag),
+                    style: styleMainTitle),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: dataListQuestoesBD.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          title: Text('${index + 1}-)', style: styleTitle),
+                        ),
+                        returnAnswers(
+                            index, dataListQuestoesBD, dataListRespostas),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Divider(
+                            color: Colors.amber,
+                            height: 2.0,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                returnAnswers(index, dataListQuestoesBD, dataListRespostas),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Divider(
-                    color: Colors.amber,
-                    height: 2.0,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
+              ),
+            ],
+          )),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              FloatingActionButton(
+              FloatingActionButton.extended(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                ),
+                label: const Text('Próximo'),
                 onPressed: () {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Enviar QUIZ?'),
-                          content: const Text(
-                              'As alternativas foram assinaladas?'),
+                          content:
+                              const Text('As alternativas foram assinaladas?'),
                           actions: [buttonSendAnswers, buttonCancel],
                         );
                       });
                 },
-                child: const Text('Enviar'),
               ),
               const SizedBox(width: 30),
             ]),
