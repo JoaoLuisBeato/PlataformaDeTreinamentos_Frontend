@@ -111,8 +111,6 @@ class Cursos extends State<CursosCall> {
 
     if (_userType == 'Aluno') {
       buttonUpdateVisibility = false;
-      buttonSubscribeVisibility = true;
-      buttonUnsubscribeVisibility = true;
     }
 
     void _showDatePicker(pressedButton) {
@@ -341,39 +339,38 @@ class Cursos extends State<CursosCall> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Visibility(
-                visible: buttonInicioInscricaoVisibility,
-                child: Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: ButtonTheme(
-                  minWidth: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                  child: ButtonTheme(
-                    minWidth: 200.0,
-                    height: 150.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0),
-                        ),
-                        minimumSize: const Size(150, 40),
-                      ),
-                      onPressed: () {
-                        _showDatePicker('Inicio');
-                      },
-                      child: Text(
-                        "Selecione INÍCIO das inscrições",
-                        textAlign: TextAlign.center,
-                        style: style.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  visible: buttonInicioInscricaoVisibility,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: ButtonTheme(
+                      minWidth: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                      child: ButtonTheme(
+                        minWidth: 200.0,
+                        height: 150.0,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32.0),
+                            ),
+                            minimumSize: const Size(150, 40),
+                          ),
+                          onPressed: () {
+                            _showDatePicker('Inicio');
+                          },
+                          child: Text(
+                            "Selecione INÍCIO das inscrições",
+                            textAlign: TextAlign.center,
+                            style: style.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              )
-              ),
+                  )),
               const SizedBox(height: 20.0),
               Padding(
                 padding: const EdgeInsets.only(right: 10),
@@ -460,7 +457,6 @@ class Cursos extends State<CursosCall> {
                     ),
                     onPressed: () {
                       _showDatePicker('TreinamentoFinal');
-
                     },
                     child: Text(
                       "Selecione FIM do treinamento",
@@ -510,14 +506,10 @@ class Cursos extends State<CursosCall> {
                           dataListCursosBD[index]['Descricao'].toString(),
                       'carga_horaria':
                           dataListCursosBD[index]['Carga Horária'].toString(),
-                      'inicio_inscricoes': dataInicioInscricao
-                          .toString(),
-                      'final_inscricoes': dataFinalInscricao
-                          .toString(),
-                      'inicio_treinamentos': dataInicioTreinamento
-                          .toString(),
-                      'final_treinamentos': dataFinalTreinamento
-                          .toString(),
+                      'inicio_inscricoes': dataInicioInscricao.toString(),
+                      'final_inscricoes': dataFinalInscricao.toString(),
+                      'inicio_treinamentos': dataInicioTreinamento.toString(),
+                      'final_treinamentos': dataFinalTreinamento.toString(),
                       'qnt_min': dataListCursosBD[index]
                               ['Quantidade mínima de alunos']
                           .toString(),
@@ -743,35 +735,43 @@ class Cursos extends State<CursosCall> {
     }
 
     void decideButtonVisibility() {
-      for (int i = 0; i < subscribedUsersBD.length; i++) {
-        if (widget.userType == "Aluno" && subscribedUsersBD.isNotEmpty) {
-          if (widget.emailUser == subscribedUsersBD[i]['email']) {
-            setState(() {
-              buttonSubscribeVisibility = false;
-              buttonUnsubscribeVisibility = true;
-              buttonDoQuizVisibility = true;
-            });
-            break;
-          } else {
-            setState(() {
-              buttonSubscribeVisibility = true;
-              buttonUnsubscribeVisibility = false;
-              buttonDoQuizVisibility = false;
-            });
-          }
-        } else {
+      if (subscribedUsersBD.isNotEmpty) {
+        for (int i = 0; i < subscribedUsersBD.length; i++) {
           if (widget.userType == "Aluno") {
-            setState(() {
-              buttonSubscribeVisibility = true;
-              buttonUnsubscribeVisibility = false;
-              buttonDoQuizVisibility = false;
-            });
+            if (widget.emailUser == subscribedUsersBD[i]['email']) {
+              setState(() {
+                buttonSubscribeVisibility = false;
+                buttonUnsubscribeVisibility = true;
+                buttonDoQuizVisibility = true;
+              });
+              break;
+            } else {
+              setState(() {
+                buttonSubscribeVisibility = true;
+                buttonUnsubscribeVisibility = false;
+                buttonDoQuizVisibility = false;
+              });
+            }
           } else {
             setState(() {
               buttonSubscribeVisibility = false;
               buttonUnsubscribeVisibility = false;
             });
           }
+        }
+      } else {
+        if (widget.userType == "Aluno") {
+          setState(() {
+            buttonSubscribeVisibility = true;
+            buttonUnsubscribeVisibility = false;
+            buttonDoQuizVisibility = false;
+          });
+        } else {
+          setState(() {
+            buttonSubscribeVisibility = false;
+            buttonUnsubscribeVisibility = false;
+            buttonDoQuizVisibility = false;
+          });
         }
       }
     }
@@ -864,10 +864,8 @@ class Cursos extends State<CursosCall> {
                   returnTextEdit(),
                 ]),
             onTap: () {
-              receiveUsers(index).then(
-                (_) {
+              receiveUsers(index).then((_) {
                   decideButtonVisibility();
-
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {

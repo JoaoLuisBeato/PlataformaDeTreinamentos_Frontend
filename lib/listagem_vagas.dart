@@ -122,7 +122,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
       }
     }
 
-    Column updateField(index) {
+    SingleChildScrollView updateField(index) {
       final TextEditingController textFieldTitleController =
           TextEditingController(text: dataListVagasBD[index]['Titulo da vaga']);
       final TextEditingController textFieldCompanyController =
@@ -137,7 +137,8 @@ class ListagemVagas extends State<ListagemVagasCall> {
       dataListVagasBD[index]['Salário máximo'] =
           dataListVagasBD[index]['Salário máximo'].toString();
 
-      return Column(
+      return SingleChildScrollView(
+        child: Column(
         children: [
           const SizedBox(height: 30.0),
           SizedBox(
@@ -269,7 +270,6 @@ class ListagemVagas extends State<ListagemVagasCall> {
               style: styleAltUpdate,
               controller: fieldText,
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                 labelText: "Salário máximo",
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
@@ -279,6 +279,7 @@ class ListagemVagas extends State<ListagemVagasCall> {
             ),
           ),
         ],
+        ),
       );
     }
 
@@ -514,33 +515,39 @@ class ListagemVagas extends State<ListagemVagasCall> {
     }
 
     void decideButtonVisibility() {
-      for (int i = 0; i < subscribedUsersBD.length; i++) {
-        if (widget.userType == "Aluno" && subscribedUsersBD.isNotEmpty) {
-          if (widget.emailUser == subscribedUsersBD[i]['email']) {
-            setState(() {
-              buttonSubscribeVisibility = false;
-              buttonUnsubscribeVisibility = true;
-            });
-            break;
+      if (subscribedUsersBD.isNotEmpty) {
+        for (int i = 0; i < subscribedUsersBD.length; i++) {
+          if (widget.userType == "Aluno") {
+            if (widget.emailUser == subscribedUsersBD[i]['email']) {
+              setState(() {
+                buttonSubscribeVisibility = false;
+                buttonUnsubscribeVisibility = true;
+              });
+              break;
+            } else {
+              setState(() {
+                buttonSubscribeVisibility = true;
+                buttonUnsubscribeVisibility = false;
+              });
+            }
           } else {
             setState(() {
-              buttonSubscribeVisibility = true;
-              buttonUnsubscribeVisibility = false;
-            });
-          }
-        } else {
-          if (widget.userType == "Aluno") {
-            setState(() {
-              buttonSubscribeVisibility = true;
-              buttonUnsubscribeVisibility = false;
-            });
-          }
-          else {
-            setState(() {
               buttonSubscribeVisibility = false;
               buttonUnsubscribeVisibility = false;
             });
           }
+        }
+      } else {
+        if (widget.userType == "Aluno") {
+          setState(() {
+            buttonSubscribeVisibility = true;
+            buttonUnsubscribeVisibility = false;
+          });
+        } else {
+          setState(() {
+            buttonSubscribeVisibility = false;
+            buttonUnsubscribeVisibility = false;
+          });
         }
       }
     }
