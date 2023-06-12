@@ -8,14 +8,11 @@ import 'dart:math';
 import 'package:my_app/quiz.dart';
 
 class CrudTreinamentosCall extends StatefulWidget {
-
   @override
   CrudTreinamentos createState() => CrudTreinamentos();
 }
 
 class CrudTreinamentos extends State<CrudTreinamentosCall> {
-
-
   int id = Random().nextInt(200);
 
   TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
@@ -24,6 +21,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   String nomeComercial = '';
   String descricao = '';
   String cargaHoraria = '';
+  String cursoIntrodutorio = '';
+  String cursoAvancado = '';
 
   DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
   DateTime dataInicioInscricao = DateTime.now();
@@ -39,9 +38,12 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
   Timer? _debounce;
   final Duration _debounceTime = const Duration(seconds: 1);
 
+  bool visibilityButtonQuiz = true;
+  bool visibilityButtonCase1 = true;
+  bool visibilityButtonCase2 = true;
+
   @override
   Widget build(BuildContext context) {
-    
     void _showDatePicker(pressedButton) {
       showDatePicker(
         context: context,
@@ -380,7 +382,123 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
       ],
     );
 
-    final buttonQuiz = ButtonTheme(
+    final cursosIntrodutoriosField = SizedBox(
+      width: 600,
+      child: TextField(
+        onChanged: (text) {
+          cursoIntrodutorio = text;
+        },
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          labelText: "Texto do curso introdutório",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+
+    final cursosAvancadosField = SizedBox(
+      width: 600,
+      child: TextField(
+        onChanged: (text) {
+          cursoAvancado = text;
+        },
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        obscureText: false,
+        style: style,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          labelText: "Texto do curso avançado",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ),
+    );
+
+    final buttonQuiz = Visibility(
+      visible: visibilityButtonQuiz,
+      child: ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        child: ButtonTheme(
+          minWidth: 200.0,
+          height: 150.0,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+              minimumSize: const Size(150, 40),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => QuizCall(randId: id, flag: 0)),
+              );
+              setState(() {
+                visibilityButtonQuiz = false;
+              });
+            },
+            child: Text(
+              "Criar QUIZ",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonCase1 = Visibility(
+      visible: visibilityButtonCase1,
+      child: ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+        child: ButtonTheme(
+          minWidth: 200.0,
+          height: 150.0,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+              minimumSize: const Size(150, 40),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => QuizCall(randId: id, flag: 1)),
+              );
+              setState(() {
+                visibilityButtonCase1 = false;
+              });
+            },
+            child: Text(
+              "Criar Teste Case 1",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final buttonCase2 = Visibility(
+      visible: visibilityButtonCase2,
+      child: ButtonTheme(
       minWidth: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
       child: ButtonTheme(
@@ -398,11 +516,14 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => QuizCall(randId: id)),
+                  builder: (context) => QuizCall(randId: id, flag: 2)),
             );
+            setState(() {
+                visibilityButtonCase2 = false;
+              });
           },
           child: Text(
-            "Criar QUIZ",
+            "Criar Teste Case 2",
             textAlign: TextAlign.center,
             style: style.copyWith(
               color: Colors.white,
@@ -410,6 +531,7 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             ),
           ),
         ),
+      ),
       ),
     );
 
@@ -424,6 +546,8 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             ),
           ),
           onPressed: () async {
+            Navigator.of(context).pop();
+
             final url = Uri.parse('http://127.0.0.1:5000/criar_treinamento');
 
             await http.post(url, body: {
@@ -436,16 +560,12 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               'inicio_treinamentos': dataInicioTreinamento.toString(),
               'final_treinamentos': dataFinalTreinamento.toString(),
               'qnt_min': minCandidatos.toString(),
-              'qnt_max': maxCandidatos.toString()
+              'qnt_max': maxCandidatos.toString(),
+              'curso_inicial': cursoIntrodutorio.toString(),
+              'curso_avancado': cursoAvancado.toString()
             });
 
-            Navigator.of(context).pop();
             CrudTreinamentosCall();
-
-            /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AdminPageCall()),
-              );*/
           },
           child: Text(
             "Continuar",
@@ -499,7 +619,6 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
             minimumSize: const Size(150, 40),
           ),
           onPressed: () async {
-
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -548,8 +667,16 @@ class CrudTreinamentos extends State<CrudTreinamentosCall> {
               const SizedBox(height: 30.0),
               buttonQuiz,
               const SizedBox(height: 30.0),
+              buttonCase1,
+              const SizedBox(height: 30.0),
+              buttonCase2,
+              const SizedBox(height: 30.0),
+              cursosIntrodutoriosField,
+              const SizedBox(height: 30.0),
+              cursosAvancadosField,
+              const SizedBox(height: 30.0),
               buttonSendTreinee,
-              const SizedBox(height: 40)
+              const SizedBox(height: 40),
             ],
           ),
         ),

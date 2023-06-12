@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'crud_vagas.dart';
 import 'pesquisa_de_aluno.dart';
 import 'results_empresa.dart';
+import 'listagem_vagas.dart';
 
 class CompanyPageCall extends StatefulWidget {
 
@@ -21,7 +22,8 @@ class CompanyPage extends State<CompanyPageCall> {
     return [
       ResultsSearchCall(userType: widget.userType, emailUser: widget.emailUser),
       CrudVagasCall(userType: widget.userType, emailUser: widget.emailUser),
-      AlunoSearchCall(userType: widget.userType, emailUser: widget.emailUser)
+      ListagemVagasCall(userType: widget.userType, emailUser: widget.emailUser),
+      AlunoSearchCall(userType: widget.userType, emailUser: widget.emailUser),
     ];
   }
 
@@ -64,6 +66,10 @@ class CompanyPage extends State<CompanyPageCall> {
           BottomNavigationBarItem(
             icon: Icon(Icons.business),
             label: 'CRUD Vagas de Emprego',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.work),
+            label: 'Vagas Divulgadas',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check),

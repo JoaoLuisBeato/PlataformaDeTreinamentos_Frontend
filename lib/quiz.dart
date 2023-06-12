@@ -4,8 +4,9 @@ import 'dart:async';
 
 class QuizCall extends StatefulWidget {
   final int randId;
+  final int flag;
 
-  const QuizCall({required this.randId});
+  const QuizCall({required this.randId, required this.flag});
 
   @override
   Quiz createState() => Quiz();
@@ -31,7 +32,38 @@ class Quiz extends State<QuizCall> {
     });
   }
 
-  TextStyle style = const TextStyle(fontFamily: 'Nunito', fontSize: 20.9);
+  TextStyle style = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
+
+  TextStyle styleTitle = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 30.9, fontWeight: FontWeight.bold);
+
+  TextStyle styleComplement = const TextStyle(
+      fontFamily: 'Nunito', fontSize: 20, fontWeight: FontWeight.bold);
+
+  TextStyle styleSubtitle = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.grey);
+
+  TextStyle styleSubtitleSmall = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 12,
+      fontWeight: FontWeight.normal,
+      color: Colors.grey);
+
+  TextStyle styleMainTitle =
+      const TextStyle(fontFamily: 'Nunito', fontSize: 50.9);
+
+  TextStyle styleAltUpdate = const TextStyle(
+      fontFamily: 'Nunito',
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      color: Colors.black);
 
   String pergunta = '';
 
@@ -49,13 +81,25 @@ class Quiz extends State<QuizCall> {
 
   int questionCounter = 0;
 
-  Future<void> enviaQuestao(itemsRespostas, transferIndex) async {
-    final url = Uri.parse('http://127.0.0.1:5000/criar_questao');
+  Future<void> enviaQuestao(itemsRespostas, transferIndex, flag) async {
+    final url;
+
+    if (flag == 0) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/criar_questao_aptidao'); //mudar rota para teste de aptidao
+    } else if (flag == 1) {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/criar_questao_prova1'); //mudar rota para prova 1
+    } else {
+      url = Uri.parse(
+          'http://127.0.0.1:5000/criar_questao_prova2'); //mudar rota para prova 2
+    }
 
     await http.post(url, body: {
       'id_treinamento_quiz':
           itemsRespostas[transferIndex].idTreinamentoQuiz.toString(),
-      'questao': itemsRespostas[transferIndex].questao
+      'questao': itemsRespostas[transferIndex]
+          .questao
           .toString(), // na criação da nova tabela, isso tem que ser a pk
       'pergunta': itemsRespostas[transferIndex].pergunta,
       'respostaDaAlternativaA':
@@ -72,7 +116,6 @@ class Quiz extends State<QuizCall> {
 
   @override
   Widget build(BuildContext context) {
-    
     Column returnCheckbox(index, listAnswers) {
       checkAlternativaA = false;
       checkAlternativaB = false;
@@ -107,7 +150,7 @@ class Quiz extends State<QuizCall> {
           ),
           CheckboxListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 320, vertical: 5),
             value: listAnswers[index].alternativaA,
             onChanged: (bool? value) {
               setState(() {
@@ -138,7 +181,7 @@ class Quiz extends State<QuizCall> {
           ),
           CheckboxListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 320, vertical: 5),
             value: listAnswers[index].alternativaB,
             onChanged: (bool? value) {
               setState(() {
@@ -169,7 +212,7 @@ class Quiz extends State<QuizCall> {
           ),
           CheckboxListTile(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 420, vertical: 5),
+                const EdgeInsets.symmetric(horizontal: 320, vertical: 5),
             value: listAnswers[index].alternativaC,
             onChanged: (bool? value) {
               setState(() {
@@ -215,7 +258,8 @@ class Quiz extends State<QuizCall> {
           onPressed: () async {
             addResposta();
             questionCounter++;
-            enviaQuestao(itemsRespostas, transferIndex);
+            enviaQuestao(itemsRespostas, transferIndex, widget.flag);
+
             Navigator.of(context).pop();
           },
           child: Text(
@@ -230,29 +274,27 @@ class Quiz extends State<QuizCall> {
       ),
     );
 
-    final buttonConfirmSubmit = Container(
-      height: 58,
+    final buttonConfirmSend = ButtonTheme(
+      minWidth: MediaQuery.of(context).size.width,
       child: ButtonTheme(
-        minWidth: MediaQuery.of(context).size.width,
-        child: ButtonTheme(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32.0),
-              ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(32.0),
             ),
-            onPressed: () {
-              enviaQuestao(itemsRespostas, transferIndex);
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              "Enviar",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
-              ),
+          ),
+          onPressed: () async {
+            enviaQuestao(itemsRespostas, transferIndex, widget.flag);
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            "Continuar",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.normal,
             ),
           ),
         ),
@@ -284,32 +326,93 @@ class Quiz extends State<QuizCall> {
       ),
     );
 
+    final buttonConfirmSubmit = Container(
+      height: 58,
+      child: ButtonTheme(
+        minWidth: MediaQuery.of(context).size.width,
+        child: ButtonTheme(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32.0),
+              ),
+            ),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Enviar quiz?'),
+                      content: const Text(
+                          'Os campos foram preenchidos e as alternativas foram assinaladas?'),
+                      actions: [buttonConfirmSend, buttonCancel],
+                    );
+                  });
+            },
+            child: Text(
+              "Enviar",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    String changeTitleNameMaster(flag) {
+      if (flag == 0) {
+        return 'Criar Teste de Aptidão';
+      } else if (flag == 1) {
+        return 'Criar Teste do Case 1';
+      } else {
+        return 'Criar Teste do Case 2';
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Criar QUIZ'),
+          title:
+              Text(changeTitleNameMaster(widget.flag), style: styleAltUpdate),
           titleTextStyle: style,
           automaticallyImplyLeading: false),
-      body: ListView.builder(
-        itemCount: itemsRespostas.length,
-        itemBuilder: (context, index) {
-          transferIndex = index;
-          return Column(
+      body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 50),
+          child: Column(
             children: [
-              ListTile(
-                title: Text(itemsRespostas[index].questao, style: style),
+              Center(
+                child: Text(changeTitleNameMaster(widget.flag),
+                    style: styleMainTitle),
               ),
-              returnCheckbox(index, itemsRespostas),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: Divider(
-                  color: Colors.amber,
-                  height: 2.0,
+              Expanded(
+                child: ListView.builder(
+                  itemCount: itemsRespostas.length,
+                  itemBuilder: (context, index) {
+                    transferIndex = index;
+                    return Column(
+                      children: [
+                        ListTile(
+                          title:
+                              Text(itemsRespostas[index].questao, style: style),
+                        ),
+                        returnCheckbox(index, itemsRespostas),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.0),
+                          child: Divider(
+                            color: Colors.amber,
+                            height: 2.0,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],
-          );
-        },
-      ),
+          )),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,

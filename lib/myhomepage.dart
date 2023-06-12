@@ -183,7 +183,7 @@ class MyHomePage extends StatelessWidget {
               child: Center(
                 child: Container(
                   constraints: const BoxConstraints.expand(),
-                  padding: const EdgeInsets.fromLTRB(30.0, 250.0, 30.0, 150.0),
+                  padding: const EdgeInsets.fromLTRB(30.0, 150.0, 30.0, 150.0),
                   child: Column(
                     children: [
                       Text('Login', style: styleTitle),
@@ -192,9 +192,12 @@ class MyHomePage extends StatelessWidget {
                       const SizedBox(height: 30.0),
                       passwordField,
                       const SizedBox(height: 30.0),
+                      Row(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                       buttonLogin,
-                      const SizedBox(height: 30.0),
+                      const SizedBox(width: 30.0),
                       buttonCadastro,
+                      ],),
                       const SizedBox(height: 30.0)
                     ],
                   ),
