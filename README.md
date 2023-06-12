@@ -15,7 +15,6 @@ Dessa forma, é possível manter a sua estrutura independentemente do dispositiv
 <br>
 
 
-## Getting Started
 
 <p align="justify">Para começar, selecione qualquer pasta dentro do seu dispositivo e copie este repositório para dentro desta pasta. Vale lembrar que os comandos mostrados a seguir são refente ao sistema Windows.</p>
 
@@ -54,10 +53,17 @@ Após isso, sua aplicativo irá rodando localmente na sua máquina.
 
 
 
-
 ## Authors
 
   >### Tarefa 7 - APP 
 ><sub>PUC Campinas - Engenharia de Computação: Projeto de Desenvolvimento de Aplicativos. <br><br> Desenvolvidos por alunos do 5º semestre:<br>André Luís Bianchini Filho;<br>João Luís Beato Cardoso;<br>Mateus José Whitaker Filipe;<br>Rafael Rodrigues Sato;<br>Yuka Sakai;<br><br></sub>
 
 **[Colaboradores](https://github.com/JoaoLuisBeato/app_tarefa07_frontend/graphs/contributors)**
+
+<!--
+[Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+[Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+[online documentation](https://docs.flutter.dev/)
+offers tutorials, samples, guidance on mobile development, and a full API reference.
+-->
+
