@@ -36,13 +36,13 @@ Aqui estão listados algumas das ferramentas e dos softwares necessários para o
 
 ### Installing
 
-<p align="justify">Como o repositório e o flutter instalados dentro da máquina e já configurados, abra o terminal e execute o seguinte comando:
+<p align="justify">Com o repositório e o flutter instalados dentro da máquina e já configurados, abra o terminal e execute o seguinte comando:
 
     flutter pub get
 
 Isso irá baixar todas as dependências necessárias para executar o aplicativo.</p>
 
-<p align="justify">Em seguida basta executar o arquivo main.dart que está localizado dentro da pasta lib deste projeto 
+<p align="justify">Em seguida basta executar o arquivo main.dart que está localizado dentro da pasta lib deste projeto. 
 
 </p>
 
